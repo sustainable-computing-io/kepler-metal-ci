@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Runner:
+  Create-runner:
     name: "Create Runner"
     runs-on: ubuntu-latest
 
@@ -21,8 +21,10 @@ jobs:
 
   Demo:
     name: "Demo Action"
-    needs: Runner
+    needs: Create-runner
     runs-on: self-hosted
+    outputs:
+      runner-name: ${{ runner.name }}
 
     steps:
       - run: |
@@ -36,9 +38,9 @@ jobs:
     needs: [Demo]
 
     steps:
-      - name: metal-sweeper-action
-        uses: equinix-labs/metal-sweeper-action@v0.6.0
+      - name: delete runner
+        uses: rootfs/metal-delete-action@main
         with:
           authToken: ${{ secrets.EQUINIX_API_TOKEN }}
           projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
-          keepProject: true
+          runnerName: ${{ needs.Demo.outputs.runner-name }}
