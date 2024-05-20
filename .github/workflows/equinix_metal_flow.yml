@@ -17,10 +17,10 @@ jobs:
           metal_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
           metro: "da"
           plan: "c3.small.x86"
-          os: "ubuntu_20_04"
+          os: "rhel_9"
 
-  Demo:
-    name: "Demo Action"
+  Install:
+    name: "Install"
     needs: Create-runner
     runs-on: self-hosted
     outputs:
@@ -28,14 +28,60 @@ jobs:
 
     steps:
       - run: |
-          echo "Hello, Equinix Metal!"
           echo "This is runner: ${{ runner.name }}"
           echo "Running on ${{ runner.arch }} ${{ runner.os }}"
+          # config ssh
+          sudo ssh-keygen -t rsa -b 4096 -f /root/.ssh/ansible_rsa -N ''
+          sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
+          sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
+          # install ansible
+          sudo dnf -y install ansible-core
+          sudo dnf install -y rhel-system-roles
+          sudo ansible-config init --disabled | sed "s/;host_key_checking=True/host_key_checking=False/g" | sed "s/;private_key_file=/private_key_file=~\/.ssh\/ansible_rsa/g" > /etc/ansible/ansible.cfg
+          sudo cat > inventory.yml << EOF
+          all:
+            children:
+              servers:
+                hosts:
+                  localhost:
+                vars:
+                  firewall:
+                    - service: pmcd
+                      state: enabled
+                  metrics_retention_days: 7
+              metrics_monitor:
+                hosts:
+                  localhost:
+                vars:
+                  firewall:
+                    - service: grafana
+                      state: enabled
+                  metrics_graph_service: yes
+                  metrics_query_service: yes
+                  metrics_retention_days: 7
+                  metrics_monitored_hosts: "{{ groups['servers'] }}"
+          EOF
+          cat > metrics.yml << EOF
+          - name: Use metrics system role to configure PCP metrics recording
+            hosts: servers
+            roles:
+              - redhat.rhel_system_roles.metrics
+              - redhat.rhel_system_roles.firewall
+            become: true
+
+          - name: Use metrics system role to configure Grafana
+            hosts: metrics_monitor
+            roles:
+              - redhat.rhel_system_roles.metrics
+              - redhat.rhel_system_roles.firewall
+            become: true
+          EOF
+          ansible-playbook -i inventory.yml metrics.yml
 
   Cleanup:
     name: "Cleanup"
     runs-on: ubuntu-latest
-    needs: [Demo]
+    needs: [Install]
 
     steps:
       - name: delete runner
@@ -43,4 +89,4 @@ jobs:
         with:
           authToken: ${{ secrets.EQUINIX_API_TOKEN }}
           projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
-          runnerName: ${{ needs.Demo.outputs.runner-name }}
+          runnerName: ${{ needs.Install.outputs.runner-name }}
