@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: metal-runner-action
-        uses: equinix-labs/metal-action-runner@v0.1.1
+        uses: rootfs/metal-runner-action@main
         with:
           github_token: ${{ secrets.GH_SELF_HOSTED_RUNNER_TOKEN }}
           metal_auth_token: ${{ secrets.EQUINIX_API_TOKEN }}
