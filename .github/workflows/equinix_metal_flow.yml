@@ -91,8 +91,9 @@ jobs:
           # curl kepler port 8888 with 10 seconds timeout and retry 5 times; if it fails, exit with error
           for i in {1..5}; do 
             echo "Attempt $i"
-            curl -s -o /dev/null http://localhost:8888 --connect-timeout 10
-            if [ $? -eq 0 ]; then 
+            # curl and get http code
+            ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10)
+            if [ ${ret} -eq 200 ]; then 
               break 
             fi
             sleep 5
