@@ -1,0 +1,34 @@
+<domain type='kvm'>
+  <name>{{ vm_name }}</name>
+  <memory unit='MiB'>2048</memory>
+  <vcpu placement='static'>2</vcpu>
+  <cpu mode='host-model'>
+    <model fallback='forbid'/>
+  </cpu>
+  <os>
+    <type arch='x86_64' machine='pc'>hvm</type>
+    <boot dev='hd'/>
+    <!-- If using UEFI, add loader -->
+    <!-- <loader readonly='yes' type='pflash'>/usr/share/OVMF/OVMF_CODE.fd</loader> -->
+  </os>
+  <devices>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='{{ vm_disk_path }}'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+    <interface type='network'>
+      <source network='default'/>
+      <model type='virtio'/>
+    </interface>
+    <console type='file'>
+      <target type='serial' port='0'/>
+      <source path='/var/log/vm_console.log'/>
+    </console>
+    <serial type='file'>
+      <source path='/var/log/vm_serial.log'/>
+      <target port='0'/>
+    </serial>
+  </devices>
+</domain>
+

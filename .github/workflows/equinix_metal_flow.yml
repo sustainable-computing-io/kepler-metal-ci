@@ -152,6 +152,7 @@ jobs:
           echo "Checking the pmproxy metrics query"
           curl "http://localhost:44322/metrics?names=openmetrics.kepler.kepler_node_package_joules_total" || true
           # check prometheus metrics
+          echo "Checking the prometheus metrics query"
           curl http://localhost:9090/api/v1/query?query=kepler_node_package_joules_total || true
 
   Cleanup:

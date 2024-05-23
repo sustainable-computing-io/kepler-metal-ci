@@ -1,0 +1,16 @@
+#cloud-config
+ssh_pwauth: true
+
+ssh_genkeytypes: ['rsa', 'ecdsa']
+
+bootcmd:
+  - mkdir -p ~{{ vm_user }}/.ssh
+  - echo "{{ vm_ssh_public_key }}" >> ~{{ vm_user }}/.ssh/authorized_keys
+  - chown -R {{ vm_user }}:{{ vm_user }} ~{{ vm_user }}/.ssh
+  - chmod 700 ~{{ vm_user }}/.ssh
+  - chmod 600 ~{{ vm_user }}/.ssh/authorized_keys
+
+runcmd:
+  - sudo yum -y remove cloud-init
+  - sudo dnf -y install ansible-core rhel-system-roles
+  - sudo ansible-galaxy collection install prometheus.prometheus
