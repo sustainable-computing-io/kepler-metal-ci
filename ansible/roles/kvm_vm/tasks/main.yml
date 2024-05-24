@@ -73,7 +73,7 @@
       command: >
         virt-customize -a "{{ vm_disk_path }}" --hostname {{ vm_name }} --selinux-relabel 
         --root-password password:{{ vm_password }} --ssh-inject 'root:file:{{ ssh_key_path }}'
-        --upload "{{ cloud_init_config_path }}":/tmp/user-data --upload /tmp/meta-data:/tmp/meta-data --run cloud-init-script.sh
+        --upload "{{ cloud_init_config_path }}":/tmp/user-data --upload /tmp/meta-data:/tmp/meta-data --run /tmp/cloud-init-script.sh
 
     - name: Use virt-customize to fdisk to resize disk
       command: >
