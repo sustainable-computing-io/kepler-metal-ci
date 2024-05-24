@@ -51,6 +51,7 @@ jobs:
       - name: Run playbook
         run: |
           cd ci-playground/ansible
+          cp roles/kvm_vm/files/meta-data /tmp/meta-data
           echo "Create VM"
           ansible-playbook -i inventory.yml kvm_playbook.yml
           echo "Install Prometheus"
