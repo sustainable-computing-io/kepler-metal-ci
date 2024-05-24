@@ -1,3 +1,6 @@
+vcpu_count: 4
+memory_size: 16384
+cpuset: 0-3
 vm_name: my-vm
 vm_disk_path: /var/lib/libvirt/images/my-vm.qcow2
 backup_vm_disk_path: /var/lib/libvirt/images/my-vm-bak.qcow2

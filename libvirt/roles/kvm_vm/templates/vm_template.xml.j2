@@ -1,10 +1,8 @@
 <domain type='kvm'>
   <name>{{ vm_name }}</name>
-  <memory unit='MiB'>2048</memory>
-  <vcpu placement='static'>2</vcpu>
-  <cpu mode='host-model'>
-    <model fallback='forbid'/>
-  </cpu>
+  <memory unit='MiB'>{{ memory_size }}</memory>
+  <vcpu>{{ vcpu_count }}</vcpu>
+  <cpu mode='host-passthrough'/>
   <os>
     <type arch='x86_64' machine='pc'>hvm</type>
     <boot dev='hd'/>
