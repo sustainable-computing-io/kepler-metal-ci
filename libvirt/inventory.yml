@@ -1,0 +1,37 @@
+all:
+  children:
+    servers:
+      hosts:
+        localhost:
+          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
+        my-vm:
+          ansible_ssh_private_key_file: /tmp/vm_ssh_key
+      vars:
+        firewall:
+          - service: pmcd
+            state: enabled
+        metrics_retention_days: 7
+    kvm_hosts:
+      hosts:
+        localhost:
+          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
+    metrics_monitor:
+      hosts:
+        localhost:
+          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
+        my-vm:
+          ansible_ssh_private_key_file: /tmp/vm_ssh_key
+      vars:
+        firewall:
+          - service: grafana
+            state: enabled
+        metrics_graph_service: yes
+        metrics_query_service: yes
+        metrics_retention_days: 7
+        metrics_monitored_hosts: "{{ groups['servers'] }}"
+    prometheus_server:
+      hosts:
+        localhost:
+          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
+        my-vm:
+          ansible_ssh_private_key_file: /tmp/vm_ssh_key

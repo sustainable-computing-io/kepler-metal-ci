@@ -130,6 +130,20 @@
           debug:
             msg: "The output of the command is {{ host_output.stdout }}"
 
+    - name: Add or replace VM name into /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ vm_ip }} {{ vm_name }}"
+        create: yes
+
+    - name: Test ssh to the VM by ssh to the VM by name
+      ansible.builtin.wait_for:
+        host: "{{ vm_name }}"
+        port: 22
+        delay: 10
+        timeout: 60
+      register: ssh_reachable 
+
   rescue:
     - name: Destroy the VM
       community.libvirt.virt:

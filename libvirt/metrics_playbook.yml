@@ -1,0 +1,27 @@
+- name: Use metrics system role to configure PCP metrics recording
+  hosts: servers
+  roles:
+    - redhat.rhel_system_roles.metrics
+    - redhat.rhel_system_roles.firewall
+  become: true
+
+- name: Use metrics system role to configure Grafana
+  hosts: metrics_monitor
+  roles:
+    - redhat.rhel_system_roles.metrics
+    - redhat.rhel_system_roles.firewall
+  become: true
+
+- name: Use Prometheus role to configure Prometheus server
+  hosts: prometheus_server
+  become: true
+  vars:
+    prometheus_targets:
+      node:
+        - targets:
+            - localhost:8888
+  roles:
+    - role: prometheus.prometheus.prometheus
+      vars:
+        roles_path: /root/.ansible/collections/ansible_collections/prometheus/prometheus/roles
+

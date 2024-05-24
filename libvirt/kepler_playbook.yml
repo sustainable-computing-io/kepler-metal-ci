@@ -1,0 +1,118 @@
+- name: Setup Kepler and OpenMetrics
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install podman
+      ansible.builtin.dnf:
+        name: podman
+        state: present
+
+    - name: Download Kepler systemd unit file
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/packaging/rpm/container-kepler.service
+        dest: /etc/systemd/system/container-kepler.service
+
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Enable and start Kepler service
+      ansible.builtin.systemd:
+        name: container-kepler
+        enabled: yes
+        state: started
+
+    - name: Wait for Kepler to start (retry logic)
+      ansible.builtin.shell: |
+        for i in {1..5}; do
+          echo "Attempt $i"
+          ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
+          if [ ${ret} -eq 200 ]; then
+            exit 0
+          fi
+          sleep 5
+        done
+        echo "Kepler did not start in time"
+        exit 1
+      register: kepler_start
+      failed_when: kepler_start.rc != 0
+
+    - name: Dump Kepler metrics
+      ansible.builtin.shell: curl -s http://localhost:8888/metrics | grep ^kepler_
+
+    - name: Install OpenMetrics
+      ansible.builtin.yum:
+        name: pcp-pmda-openmetrics
+        state: present
+
+    - name: Configure OpenMetrics for Kepler
+      ansible.builtin.shell: |
+        cd /var/lib/pcp/pmdas/openmetrics/
+        echo "http://localhost:8888/metrics" > config.d/kepler.url
+        ./Install
+
+    - name: Validate Kepler metrics
+      ansible.builtin.shell: |
+        pminfo openmetrics | grep kepler
+        pmrep -s 10 openmetrics.kepler.kepler_node_package_joules_total
+
+    - name: Create Kepler pmlogger config directory
+      ansible.builtin.file:
+        path: /etc/pcp/pmlogconf/kepler
+        state: directory
+
+    - name: Create Kepler pmlogger config
+      ansible.builtin.copy:
+        dest: /etc/pcp/pmlogconf/kepler/kepler
+        content: |
+          #pmlogconf-setup 2.0
+          ident  metrics used by the kepler node
+          probe  openmetrics.kepler.kepler_node_package_joules_total
+            openmetrics.kepler.kepler_node_package_joules_total
+            openmetrics.kepler.kepler_node_dram_joules_total
+            openmetrics.kepler.kepler_node_core_joules_total
+
+    - name: Configure pmlogger with Kepler
+      ansible.builtin.command: pmlogconf -r -g kepler /etc/pcp/pmlogconf/kepler/kepler
+
+    - name: Restart pmlogger
+      ansible.builtin.systemd:
+        name: pmlogger
+        state: restarted
+
+    - name: Restart pmproxy
+      ansible.builtin.systemd:
+        name: pmproxy
+        state: restarted
+
+    - name: Wait for pmseries
+      ansible.builtin.pause:
+        seconds: 10
+
+    - name: Check pmseries for Kepler metrics
+      ansible.builtin.shell: pmseries openmetrics.kepler.kepler_node_package_joules_total
+      register: pmseries_output
+
+    - name: Debug pmseries output
+      ansible.builtin.debug:
+        var: pmseries_output.stdout
+
+    - name: Check pmproxy metrics query
+      ansible.builtin.uri:
+        url: "http://localhost:44322/metrics?names=openmetrics.kepler.kepler_node_package_joules_total"
+        method: GET
+      register: pmproxy_output
+
+    - name: Debug pmproxy output
+      ansible.builtin.debug:
+        var: pmproxy_output
+
+    - name: Check Prometheus metrics query
+      ansible.builtin.uri:
+        url: "http://localhost:9090/api/v1/query?query=kepler_node_package_joules_total"
+        method: GET
+      register: prometheus_output
+
+    - name: Debug Prometheus output
+      ansible.builtin.debug:
+        var: prometheus_output
