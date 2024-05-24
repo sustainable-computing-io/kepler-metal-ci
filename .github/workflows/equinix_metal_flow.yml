@@ -28,7 +28,8 @@ jobs:
       runner-name: ${{ runner.name }}
 
     steps:
-      - run: |
+      - name: Setup runner
+        run: |
           echo "This is runner: ${{ runner.name }}"
           echo "Running on ${{ runner.arch }} ${{ runner.os }}"
           # config ssh
@@ -40,6 +41,20 @@ jobs:
           sudo dnf install -y rhel-system-roles
           sudo ansible-galaxy collection install prometheus.prometheus
           sudo ansible-config init --disabled | sed "s/;host_key_checking=True/host_key_checking=False/g" | sed "s/;private_key_file=/private_key_file=~\/.ssh\/ansible_rsa/g" | sed 's|;roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles" }}|roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles;/root/.ansible/collections/ansible_collections/community/libvirt/roles" }}|' > /etc/ansible/ansible.cfg
+
+      - name: Clone repo
+        run: |
+          git clone https://github.com/sustainable-computing-io/ci-playground
+
+      - name: Run playbook
+        run: |
+          cd ci-playground/ansible
+          echo "Create VM"
+          ansible-playbook -i inventory.yml kvm_playbook.yml
+          echo "Install Prometheus"
+          ansible-playbook -i inventory.yml metrics_playbook.yml
+          echo "Install Kepler"
+          ansible-playbook -i inventory.yml kepler_playbook.yml
 
   Cleanup:
     name: "Cleanup"
