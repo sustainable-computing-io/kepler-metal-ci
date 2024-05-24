@@ -3,7 +3,7 @@
 # Create
 
 ```bash
-ansible-playbook -i inventory.ini kvm.yml
+ansible-playbook -i inventory.ini kvm_playbook.yml
 ```
 
 # Destroy
