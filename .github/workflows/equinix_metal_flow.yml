@@ -40,6 +40,8 @@ jobs:
           sudo dnf -y install ansible-core
           sudo dnf install -y rhel-system-roles
           sudo ansible-galaxy collection install prometheus.prometheus
+          sudo ansible-galaxy collection install community.crypto
+          sudo ansible-galaxy collection install community.libvirt
           sudo ansible-config init --disabled | sed "s/;host_key_checking=True/host_key_checking=False/g" | sed "s/;private_key_file=/private_key_file=~\/.ssh\/ansible_rsa/g" | sed 's|;roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles" }}|roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles;/root/.ansible/collections/ansible_collections/community/libvirt/roles" }}|' > /etc/ansible/ansible.cfg
 
       - name: Clone repo
