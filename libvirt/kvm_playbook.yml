@@ -1,0 +1,7 @@
+---
+- name: Install KVM and create VM
+  hosts: kvm_hosts
+  become: yes
+
+  roles:
+    - kvm_vm
