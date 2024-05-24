@@ -37,7 +37,7 @@ jobs:
           sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
           sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
           # install ansible
-          sudo dnf -y install ansible-core
+          sudo dnf -y install ansible-core python3-pip
           sudo dnf install -y rhel-system-roles
           sudo ansible-galaxy collection install prometheus.prometheus
           sudo ansible-galaxy collection install community.crypto
