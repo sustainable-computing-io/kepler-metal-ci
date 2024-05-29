@@ -1,5 +1,5 @@
-# CI playground
-Testing different CI and Github Action pipelines before adding to Kepler main repos.
+# Kepler Metal CI 
+Running Kepler on Equinix and AWS Metal instances with GitHub Actions
 
 # Equinix Metal Runner
 [This action](.github/workflows/equinix_metal_flow.yml) is used to demo how to deploy a GitHub self hosted runner on Equinix Metal, run some workload, and delete the runner.
