@@ -59,6 +59,8 @@ jobs:
           ansible-playbook -i inventory.yml metrics_playbook.yml
           echo "Install Kepler"
           ansible-playbook -i inventory.yml kepler_playbook.yml
+          echo "Run validation test"
+          ansible-playbook kepler_validator.yml
 
   Cleanup:
     name: "Cleanup"
