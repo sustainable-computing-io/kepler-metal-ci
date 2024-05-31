@@ -63,14 +63,22 @@
         content: |
           {% raw %}
           [
-              {
-                  "expected_query": "sum(rate(kepler_{level}_package_joules_total{{{query}}}[{interval}]))",
-                  "actual_query": "sum(rate(kepler_node_package_joules_total[{interval}]))"
-              },
-              {
-                  "expected_query": "sum(rate(kepler_{level}_platform_joules_total{{{query}}}[{interval}]))",
-                  "actual_query": "sum(rate(kepler_node_platform_joules_total[{interval}]))"
-              }
+            {
+                "expected_query": "sum(rate(kepler_{level}_package_joules_total{{{query}}}[{interval}]))",
+                "actual_query": "sum(rate(kepler_node_package_joules_total[{interval}]))"
+            },
+            {
+                "expected_query": "sum(rate(kepler_{level}_core_joules_total{{{query}}}[{interval}]))",
+                "actual_query": "sum(rate(kepler_node_core_joules_total[{interval}]))"
+            },
+            {
+                "expected_query": "sum(rate(kepler_{level}_dram_joules_total{{{query}}}[{interval}]))",
+                "actual_query": "sum(rate(kepler_node_dram_joules_total[{interval}]))"
+            },
+            {
+                "expected_query": "sum(rate(kepler_{level}_platform_joules_total{{{query}}}[{interval}]))",
+                "actual_query": "sum(rate(kepler_node_platform_joules_total[{interval}]))"
+            }
           ]
           {% endraw %}
 
