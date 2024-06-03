@@ -46,7 +46,7 @@ jobs:
 
       - name: Clone repo
         run: |
-          git clone https://github.com/sustainable-computing-io/ci-playground
+          git clone https://github.com/sustainable-computing-io/kepler-metal-ci/
 
       - name: Run playbook
         run: |
