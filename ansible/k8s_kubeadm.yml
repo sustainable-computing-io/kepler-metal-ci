@@ -38,7 +38,7 @@
         msg: "{{ existing_control_plane_servers }}"
 
     - name: Create Control Plane Servers if they do not exist
-      when: existing_control_plane_servers == ""
+      when: existing_control_plane_servers.results[0].stdout == ""
       shell: >
         metal device create
         --config /tmp/metal.yaml
@@ -63,7 +63,7 @@
       failed_when: false
 
     - name: Create Node Servers if they do not exist, don't overwrite the existing control_plane_servers variable
-      when: existing_node_servers == ""
+      when: existing_node_servers.results[0].stdout == ""
       shell: >
         metal device create
         --config /tmp/metal.yaml
@@ -89,7 +89,7 @@
       shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
       register: control_plane_status
       until: control_plane_status.stdout.find('active') != -1
-      retries: 10
+      retries: 20
       delay: 30
       loop: "{{ control_plane_servers.results }}"
       failed_when: false
@@ -102,7 +102,7 @@
       shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
       register: node_status
       until: node_status.stdout.find('active') != -1
-      retries: 10
+      retries: 20
       delay: 30
       loop: "{{ node_servers.results }}"
       failed_when: false
@@ -224,9 +224,13 @@
         enabled: yes
 
     - name: Initialize Kubernetes Cluster on Control Plane
-      command: kubeadm init
+      command: kubeadm init --pod-network-cidr=10.244.0.0/16 
       when: inventory_hostname in groups['control_plane']
       failed_when: false
+
+    - name: mkdir .kube directory
+      command: mkdir -p /root/.kube
+      when: inventory_hostname in groups['control_plane']
 
     - name: Copy kubeconfig to root user
       command: cp /etc/kubernetes/admin.conf /root/.kube/config
@@ -251,3 +255,18 @@
       shell: "{{ hostvars[groups['control_plane'][0]]['join_command'] }}"
       when: inventory_hostname in groups['nodes']
     
+    - name: install Pod network
+      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+      when: inventory_hostname in groups['control_plane']
+
+    - name: run kubectl to get kubeconfig and save it to /tmp/kubeconfig
+      shell: kubectl config view --raw 
+      register: kubeconfig
+      when: inventory_hostname in groups['control_plane'][0]
+    
+    - name: save kubeconfig to local /tmp/kubeconfig
+      local_action:
+        module: copy
+        content: "{{ kubeconfig.stdout }}"
+        dest: /tmp/kubeconfig
+
