@@ -9,8 +9,9 @@
     operating_system: "rhel_9"
     plan: "c3.small.x86"
     facility: "da"
-    # cluster_id: "cluster-{{ 999 | random }}"
-    cluster_id: "cluster-"
+    rand_id: "{{ now(utc=true,fmt='%Y-%m-%d-%H-%M-%S') }}"
+    cluster_id: "cluster-{{ rand_id }}"
+    # cluster_id: "cluster-"
     ssh_key_path: /root/.ssh/kepler_ci
 
   tasks:
@@ -52,7 +53,7 @@
       register: control_plane_servers
 
     - name: Set existing_control_plane_servers to control_plane_servers, if existing control plane servers exist
-      when: existing_control_plane_servers != ""
+      when: existing_control_plane_servers.results[0].stdout != ""
       set_fact:
         control_plane_servers: "{{ existing_control_plane_servers }}"
 
@@ -77,7 +78,7 @@
       register: node_servers
 
     - name: Set existing_node_servers to node_servers, if existing node servers exist
-      when: existing_node_servers != ""
+      when: existing_node_servers.results[0].stdout != ""
       set_fact:
         node_servers: "{{ existing_node_servers }}"
 
@@ -150,7 +151,6 @@
         ansible_ssh_private_key_file: "{{ ssh_key_path }}"
       loop: "{{ node_ip_addresses }}"
 
-# user control_ip_addresses to provision the k8s cluster
 - name: Provision Kubernetes Cluster
   hosts: control_plane:nodes
   become: yes
@@ -269,4 +269,5 @@
         module: copy
         content: "{{ kubeconfig.stdout }}"
         dest: /tmp/kubeconfig
+        force: true
 
