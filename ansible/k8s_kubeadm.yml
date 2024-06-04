@@ -9,7 +9,8 @@
     operating_system: "rhel_9"
     plan: "c3.small.x86"
     facility: "da"
-    cluster_id: "cluster-{{ 999 | random | to_uuid }}"
+    # cluster_id: "cluster-{{ 999 | random }}"
+    cluster_id: "cluster-"
     ssh_key_path: /root/.ssh/kepler_ci
 
   tasks:
@@ -25,8 +26,19 @@
         token: "{{ metal_api_token }}"
         project-id: "{{ project_id }}"
         EOF
-        
-    - name: Create Control Plane Servers
+    
+    - name: Check if the control plane servers already exist
+      shell: metal device list --config /tmp/metal.yaml --output json | jq -r '.[] | select(.hostname | contains("{{ cluster_id }}-control-plane-{{ item }}")) | .id'
+      loop: "{{ range(1, control_plane_count|int + 1)|list }}"
+      register: existing_control_plane_servers
+      failed_when: false
+
+    - name: Print control_plane_servers
+      debug:
+        msg: "{{ existing_control_plane_servers }}"
+
+    - name: Create Control Plane Servers if they do not exist
+      when: existing_control_plane_servers == ""
       shell: >
         metal device create
         --config /tmp/metal.yaml
@@ -39,7 +51,19 @@
       loop: "{{ range(1, control_plane_count|int + 1)|list }}"
       register: control_plane_servers
 
-    - name: Create Node Servers
+    - name: Set existing_control_plane_servers to control_plane_servers, if existing control plane servers exist
+      when: existing_control_plane_servers != ""
+      set_fact:
+        control_plane_servers: "{{ existing_control_plane_servers }}"
+
+    - name: Check if the node servers already exist
+      shell: metal device list --config /tmp/metal.yaml --output json | jq -r '.[] | select(.hostname | contains("{{ cluster_id }}-node-{{ item }}")) | .id'
+      loop: "{{ range(1, control_plane_count|int + 1)|list }}"
+      register: existing_node_servers
+      failed_when: false
+
+    - name: Create Node Servers if they do not exist, don't overwrite the existing control_plane_servers variable
+      when: existing_node_servers == ""
       shell: >
         metal device create
         --config /tmp/metal.yaml
@@ -52,6 +76,15 @@
       loop: "{{ range(1, node_count|int + 1)|list }}"
       register: node_servers
 
+    - name: Set existing_node_servers to node_servers, if existing node servers exist
+      when: existing_node_servers != ""
+      set_fact:
+        node_servers: "{{ existing_node_servers }}"
+
+    - name: Print control_plane_servers
+      debug:
+        msg: "{{ control_plane_servers }}"
+
     - name: Wait for Control Plane Servers to be Active
       shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
       register: control_plane_status
@@ -59,6 +92,11 @@
       retries: 10
       delay: 30
       loop: "{{ control_plane_servers.results }}"
+      failed_when: false
+
+    - name: Print Node Servers
+      debug:
+        msg: "{{ node_servers }}"
 
     - name: Wait for Node Servers to be Active
       shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
@@ -67,6 +105,7 @@
       retries: 10
       delay: 30
       loop: "{{ node_servers.results }}"
+      failed_when: false
 
     - name: Add Control Plane Servers to Inventory
       add_host:
@@ -89,6 +128,14 @@
       shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.ip_addresses[0].address'
       register: node_ip_addresses
       loop: "{{ node_servers.results }}"
+
+    - name: Print Control Plane IP addresses
+      debug:
+        msg: "{{ control_ip_addresses.results | map(attribute='stdout') | list }}"
+
+    - name: Print Node IP addresses
+      debug:
+        msg: "{{ node_ip_addresses.results | map(attribute='stdout') | list }}"
 
     - name: Delete metal config
       shell: rm /tmp/metal.yaml
