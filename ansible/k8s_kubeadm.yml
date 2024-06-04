@@ -1,0 +1,136 @@
+---
+- name: Create Kubernetes Cluster on Equinix Metal
+  hosts: localhost
+  vars:
+    metal_api_token: "{{ lookup('env', 'METAL_AUTH_TOKEN') }}" 
+    project_id: "{{ lookup('env', 'EQUINIX_PROJECT_ID') }}"
+    control_plane_count: 1
+    node_count: 1
+    operating_system: "rhel_9"
+    plan: "c3.small.x86"
+    facility: "da"
+    cluster_id: "cluster-{{ 999 | random | to_uuid }}"
+    ssh_key_path: /root/.ssh/kepler_ci
+
+  tasks:
+    - name: Download metal CLI
+      shell: curl -L https://github.com/equinix/metal-cli/releases/download/v0.23.0/metal-linux-amd64 -o /usr/bin/metal
+
+    - name: Make metal CLI executable
+      shell: chmod 755 /usr/bin/metal
+
+    - name: Create metal config
+      shell: |
+        cat <<EOF > /tmp/metal.yaml
+        token: "{{ metal_api_token }}"
+        project-id: "{{ project_id }}"
+        EOF
+        
+    - name: Create Control Plane Servers
+      shell: >
+        metal device create
+        --config /tmp/metal.yaml
+        --hostname "{{ cluster_id }}-control-plane-{{ item }}"
+        --plan "{{ plan }}"
+        --operating-system "{{ operating_system }}"
+        --metro "{{ facility }}" 
+        --output json 
+        | jq -r '.id'
+      loop: "{{ range(1, control_plane_count|int + 1)|list }}"
+      register: control_plane_servers
+
+    - name: Create Node Servers
+      shell: >
+        metal device create
+        --config /tmp/metal.yaml
+        --hostname "{{ cluster_id }}-node-{{ item }}"
+        --operating-system "{{ operating_system }}"
+        --plan "{{ plan }}"
+        --metro "{{ facility }}"
+        --output json 
+        | jq -r '.id'
+      loop: "{{ range(1, node_count|int + 1)|list }}"
+      register: node_servers
+
+    - name: Wait for Control Plane Servers to be Active
+      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
+      register: control_plane_status
+      until: control_plane_status.stdout.find('active') != -1
+      retries: 10
+      delay: 30
+      loop: "{{ control_plane_servers.results }}"
+
+    - name: Wait for Node Servers to be Active
+      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
+      register: node_status
+      until: node_status.stdout.find('active') != -1
+      retries: 10
+      delay: 30
+      loop: "{{ node_servers.results }}"
+
+    - name: Add Control Plane Servers to Inventory
+      add_host:
+        name: "{{ item.stdout }}"
+        groups: control_plane
+      loop: "{{ control_plane_servers.results }}"
+
+    - name: Add Node Servers to Inventory
+      add_host:
+        name: "{{ item.stdout }}"
+        groups: nodes
+      loop: "{{ node_servers.results }}"
+
+    - name: Get IP addresses of control plane node
+      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.ip_addresses[0].address'
+      register: control_ip_addresses
+      loop: "{{ control_plane_servers.results}}"
+
+    - name: Get IP addresses of node
+      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.ip_addresses[0].address'
+      register: node_ip_addresses
+      loop: "{{ node_servers.results }}"
+
+    - name: Delete metal config
+      shell: rm /tmp/metal.yaml
+
+- name: Provision Kubernetes Cluster
+  hosts: control_ip_addresses
+  become: yes
+
+  tasks:
+    - name: Set SELinux to Permissive
+      shell: setenforce 0
+
+    - name: add yum repo
+      shell: |
+          # This overwrites any existing configuration in /etc/yum.repos.d/kubernetes.repo
+          cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+          [kubernetes]
+          name=Kubernetes
+          baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
+          exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+          EOF
+    - name: Install kubeadm and dependencies
+      yum:
+        name:
+          - kubeadm
+          - kubectl
+          - kubelet
+        state: present
+
+    - name: Start and enable kubelet service
+      service:
+        name: kubelet
+        state: started
+        enabled: yes
+
+    - name: Initialize Kubernetes Cluster on Control Plane
+      command: kubeadm init
+      when: inventory_hostname in groups['control_plane']
+
+    - name: Join Nodes to Kubernetes Cluster
+      command: kubeadm join --token "{{ hostvars[groups['control_plane'][0]]['kubeadm_token'] }}"
+      when: inventory_hostname in groups['nodes']
