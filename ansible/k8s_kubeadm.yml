@@ -1,0 +1,273 @@
+---
+- name: Create Kubernetes Cluster on Equinix Metal
+  hosts: localhost
+  vars:
+    metal_api_token: "{{ lookup('env', 'METAL_AUTH_TOKEN') }}" 
+    project_id: "{{ lookup('env', 'EQUINIX_PROJECT_ID') }}"
+    control_plane_count: 1
+    node_count: 1
+    operating_system: "rhel_9"
+    plan: "c3.small.x86"
+    facility: "da"
+    rand_id: "{{ now(utc=true,fmt='%Y-%m-%d-%H-%M-%S') }}"
+    cluster_id: "cluster-{{ rand_id }}"
+    # cluster_id: "cluster-"
+    ssh_key_path: /root/.ssh/kepler_ci
+
+  tasks:
+    - name: Download metal CLI
+      shell: curl -L https://github.com/equinix/metal-cli/releases/download/v0.23.0/metal-linux-amd64 -o /usr/bin/metal
+
+    - name: Make metal CLI executable
+      shell: chmod 755 /usr/bin/metal
+
+    - name: Create metal config
+      shell: |
+        cat <<EOF > /tmp/metal.yaml
+        token: "{{ metal_api_token }}"
+        project-id: "{{ project_id }}"
+        EOF
+    
+    - name: Check if the control plane servers already exist
+      shell: metal device list --config /tmp/metal.yaml --output json | jq -r '.[] | select(.hostname | contains("{{ cluster_id }}-control-plane-{{ item }}")) | .id'
+      loop: "{{ range(1, control_plane_count|int + 1)|list }}"
+      register: existing_control_plane_servers
+      failed_when: false
+
+    - name: Print control_plane_servers
+      debug:
+        msg: "{{ existing_control_plane_servers }}"
+
+    - name: Create Control Plane Servers if they do not exist
+      when: existing_control_plane_servers.results[0].stdout == ""
+      shell: >
+        metal device create
+        --config /tmp/metal.yaml
+        --hostname "{{ cluster_id }}-control-plane-{{ item }}"
+        --plan "{{ plan }}"
+        --operating-system "{{ operating_system }}"
+        --metro "{{ facility }}" 
+        --output json 
+        | jq -r '.id'
+      loop: "{{ range(1, control_plane_count|int + 1)|list }}"
+      register: control_plane_servers
+
+    - name: Set existing_control_plane_servers to control_plane_servers, if existing control plane servers exist
+      when: existing_control_plane_servers.results[0].stdout != ""
+      set_fact:
+        control_plane_servers: "{{ existing_control_plane_servers }}"
+
+    - name: Check if the node servers already exist
+      shell: metal device list --config /tmp/metal.yaml --output json | jq -r '.[] | select(.hostname | contains("{{ cluster_id }}-node-{{ item }}")) | .id'
+      loop: "{{ range(1, control_plane_count|int + 1)|list }}"
+      register: existing_node_servers
+      failed_when: false
+
+    - name: Create Node Servers if they do not exist, don't overwrite the existing control_plane_servers variable
+      when: existing_node_servers.results[0].stdout == ""
+      shell: >
+        metal device create
+        --config /tmp/metal.yaml
+        --hostname "{{ cluster_id }}-node-{{ item }}"
+        --operating-system "{{ operating_system }}"
+        --plan "{{ plan }}"
+        --metro "{{ facility }}"
+        --output json 
+        | jq -r '.id'
+      loop: "{{ range(1, node_count|int + 1)|list }}"
+      register: node_servers
+
+    - name: Set existing_node_servers to node_servers, if existing node servers exist
+      when: existing_node_servers.results[0].stdout != ""
+      set_fact:
+        node_servers: "{{ existing_node_servers }}"
+
+    - name: Print control_plane_servers
+      debug:
+        msg: "{{ control_plane_servers }}"
+
+    - name: Wait for Control Plane Servers to be Active
+      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
+      register: control_plane_status
+      until: control_plane_status.stdout.find('active') != -1
+      retries: 20
+      delay: 30
+      loop: "{{ control_plane_servers.results }}"
+      failed_when: false
+
+    - name: Print Node Servers
+      debug:
+        msg: "{{ node_servers }}"
+
+    - name: Wait for Node Servers to be Active
+      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
+      register: node_status
+      until: node_status.stdout.find('active') != -1
+      retries: 20
+      delay: 30
+      loop: "{{ node_servers.results }}"
+      failed_when: false
+
+    - name: Get IP addresses of control plane node
+      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.ip_addresses[0].address'
+      register: control_ip_addresses
+      loop: "{{ control_plane_servers.results}}"
+
+    - name: Get IP addresses of node
+      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.ip_addresses[0].address'
+      register: node_ip_addresses
+      loop: "{{ node_servers.results }}"
+
+    - name: Create Control Plane IP addresses list variable
+      set_fact:
+        control_ip_addresses: "{{ control_ip_addresses.results | map(attribute='stdout') | list }}"
+
+    - name: Create Node IP addresses list variable
+      set_fact:
+        node_ip_addresses: "{{ node_ip_addresses.results | map(attribute='stdout') | list }}"
+
+    - name: Print Control Plane IP addresses
+      debug:
+        msg: "{{ control_ip_addresses }}"
+
+    - name: Print Node IP addresses
+      debug:
+        msg: "{{ node_ip_addresses }}"
+
+    - name: Delete metal config
+      shell: rm /tmp/metal.yaml
+
+    - name: Add Control Plane Hosts to Inventory
+      add_host:
+        name: "{{ item }}"
+        groups: control_plane
+        ansible_ssh_private_key_file: "{{ ssh_key_path }}"
+      loop: "{{ control_ip_addresses }}"
+
+    - name: Add Node Hosts to Inventory
+      add_host:
+        name: "{{ item }}"
+        groups: nodes
+        ansible_ssh_private_key_file: "{{ ssh_key_path }}"
+      loop: "{{ node_ip_addresses }}"
+
+- name: Provision Kubernetes Cluster
+  hosts: control_plane:nodes
+  become: yes
+
+  tasks:
+    - name: Set SELinux to Permissive
+      shell: setenforce 0
+
+    - name: add yum repo
+      shell: |
+          # This overwrites any existing configuration in /etc/yum.repos.d/kubernetes.repo
+          cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+          [kubernetes]
+          name=Kubernetes
+          baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
+          exclude=kubelet kubeadm kubectl
+          EOF
+
+    - name: Install cri-o
+      shell: |
+          VERSION=1.22
+          curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/CentOS_8/devel:kubic:libcontainers:stable.repo
+          curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:${VERSION}/CentOS_8/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo
+          dnf -y install cri-o cri-tools
+          systemctl enable --now crio
+
+    - name: Install kubeadm and dependencies
+      shell: dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+
+    - name: Prepare for kubelet
+      shell: |
+        swapoff -a
+        sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+        setenforce 0
+        sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+        firewall-cmd --permanent --add-port=6443/tcp
+        firewall-cmd --permanent --add-port=2379-2380/tcp
+        firewall-cmd --permanent --add-port=10250/tcp
+        firewall-cmd --permanent --add-port=10259/tcp
+        firewall-cmd --permanent --add-port=10257/tcp
+        firewall-cmd --permanent --add-port=4240/tcp
+        firewall-cmd --permanent --add-port=8472/udp
+        firewall-cmd --permanent --add-port=10250/tcp
+        firewall-cmd --permanent --add-port=30000-32767/tcp  
+        firewall-cmd --reload
+        cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+        overlay
+        br_netfilter
+        EOF
+        
+        modprobe overlay
+        modprobe br_netfilter
+        
+        # sysctl params required by setup, params persist across reboots
+        cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+        net.bridge.bridge-nf-call-iptables  = 1
+        net.bridge.bridge-nf-call-ip6tables = 1
+        net.ipv4.ip_forward                 = 1
+        EOF
+
+        sysctl --system
+
+
+    - name: Start and enable kubelet service
+      service:
+        name: kubelet
+        state: started
+        enabled: yes
+
+    - name: Initialize Kubernetes Cluster on Control Plane
+      command: kubeadm init --pod-network-cidr=10.244.0.0/16 
+      when: inventory_hostname in groups['control_plane']
+      failed_when: false
+
+    - name: mkdir .kube directory
+      command: mkdir -p /root/.kube
+      when: inventory_hostname in groups['control_plane']
+
+    - name: Copy kubeconfig to root user
+      command: cp /etc/kubernetes/admin.conf /root/.kube/config
+      when: inventory_hostname in groups['control_plane']
+
+    - name: Generate kubeadm token
+      command: kubeadm token create --print-join-command
+      register: token_join_command
+      when: inventory_hostname in groups['control_plane']
+
+    - name: Set join command
+      set_fact:
+        join_command: "{{ token_join_command.stdout_lines[0] }}"
+      when: inventory_hostname in groups['control_plane']
+
+    - name: Print join command
+      debug:
+        var: join_command
+      when: inventory_hostname in groups['control_plane']
+      
+    - name: Join Nodes to Kubernetes Cluster using kubeadm token
+      shell: "{{ hostvars[groups['control_plane'][0]]['join_command'] }}"
+      when: inventory_hostname in groups['nodes']
+    
+    - name: install Pod network
+      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+      when: inventory_hostname in groups['control_plane']
+
+    - name: run kubectl to get kubeconfig and save it to /tmp/kubeconfig
+      shell: kubectl config view --raw 
+      register: kubeconfig
+      when: inventory_hostname in groups['control_plane'][0]
+    
+    - name: save kubeconfig to local /tmp/kubeconfig
+      local_action:
+        module: copy
+        content: "{{ kubeconfig.stdout }}"
+        dest: /tmp/kubeconfig
+        force: true
+
