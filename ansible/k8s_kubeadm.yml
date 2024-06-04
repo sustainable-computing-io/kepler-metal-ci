@@ -240,12 +240,14 @@
     - name: Set join command
       set_fact:
         join_command: "{{ token_join_command.stdout_lines[0] }}"
+      when: inventory_hostname in groups['control_plane']
 
     - name: Print join command
       debug:
         var: join_command
+      when: inventory_hostname in groups['control_plane']
       
     - name: Join Nodes to Kubernetes Cluster using kubeadm token
-      shell: "{{ join_command }}"
+      shell: "{{ hostvars[groups['control_plane'][0]]['join_command'] }}"
       when: inventory_hostname in groups['nodes']
     
