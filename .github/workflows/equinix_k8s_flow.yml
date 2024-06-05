@@ -23,6 +23,7 @@ jobs:
           mkdir -p ~/.ssh/
           echo "${{ secrets.EQUINIX_SSH_KEY }}" > ~/.ssh/kepler_ci
           chmod 600 ~/.ssh/kepler_ci
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
       - name: Create metal config
         run: |
