@@ -27,7 +27,7 @@ jobs:
       - name: Create metal config
         run: |
           cat <<EOF > /tmp/metal.yaml
-          token: "${{ secrets.EQUINIX_SSH_KEY }}"
+          token: "${{ secrets.METAL_AUTH_TOKEN }}"
           project-id: ${{ secrets.EQUINIX_PROJECT_ID }}
           EOF
 
