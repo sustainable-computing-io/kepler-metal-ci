@@ -2,6 +2,11 @@ name: Equinix k8s Action
 
 on:
   workflow_dispatch:
+    inputs:
+      termination_time:
+        description: 'Cluster termination time in hours after now'
+        required: true
+        default: '1'
 
 jobs:
   Create-k8s-cluster:
@@ -9,6 +14,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Validate termination time
+        run: |
+          if [ ${{ github.event.inputs.termination_time }} -gt 48 ]; then
+            echo "Error: Termination time cannot be more than 48 hours."
+            exit 1
+          fi
+
       - name: Install ansible, git and jq
         run: |
           sudo apt-get update
@@ -46,7 +58,7 @@ jobs:
           cd kepler-metal-ci
           cp ansible/mask_ip_callback.py ~/.github/callback_plugins/mask_ip_callback.py
 
-          ansible-playbook ansible/k8s_kubeadm.yml >> k8s_kubeadm.log
+          ansible-playbook ansible/k8s_kubeadm.yml --extra-vars "termination_time=${{ github.event.inputs.termination_time }}" >> k8s_kubeadm.log
           sudo cat /tmp/kubeconfig |jq -r '.stdout' > /tmp/k8sconfig
           sudo mv /tmp/k8sconfig /tmp/kubeconfig
 
