@@ -9,7 +9,6 @@
     facility: "da"
     rand_id: "{{ now(utc=true,fmt='%Y-%m-%d-%H-%M-%S') }}"
     cluster_id: "cluster-{{ rand_id }}"
-    # cluster_id: "cluster-"
     ssh_key_path: ~/.ssh/kepler_ci
     metal_config_path: /tmp/metal.yaml
 
@@ -241,4 +240,4 @@
         content: "{{ kubeconfig }}"
         dest: /tmp/kubeconfig
         force: true
-
+      when: inventory_hostname in groups['control_plane'][0]
