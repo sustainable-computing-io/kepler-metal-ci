@@ -46,4 +46,39 @@ jobs:
           cd kepler-metal-ci
           cp ansible/mask_ip_callback.py ~/.github/callback_plugins/mask_ip_callback.py
 
-          ansible-playbook ansible/k8s_kubeadm.yml     
+          ansible-playbook ansible/k8s_kubeadm.yml >> k8s_kubeadm.log
+
+      - name: Upload kubeconfig
+        uses: actions/upload-artifact@v2
+        with:
+          name: kubeconfig-${{ github.run_id }}
+          path: /tmp/kubeconfig
+          retention-days: 1
+
+  Test-K8s:
+    name: "Test K8s"
+    needs: create-k8s-cluster
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: mkdir ~/.kube
+        run: |
+          mkdir -p ~/.kube
+
+      - name: Download kubeconfig
+        uses: actions/download-artifact@v2
+        with:
+          name: kubeconfig-${{ github.run_id }}
+          path: ~/.kube/
+
+      - name: Test k8s
+        run: |
+          mv ~/.kube/kubeconfig-${{ github.run_id }} ~/.kube/config
+          kubectl get nodes
+          kubectl get pods --all-namespaces
