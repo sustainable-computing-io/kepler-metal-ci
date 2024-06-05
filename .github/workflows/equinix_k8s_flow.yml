@@ -24,6 +24,13 @@ jobs:
           echo "${{ secrets.EQUINIX_SSH_KEY }}" > ~/.ssh/kepler_ci
           chmod 600 ~/.ssh/kepler_ci
 
+      - name: Create metal config
+        run: |
+          cat <<EOF > /tmp/metal.yaml
+          token: "${{ secrets.EQUINIX_SSH_KEY }}"
+          project-id: ${{ secrets.EQUINIX_PROJECT_ID }}
+          EOF
+
       - name: Play k8s_kubeadm.yml
         env:
           metal_auth_token: ${{ secrets.EQUINIX_API_TOKEN }}
