@@ -24,7 +24,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Play k8s_kubeadm.yml
-        with:
+        env:
           metal_auth_token: ${{ secrets.EQUINIX_API_TOKEN }}
           equinix_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
           metro: "da"
