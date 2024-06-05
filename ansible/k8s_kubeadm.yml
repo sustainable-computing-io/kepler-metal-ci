@@ -267,7 +267,7 @@
     - name: save kubeconfig to local /tmp/kubeconfig
       local_action:
         module: copy
-        content: "{{ kubeconfig.stdout }}"
+        content: "{{ kubeconfig }}"
         dest: /tmp/kubeconfig
         force: true
 
