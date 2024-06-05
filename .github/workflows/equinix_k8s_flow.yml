@@ -33,8 +33,6 @@ jobs:
 
       - name: Play k8s_kubeadm.yml
         env:
-          metal_auth_token: ${{ secrets.EQUINIX_API_TOKEN }}
-          equinix_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
           metro: "da"
           plan: "c3.small.x86"
           os: "rhel_9"
