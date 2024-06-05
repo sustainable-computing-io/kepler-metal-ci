@@ -2,8 +2,6 @@
 - name: Create Kubernetes Cluster on Equinix Metal
   hosts: localhost
   vars:
-    metal_api_token: "{{ lookup('env', 'METAL_AUTH_TOKEN') }}" 
-    project_id: "{{ lookup('env', 'EQUINIX_PROJECT_ID') }}"
     control_plane_count: 1
     node_count: 1
     operating_system: "rhel_9"
@@ -13,6 +11,7 @@
     cluster_id: "cluster-{{ rand_id }}"
     # cluster_id: "cluster-"
     ssh_key_path: ~/.ssh/kepler_ci
+    metal_config_path: /tmp/metal.yaml
 
   tasks:
     - name: Download metal CLI
@@ -21,17 +20,8 @@
     - name: Make metal CLI executable
       shell: sudo chmod 755 /usr/bin/metal
 
-    - name: Create metal config if it does not exist
-      shell: |
-        if [ ! -f /tmp/metal.yaml ]; then
-          cat <<EOF > /tmp/metal.yaml
-          token: "{{ metal_api_token }}"
-          project-id: "{{ project_id }}"
-          EOF
-        fi 
-    
     - name: Check if the control plane servers already exist
-      shell: metal device list --config /tmp/metal.yaml --output json | jq -r '.[] | select(.hostname | contains("{{ cluster_id }}-control-plane-{{ item }}")) | .id'
+      shell: metal device list --config "{{ metal_config_path }}" --output json | jq -r '.[] | select(.hostname | contains("{{ cluster_id }}-control-plane-{{ item }}")) | .id'
       loop: "{{ range(1, control_plane_count|int + 1)|list }}"
       register: existing_control_plane_servers
       failed_when: false
@@ -44,7 +34,7 @@
       when: existing_control_plane_servers.results[0].stdout == ""
       shell: >
         metal device create
-        --config /tmp/metal.yaml
+        --config "{{ metal_config_path }}"
         --hostname "{{ cluster_id }}-control-plane-{{ item }}"
         --plan "{{ plan }}"
         --operating-system "{{ operating_system }}"
@@ -61,7 +51,7 @@
         control_plane_servers: "{{ existing_control_plane_servers }}"
 
     - name: Check if the node servers already exist
-      shell: metal device list --config /tmp/metal.yaml --output json | jq -r '.[] | select(.hostname | contains("{{ cluster_id }}-node-{{ item }}")) | .id'
+      shell: metal device list --config "{{ metal_config_path }}" --output json | jq -r '.[] | select(.hostname | contains("{{ cluster_id }}-node-{{ item }}")) | .id'
       loop: "{{ range(1, control_plane_count|int + 1)|list }}"
       register: existing_node_servers
       failed_when: false
@@ -70,7 +60,7 @@
       when: existing_node_servers.results[0].stdout == ""
       shell: >
         metal device create
-        --config /tmp/metal.yaml
+        --config "{{ metal_config_path }}"
         --hostname "{{ cluster_id }}-node-{{ item }}"
         --operating-system "{{ operating_system }}"
         --plan "{{ plan }}"
@@ -91,7 +81,7 @@
         msg: "{{ control_plane_servers }}"
 
     - name: Wait for Control Plane Servers to be Active
-      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
+      shell: metal device get -i {{ item.stdout }} --config "{{ metal_config_path }}" --output json | jq -r '.state'
       register: control_plane_status
       until: control_plane_status.stdout.find('active') != -1
       retries: 20
@@ -104,7 +94,7 @@
         msg: "{{ node_servers }}"
 
     - name: Wait for Node Servers to be Active
-      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.state'
+      shell: metal device get -i {{ item.stdout }} --config "{{ metal_config_path }}" --output json | jq -r '.state'
       register: node_status
       until: node_status.stdout.find('active') != -1
       retries: 20
@@ -113,12 +103,12 @@
       failed_when: false
 
     - name: Get IP addresses of control plane node
-      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.ip_addresses[0].address'
+      shell: metal device get -i {{ item.stdout }} --config "{{ metal_config_path }}" --output json | jq -r '.ip_addresses[0].address'
       register: control_ip_addresses
       loop: "{{ control_plane_servers.results}}"
 
     - name: Get IP addresses of node
-      shell: metal device get -i {{ item.stdout }} --config /tmp/metal.yaml --output json | jq -r '.ip_addresses[0].address'
+      shell: metal device get -i {{ item.stdout }} --config "{{ metal_config_path }}" --output json | jq -r '.ip_addresses[0].address'
       register: node_ip_addresses
       loop: "{{ node_servers.results }}"
 
@@ -139,7 +129,7 @@
         msg: "{{ node_ip_addresses }}"
 
     - name: Delete metal config
-      shell: rm /tmp/metal.yaml
+      shell: rm "{{ metal_config_path }}"
 
     - name: Add Control Plane Hosts to Inventory
       add_host:
