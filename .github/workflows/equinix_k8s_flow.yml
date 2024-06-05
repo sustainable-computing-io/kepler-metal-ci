@@ -20,8 +20,9 @@ jobs:
 
       - name: Save ssh key from env to file
         run: |
-          echo "${{ secrets.EQUINIX_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.EQUINIX_SSH_KEY }}" > ~/.ssh/kepler_ci
+          chmod 600 ~/.ssh/kepler_ci
 
       - name: Play k8s_kubeadm.yml
         env:
