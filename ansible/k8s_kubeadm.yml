@@ -5,8 +5,9 @@
     control_plane_count: 1
     node_count: 1
     operating_system: "rhel_9"
-    plan: "c3.small.x86"
-    facility: "da"
+    control_plan: "{{ control_plan | default('c3.small.x86') }}" 
+    node_plan: "{{ node_plan | default('c3.small.x86') }}" 
+    facility: "{{ metro | default('da') }}"
     rand_id: "{{ now(utc=true,fmt='%Y-%m-%d-%H-%M-%S') }}"
     cluster_id: "cluster-{{ rand_id }}"
     ssh_key_path: ~/.ssh/kepler_ci
@@ -14,6 +15,10 @@
     termination_time: "{{ termination_time | default(1) }}"
 
   tasks:
+    - name: Print all the values of plan variables and termination time
+      debug:
+        msg: "control_plan: {{ control_plan }}, node_plan: {{ node_plan }}, termination_time: {{ termination_time }}"
+
     - name: Calculate termination timestamp
       command: date -u +%Y-%m-%dT%H:%M:%SZ --date "+{{ termination_time }} hours"
       register: termination_timestamp_output
@@ -40,7 +45,7 @@
         metal device create
         --config "{{ metal_config_path }}"
         --hostname "{{ cluster_id }}-control-plane-{{ item }}"
-        --plan "{{ plan }}"
+        --plan "{{ control_plan }}"
         --operating-system "{{ operating_system }}"
         --metro "{{ facility }}" 
         --termination-time "{{ termination_timestamp }}"
@@ -67,7 +72,7 @@
         --config "{{ metal_config_path }}"
         --hostname "{{ cluster_id }}-node-{{ item }}"
         --operating-system "{{ operating_system }}"
-        --plan "{{ plan }}"
+        --plan "{{ node_plan }}"
         --metro "{{ facility }}"
         --termination-time "{{ termination_timestamp }}"
         --output json 
