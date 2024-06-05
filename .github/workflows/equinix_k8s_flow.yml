@@ -1,0 +1,35 @@
+name: Equinix k8s Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Create-k8s-cluster:
+    name: "Create Cluster"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install ansible, git and jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install ansible jq git -y
+
+      - name: Clone repo
+        run: |
+          git clone https://github.com/sustainable-computing-io/kepler-metal-ci
+
+      - name: Save ssh key from env to file
+        run: |
+          echo "${{ secrets.EQUINIX_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Play k8s_kubeadm.yml
+        with:
+          metal_auth_token: ${{ secrets.EQUINIX_API_TOKEN }}
+          equinix_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
+          metro: "da"
+          plan: "c3.small.x86"
+          os: "rhel_9"
+        run: |
+          cd kepler-metal-ci
+          ansible-playbook ansible/k8s_kubeadm.yml     

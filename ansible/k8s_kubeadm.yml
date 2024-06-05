@@ -12,7 +12,7 @@
     rand_id: "{{ now(utc=true,fmt='%Y-%m-%d-%H-%M-%S') }}"
     cluster_id: "cluster-{{ rand_id }}"
     # cluster_id: "cluster-"
-    ssh_key_path: /root/.ssh/kepler_ci
+    ssh_key_path: ~/.ssh/kepler_ci
 
   tasks:
     - name: Download metal CLI
