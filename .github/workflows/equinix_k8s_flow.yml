@@ -47,6 +47,8 @@ jobs:
           cp ansible/mask_ip_callback.py ~/.github/callback_plugins/mask_ip_callback.py
 
           ansible-playbook ansible/k8s_kubeadm.yml >> k8s_kubeadm.log
+          sudo cat /tmp/kubeconfig |jq -r '.stdout' > /tmp/k8sconfig
+          sudo mv /tmp/k8sconfig /tmp/kubeconfig
 
       - name: Upload kubeconfig
         uses: actions/upload-artifact@v2
@@ -79,6 +81,7 @@ jobs:
 
       - name: Test k8s
         run: |
-          mv ~/.kube/kubeconfig-${{ github.run_id }} ~/.kube/config
+          ls -la ~/.kube/*
+          mv ~/.kube/kubeconfig ~/.kube/config
           kubectl get nodes
           kubectl get pods --all-namespaces
