@@ -32,52 +32,18 @@ jobs:
           project-id: ${{ secrets.EQUINIX_PROJECT_ID }}
           EOF
 
-      - name: Create Ansible configuration
-        run: |
-          mkdir -p ~/.ansible
-          echo '[defaults]' > ~/.ansible/ansible.cfg
-          echo 'callback_plugins = .github/callback_plugins' >> ~/.ansible/ansible.cfg
-          echo 'callback_whitelist = mask_ip_callback' >> ~/.ansible/ansible.cfg
-
-      - name: Create callback plugin directory
-        run: mkdir -p .github/callback_plugins
-
-      - name: Add custom callback plugin
-        run: |
-          cat > .github/callback_plugins/mask_ip_callback.py << 'EOF'
-          import re
-          from ansible.plugins.callback import CallbackBase
-
-          class CallbackModule(CallbackBase):
-              CALLBACK_VERSION = 2.0
-              CALLBACK_TYPE = 'stdout'
-              CALLBACK_NAME = 'mask_ip_callback'
-
-              def v2_runner_on_ok(self, result):
-                  host = self._mask_ip(result._host.get_name())
-                  self._display.display(f"changed: [{host}]")
-
-              def v2_runner_on_changed(self, result):
-                  host = self._mask_ip(result._host.get_name())
-                  self._display.display(f"changed: [{host}]")
-
-              def v2_runner_on_failed(self, result, ignore_errors=False):
-                  host = self._mask_ip(result._host.get_name())
-                  self._display.display(f"failed: [{host}]")
-
-              def v2_runner_on_unreachable(self, result):
-                  host = self._mask_ip(result._host.get_name())
-                  self._display.display(f"unreachable: [{host}]")
-
-              def _mask_ip(self, host):
-                  return re.sub(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', 'XXX.XXX.XXX.XXX', host)
-          EOF
-
       - name: Play k8s_kubeadm.yml
         env:
           metro: "da"
           plan: "c3.small.x86"
           os: "rhel_9"
         run: |
+          mkdir -p ~/.ansible
+          echo '[defaults]' > ~/.ansible/ansible.cfg
+          echo 'callback_plugins = ~/.github/callback_plugins' >> ~/.ansible/ansible.cfg
+          echo 'callback_whitelist = mask_ip_callback' >> ~/.ansible/ansible.cfg
+          mkdir -p ~/.github/callback_plugins
           cd kepler-metal-ci
+          cp ansible/mask_ip_callback.py ~/.github/callback_plugins/mask_ip_callback.py
+
           ansible-playbook ansible/k8s_kubeadm.yml     
