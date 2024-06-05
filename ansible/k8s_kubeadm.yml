@@ -11,8 +11,17 @@
     cluster_id: "cluster-{{ rand_id }}"
     ssh_key_path: ~/.ssh/kepler_ci
     metal_config_path: /tmp/metal.yaml
+    termination_time: "{{ termination_time | default(1) }}"
 
   tasks:
+    - name: Calculate termination timestamp
+      command: date -u +%Y-%m-%dT%H:%M:%SZ --date "+{{ termination_time }} hours"
+      register: termination_timestamp_output
+
+    - name: Set termination timestamp
+      set_fact:
+        termination_timestamp: "{{ termination_timestamp_output.stdout }}"
+
     - name: Download metal CLI
       shell: sudo curl -L https://github.com/equinix/metal-cli/releases/download/v0.23.0/metal-linux-amd64 -o /usr/bin/metal
 
@@ -34,7 +43,7 @@
         --plan "{{ plan }}"
         --operating-system "{{ operating_system }}"
         --metro "{{ facility }}" 
-        --termination-time "{{ lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ --date "+6 hours"') }}"
+        --termination-time "{{ termination_timestamp }}"
         --output json 
         | jq -r '.id'
       loop: "{{ range(1, control_plane_count|int + 1)|list }}"
@@ -60,7 +69,7 @@
         --operating-system "{{ operating_system }}"
         --plan "{{ plan }}"
         --metro "{{ facility }}"
-        --termination-time "{{ lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ --date "+6 hours"') }}"
+        --termination-time "{{ termination_timestamp }}"
         --output json 
         | jq -r '.id'
       loop: "{{ range(1, node_count|int + 1)|list }}"
