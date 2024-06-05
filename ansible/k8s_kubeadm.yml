@@ -19,7 +19,7 @@
       shell: sudo curl -L https://github.com/equinix/metal-cli/releases/download/v0.23.0/metal-linux-amd64 -o /usr/bin/metal
 
     - name: Make metal CLI executable
-      shell: chmod 755 /usr/bin/metal
+      shell: sudo chmod 755 /usr/bin/metal
 
     - name: Create metal config
       shell: |
