@@ -86,6 +86,16 @@ jobs:
           path: /tmp/kubeconfig
           retention-days: 1
 
+      - name: Install Prometheus
+        run: |
+          git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
+          kubectl apply --server-side -f manifests/setup
+          until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
+          kubectl apply -f manifests/
+          kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
+          kubectl port-forward -n monitoring svc/prometheus-k8s 9090:9090 &
+
+
   Test-K8s:
     name: "Test K8s"
     needs: create-k8s-cluster
@@ -114,3 +124,4 @@ jobs:
           mv ~/.kube/kubeconfig ~/.kube/config
           kubectl get nodes
           kubectl get pods --all-namespaces
+ 
