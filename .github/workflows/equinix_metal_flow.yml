@@ -50,7 +50,7 @@ jobs:
 
       - name: Run playbook
         run: |
-          cd ci-playground/ansible
+          cd kepler-metal-ci/ansible
           cp roles/kvm_vm/files/meta-data /tmp/meta-data
           cp cloud-init-script.sh /tmp/cloud-init-script.sh
           echo "Create VM"
