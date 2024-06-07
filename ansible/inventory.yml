@@ -35,3 +35,15 @@ all:
           ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
         my-vm:
           ansible_ssh_private_key_file: /tmp/vm_ssh_key
+    ssh_tunnel_server:
+      hosts:
+        localhost:
+          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
+      vars:
+        ssh_tunnel_service_name: "ssh-tunnel-kepler-exporter"
+        ssh_tunnel_user: "root"
+        ssh_tunnel_vm: "my-vm"
+        local_port: 9999
+        remote_port: 8888
+        ssh_key_path: "/tmp/vm_ssh_key"
+        systemd_service_path: "/etc/systemd/system/{{ ssh_tunnel_service_name }}.service"

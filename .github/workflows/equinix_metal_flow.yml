@@ -62,7 +62,7 @@ jobs:
           echo "Install Kepler"
           ansible-playbook -i inventory.yml kepler_playbook.yml
           echo "Create ssh tunnel"
-          ansible-playbook ssh_tunnel_playbook.yml
+          ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
           echo "Run validation test"
           ansible-playbook kepler_validator.yml
           echo "Checkout the report"

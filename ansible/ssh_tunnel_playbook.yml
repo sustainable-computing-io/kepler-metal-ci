@@ -1,15 +1,7 @@
 ---
 - name: Configure SSH tunnel using systemd
-  hosts: localhost
+  hosts: ssh_tunnel_server
   become: yes
-  vars:
-    ssh_tunnel_service_name: "ssh-tunnel-kepler-exporter"
-    ssh_tunnel_user: "root"
-    ssh_tunnel_vm: "my-vm"
-    local_port: 9999
-    remote_port: 8888
-    ssh_key_path: "/tmp/vm_ssh_key"
-    systemd_service_path: "/etc/systemd/system/{{ ssh_tunnel_service_name }}.service"
 
   tasks:
     - name: Create systemd service file for SSH tunnel
@@ -37,28 +29,11 @@
         enabled: yes
         state: started
 
-- name: Use Prometheus role to configure Prometheus server
-  hosts: localhost
-  become: true
-  vars:
-    prometheus_scrape_configs:
-      - job_name: "node"
-        static_configs:
-          - targets: ["localhost:8888"]
-      - job_name: "vm"
-        static_configs:
-          - targets: ["localhost:9999"]        
-  roles:
-    - role: prometheus.prometheus.prometheus
-      vars:
-        roles_path: /root/.ansible/collections/ansible_collections/prometheus/prometheus/roles
     - name: Check Prometheus metrics query
-      ansible.builtin.uri:
-        url: "http://localhost:9090/api/v1/query?query=kepler_node_package_joules_total"
-        method: GET
+      shell: curl -s http://localhost:9090/api/v1/query?query=kepler_node_package_joules_total
       register: prometheus_output
 
 
     - name: Debug Prometheus output
-      ansible.builtin.debug:
-        var: prometheus_output
+      debug:
+        var: prometheus_output.stdout
