@@ -121,6 +121,7 @@
       vars:
         ansible_user: "{{ vm_user }}"
         ansible_ssh_private_key_file: /tmp/vm_ssh_key
+        ansible_ssh_retries: 5
       block:
         - name: Test the connection to the VM
           command: uname -a
