@@ -37,6 +37,8 @@
             pkey: /tmp/vm_ssh_key
 
           metal:
+            metal_job_name: node
+            vm_job_name: vm
             vm:
               name: my-vm
 
@@ -63,22 +65,10 @@
         content: |
           {% raw %}
           [
-            {
-                "expected_query": "sum(rate(kepler_{level}_package_joules_total{{{query}}}[{interval}]))",
-                "actual_query": "sum(rate(kepler_node_package_joules_total[{interval}]))"
-            },
-            {
-                "expected_query": "sum(rate(kepler_{level}_core_joules_total{{{query}}}[{interval}]))",
-                "actual_query": "sum(rate(kepler_node_core_joules_total[{interval}]))"
-            },
-            {
-                "expected_query": "sum(rate(kepler_{level}_dram_joules_total{{{query}}}[{interval}]))",
-                "actual_query": "sum(rate(kepler_node_dram_joules_total[{interval}]))"
-            },
-            {
-                "expected_query": "sum(rate(kepler_{level}_platform_joules_total{{{query}}}[{interval}]))",
-                "actual_query": "sum(rate(kepler_node_platform_joules_total[{interval}]))"
-            }
+              "abs((rate(kepler_{level}_core_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]) - on() rate(kepler_node_core_joules_total{{{vm_query}, mode='dynamic'}}[{interval}])) / on() rate(kepler_{level}_core_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]))",
+              "abs((rate(kepler_{level}_dram_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]) - on() rate(kepler_node_dram_joules_total{{{vm_query}, mode='dynamic'}}[{interval}])) / on() rate(kepler_{level}_dram_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]))",
+              "abs((rate(kepler_{level}_package_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]) - on() rate(kepler_node_package_joules_total{{{vm_query}, mode='dynamic'}}[{interval}])) / on() rate(kepler_{level}_package_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]))",
+              "abs((rate(kepler_{level}_platform_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]) - on() rate(kepler_node_platform_joules_total{{{vm_query}, mode='dynamic'}}[{interval}])) / on() rate(kepler_{level}_platform_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]))"
           ]
           {% endraw %}
 

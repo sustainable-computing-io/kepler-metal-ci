@@ -1,0 +1,64 @@
+---
+- name: Configure SSH tunnel using systemd
+  hosts: localhost
+  become: yes
+  vars:
+    ssh_tunnel_service_name: "ssh-tunnel-kepler-exporter"
+    ssh_tunnel_user: "root"
+    ssh_tunnel_vm: "my-vm"
+    local_port: 9999
+    remote_port: 8888
+    ssh_key_path: "/tmp/vm_ssh_key"
+    systemd_service_path: "/etc/systemd/system/{{ ssh_tunnel_service_name }}.service"
+
+  tasks:
+    - name: Create systemd service file for SSH tunnel
+      copy:
+        dest: "{{ systemd_service_path }}"
+        content: |
+          [Unit]
+          Description=SSH Tunnel to Kepler Exporter in VM
+          After=network.target
+
+          [Service]
+          ExecStart=/usr/bin/ssh -N -i {{ ssh_key_path }} -L {{ local_port }}:localhost:{{ remote_port }} {{ ssh_tunnel_user }}@{{ ssh_tunnel_vm }}
+          User={{ ssh_tunnel_user }}
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Reload systemd daemon
+      command: systemctl daemon-reload
+
+    - name: Enable SSH tunnel systemd service
+      systemd:
+        name: "{{ ssh_tunnel_service_name }}"
+        enabled: yes
+        state: started
+
+- name: Use Prometheus role to configure Prometheus server
+  hosts: localhost
+  become: true
+  vars:
+    prometheus_scrape_configs:
+      - job_name: "node"
+        static_configs:
+          - targets: ["localhost:8888"]
+      - job_name: "vm"
+        static_configs:
+          - targets: ["localhost:9999"]        
+  roles:
+    - role: prometheus.prometheus.prometheus
+      vars:
+        roles_path: /root/.ansible/collections/ansible_collections/prometheus/prometheus/roles
+    - name: Check Prometheus metrics query
+      ansible.builtin.uri:
+        url: "http://localhost:9090/api/v1/query?query=kepler_node_package_joules_total"
+        method: GET
+      register: prometheus_output
+
+
+    - name: Debug Prometheus output
+      ansible.builtin.debug:
+        var: prometheus_output

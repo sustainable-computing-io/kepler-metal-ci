@@ -107,12 +107,7 @@
       ansible.builtin.debug:
         var: pmproxy_output
 
-    - name: Check Prometheus metrics query
-      ansible.builtin.uri:
-        url: "http://localhost:9090/api/v1/query?query=kepler_node_package_joules_total"
-        method: GET
-      register: prometheus_output
-
-    - name: Debug Prometheus output
-      ansible.builtin.debug:
-        var: prometheus_output
+    - name: Install stress-ng
+      ansible.builtin.dnf:
+        name: stress-ng
+        state: present
