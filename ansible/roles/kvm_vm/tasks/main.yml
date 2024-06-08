@@ -24,6 +24,24 @@
         state: started
         enabled: yes
 
+    - name: Generate SSH key pair
+      community.crypto.openssh_keypair:
+        path: /tmp/vm_ssh_key_pair
+        type: rsa
+        size: 4096
+        force: true
+        state: present
+      register: ssh_key
+
+
+    - name: Save the public key into a file
+      copy:
+        content: "{{ ssh_key.public_key }}"
+        dest: "{{ ssh_key_path }}"
+
+    - name: mv ssh key to /tmp
+      command: mv /tmp/vm_ssh_key_pair /tmp/vm_ssh_key
+
     - name: Create storage directory
       file:
         path: /var/lib/libvirt/images
@@ -48,19 +66,6 @@
 
     - name: resize image to 200G
       command: qemu-img resize "{{ vm_disk_path }}" +200G
-
-    - name: Generate SSH key pair
-      community.crypto.openssh_keypair:
-        path: /tmp/vm_ssh_key
-        type: rsa
-        size: 2048
-        state: present
-      register: ssh_key
-
-    - name: Save the public key into a file
-      copy:
-        content: "{{ ssh_key.public_key }}"
-        dest: "{{ ssh_key_path }}"
 
     - name: Create cloud-init config
       template:
@@ -121,7 +126,6 @@
       vars:
         ansible_user: "{{ vm_user }}"
         ansible_ssh_private_key_file: /tmp/vm_ssh_key
-        ansible_ssh_retries: 5
       block:
         - name: Test the connection to the VM
           command: uname -a

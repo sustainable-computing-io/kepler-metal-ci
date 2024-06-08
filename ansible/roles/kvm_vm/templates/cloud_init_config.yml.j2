@@ -4,14 +4,20 @@ ssh_pwauth: true
 ssh_genkeytypes: ['rsa', 'ecdsa']
 
 bootcmd:
-  - mkdir -p ~{{ vm_user }}/.ssh
-  - echo "{{ vm_ssh_public_key }}" >> ~{{ vm_user }}/.ssh/authorized_keys
-  - chown -R {{ vm_user }}:{{ vm_user }} ~{{ vm_user }}/.ssh
-  - chmod 700 ~{{ vm_user }}/.ssh
-  - chmod 600 ~{{ vm_user }}/.ssh/authorized_keys
+  - sudo mkdir -p ~{{ vm_user }}/.ssh
+  - sudo echo "{{ vm_ssh_public_key }}" >> ~{{ vm_user }}/.ssh/authorized_keys
+  - sudo chown -R {{ vm_user }}:{{ vm_user }} ~{{ vm_user }}/.ssh
+  - sudo chmod 700 ~{{ vm_user }}/.ssh
+  - sudo chmod 600 ~{{ vm_user }}/.ssh/authorized_keys
 
 runcmd:
   - sudo yum -y remove cloud-init
+  - sudo mkdir -p ~{{ vm_user }}/.ssh
+  - sudo echo "{{ vm_ssh_public_key }}" >> ~{{ vm_user }}/.ssh/authorized_keys
+  - sudo chown -R {{ vm_user }}:{{ vm_user }} ~{{ vm_user }}/.ssh
+  - sudo chmod 700 ~{{ vm_user }}/.ssh
+  - sudo chmod 600 ~{{ vm_user }}/.ssh/authorized_keys
+  - sudo cat ~{{ vm_user }}/.ssh/authorized_keys
   - sudo dnf -y install ansible-core rhel-system-roles
   - sudo ansible-config init --disabled |
     sed "s/;host_key_checking=True/host_key_checking=False/g" |
@@ -21,3 +27,6 @@ runcmd:
   - sudo ssh-keygen -t rsa -b 4096 -f /root/.ssh/ansible_rsa -N ''
   - sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
   - sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
+  - sudo echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+  - sudo systemctl restart sshd
+  
