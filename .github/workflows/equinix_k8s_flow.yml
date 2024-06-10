@@ -92,11 +92,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Label workers
-        run: |
-          kubectl label node $(kubectl get nodes --selector=node-role.kubernetes.io/control-plane!= --no-headers -o custom-columns=":metadata.name") node-role.kubernetes.io/worker=
-
       - name: Install kubectl
         run: |
           curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
@@ -113,6 +108,17 @@ jobs:
           name: kubeconfig-${{ github.run_id }}
           path: ~/.kube/
 
+      - name: Test k8s
+        run: |
+          ls -la ~/.kube/*
+          mv ~/.kube/kubeconfig ~/.kube/config
+          kubectl get nodes
+          kubectl get pods --all-namespaces
+
+      - name: Label workers
+        run: |
+          kubectl label node $(kubectl get nodes --selector=node-role.kubernetes.io/control-plane!= --no-headers -o custom-columns=":metadata.name") node-role.kubernetes.io/worker=
+
       - name: Install Prometheus
         run: |
           git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
@@ -120,13 +126,6 @@ jobs:
           until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
           kubectl apply --validate=false -f manifests/
           kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
-
-      - name: Test k8s
-        run: |
-          ls -la ~/.kube/*
-          mv ~/.kube/kubeconfig ~/.kube/config
-          kubectl get nodes
-          kubectl get pods --all-namespaces
 
       - name: Pull kube-burner
         run: |
