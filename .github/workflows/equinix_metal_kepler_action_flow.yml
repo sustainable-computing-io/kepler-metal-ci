@@ -29,6 +29,10 @@ jobs:
       runner-name: ${{ runner.name }}
 
     steps:
+      - name: Setup runner
+        run: |
+          sudo yum -y install git
+          
       - name: use Kepler action to deploy cluster
         uses: sustainable-computing-io/kepler-action@v0.0.7
         with:
@@ -42,10 +46,6 @@ jobs:
     needs: [Install]
 
     steps:
-      - name: Setup runner
-        run: |
-          sudo yum -y install git
-
       - name: delete runner
         uses: rootfs/metal-delete-action@main
         with:
