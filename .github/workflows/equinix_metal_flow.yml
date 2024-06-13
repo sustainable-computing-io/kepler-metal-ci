@@ -75,14 +75,16 @@ jobs:
           echo "Checkout the report"
           cat /tmp/report-*.md || true
           # create a directory to store the artifacts, the directory is the current date 
+          set -x
           export DATE_STR=$(date +%Y-%m-%d)
-          mkdir -p ${GITHUB_WORKSPACE}/docs/valiation/${DATE_STR}
+          cd ${GITHUB_WORKSPACE}
+          mkdir -p docs/valiation/${DATE_STR}
           export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
           # copy the report to the directory
-          cp /tmp/report-${KEPLER_TAG}.md ${GITHUB_WORKSPACE}/docs/valiation/${DATE_STR}/
-          cp -r /tmp/validator-${KEPLER_TAG} ${GITHUB_WORKSPACE}/docs/valiation/${DATE_STR}/
+          cp /tmp/report-${KEPLER_TAG}.md docs/valiation/${DATE_STR}/
+          cp -r /tmp/validator-${KEPLER_TAG} docs/valiation/${DATE_STR}/
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](valiation/${DATE_STR}/report-${KEPLER_TAG}.md) | [Artifacts](valiation/${DATE_STR}/validator-${KEPLER_TAG}) |" \
-            >> ${GITHUB_WORKSPACE}/docs/kepler-model-validation.md
+            >> docs/kepler-model-validation.md
           git config --global user.email "dependabot[bot]@users.noreply.github.com"
           git config --global user.name "dependabot[bot]"
           git add docs/*
