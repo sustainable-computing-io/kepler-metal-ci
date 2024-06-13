@@ -120,6 +120,16 @@ jobs:
         run: |
           kubectl label node $(kubectl get nodes --selector=node-role.kubernetes.io/control-plane!= --no-headers -o custom-columns=":metadata.name") node-role.kubernetes.io/worker=
 
+      - name: Install ansible, git and jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install ansible jq git -y
+
+      - name: Clone repo
+        run: |
+          cd ~
+          git clone https://github.com/sustainable-computing-io/kepler-metal-ci
+
       - name: Install Prometheus
         run: |
           git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
@@ -172,37 +182,7 @@ jobs:
 
       - name: Wait for Kepler metrics kepler_node_package_joules_total is not empty through Prometheus query
         run: |
-          cat <<EOF > wait_for_prometheus.sh
-          #!/bin/bash
-          # Prometheus server URL
-          PROMETHEUS_URL="http://localhost:9090/api/v1/query"
-
-          # Prometheus query
-          QUERY="kepler_node_package_joules_total"
-
-          # Function to query Prometheus and check for values
-          query_prometheus() {
-            RESPONSE=$(curl -sG --data-urlencode "query=$QUERY" $PROMETHEUS_URL)
-            VALUES=$(echo $RESPONSE | jq '.data.result | length')
-            echo $VALUES
-          }
-
-          # Retry 10 times with 5 seconds interval
-          for i in {1..10}; do
-            VALUES=$(query_prometheus)
-            if [ "$VALUES" -gt 0 ]; then
-              echo "Values found in the query result."
-              break
-            else
-              echo "No values found yet, retrying in 5 seconds..."
-              sleep 5
-            fi
-          done
-
-          echo "Exiting"
-          EOF
-          chmod +x wait_for_prometheus.sh
-          ./wait_for_prometheus.sh
+          ~/kepler-metal-ci/util/wait_for_prometheus.sh
 
       - name: Pull kube-burner
         run: |
