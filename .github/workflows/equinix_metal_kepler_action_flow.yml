@@ -32,11 +32,14 @@ jobs:
       - name: Setup runner
         run: |
           sudo yum -y install git
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.22.0/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/
+          which kind
           
       - name: use Kepler action to deploy cluster
         uses: sustainable-computing-io/kepler-action@v0.0.7
         with:
-          ebpfprovider: libbpf
           cluster_provider: kind
 
   Cleanup:
