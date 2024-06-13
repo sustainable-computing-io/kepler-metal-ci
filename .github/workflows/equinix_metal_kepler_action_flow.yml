@@ -36,6 +36,10 @@ jobs:
           chmod +x ./kind
           sudo mv ./kind /usr/bin/
           which kind
+          curl -LO https://dl.k8s.io/release/v1.25.4/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          sudo mv kubectl /usr/bin/
+          which kubectl
           
       - name: use Kepler action to deploy cluster
         uses: sustainable-computing-io/kepler-action@v0.0.7
