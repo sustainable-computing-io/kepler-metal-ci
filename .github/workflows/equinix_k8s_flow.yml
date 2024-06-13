@@ -68,7 +68,7 @@ jobs:
           echo 'callback_plugins = ~/.github/callback_plugins' >> ~/.ansible/ansible.cfg
           echo 'callback_whitelist = mask_ip_callback' >> ~/.ansible/ansible.cfg
           mkdir -p ~/.github/callback_plugins
-          cd kepler-metal-ci
+          cd ~/kepler-metal-ci
           cp ansible/mask_ip_callback.py ~/.github/callback_plugins/mask_ip_callback.py
           # save input var into extra-vars.yaml
           echo "termination_time: ${{ github.event.inputs.termination_time }}" > /tmp/extra-vars.yaml
