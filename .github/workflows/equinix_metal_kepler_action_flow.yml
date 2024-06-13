@@ -40,9 +40,6 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/bin/
           which kubectl
-          curl -s \"https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh\" | bash
-          chmod +x kustomize
-          sudo mv kustomize /usr/bin/
           
       - name: use Kepler action to deploy cluster
         uses: sustainable-computing-io/kepler-action@v0.0.7
