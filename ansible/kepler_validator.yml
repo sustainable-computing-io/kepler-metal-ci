@@ -45,7 +45,7 @@
           prometheus:
             url: http://localhost:9090
             interval: 300s
-            steps: 30s
+            steps: 10s
 
           query_path: ../query.json
 
