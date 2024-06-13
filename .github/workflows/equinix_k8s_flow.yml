@@ -222,9 +222,9 @@ jobs:
           cd ${GITHUB_WORKSPACE}
           git config --global user.email "dependabot[bot]@users.noreply.github.com" 
           git config --global user.name "dependabot[bot]"          
-          END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); echo -n $END_TIME >> docs/kepler-stress-test-metrics.md
+          END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); echo -n "| " $END_TIME >> docs/kepler-stress-test-metrics.md
           MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
-          echo -n $MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
+          echo $MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
           git add docs/kepler-stress-test-metrics.md
           git commit -m "Add kepler stress test metrics" -s
           git push origin main
