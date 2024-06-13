@@ -44,6 +44,7 @@ jobs:
       - name: use Kepler action to deploy cluster
         uses: sustainable-computing-io/kepler-action@v0.0.7
         with:
+          install_containerruntime: true
           cluster_provider: kind
 
   Cleanup:
