@@ -85,8 +85,8 @@ jobs:
           cp -r /tmp/validator-${KEPLER_TAG} docs/valiation/${DATE_STR}/
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](valiation/${DATE_STR}/report-${KEPLER_TAG}.md) | [Artifacts](valiation/${DATE_STR}/validator-${KEPLER_TAG}) |" \
             >> docs/kepler-model-validation.md
-          git config --global user.email "dependabot[bot]@users.noreply.github.com"
-          git config --global user.name "dependabot[bot]"
+          git config user.email "dependabot[bot]@users.noreply.github.com"
+          git config user.name "dependabot[bot]"
           git add docs/*
           git commit -m "Add validation report for ${DATE_STR}" -s
           git push
