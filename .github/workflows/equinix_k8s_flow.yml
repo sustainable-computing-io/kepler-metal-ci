@@ -40,6 +40,7 @@ jobs:
 
       - name: Clone repo
         run: |
+          cd ~
           git clone https://github.com/sustainable-computing-io/kepler-metal-ci
 
       - name: Save ssh key from env to file
@@ -220,10 +221,25 @@ jobs:
           echo "   metricsDirectory: collected-metrics" >> kubelet-density.yml
           export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           ../../../kube-burner init -c kubelet-density.yml -u http://localhost:9090 --metrics-profile metrics.yaml
+          # sleep a min after test
+          sleep 60
           export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          touch /tmp/kepler-stress-test-metrics.txt
           # Retrieve metrics related to Kepler cpu and memory utilization over time
           curl -G 'http://localhost:9090/api/v1/query_range' \
             --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kepler"}[1m])) / sum(machine_cpu_cores) * 100' \
-            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=10" \
-            | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}'
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
+            | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
+            | tee /tmp/kepler-stress-test-metrics.txt
 
+      - name: git add the /tmp/kepler-stress-test-metrics.txt
+        run: |
+          cd ~/kepler-metal-ci
+          git config --global user.email "dependabot[bot]@users.noreply.github.com" 
+          git config --global user.name "dependabot[bot]"          
+          END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); echo -n $END_TIME >> docs/kepler-stress-test-metrics.md
+          MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
+          echo -n $MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
+          git add docs/kepler-stress-test-metrics.md
+          git commit -m "Add kepler stress test metrics"
+          git push origin main
