@@ -59,19 +59,6 @@
               stress-ng --cpu $(nproc) --cpu-load $level --timeout 10s
           done
 
-    - name: Create query.json
-      copy:
-        dest: "{{ query_json_path }}"
-        content: |
-          {% raw %}
-          [
-              "abs((rate(kepler_{level}_core_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]) - on() rate(kepler_node_core_joules_total{{{vm_query}, mode='dynamic'}}[{interval}])) / on() rate(kepler_{level}_core_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]))",
-              "abs((rate(kepler_{level}_dram_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]) - on() rate(kepler_node_dram_joules_total{{{vm_query}, mode='dynamic'}}[{interval}])) / on() rate(kepler_{level}_dram_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]))",
-              "abs((rate(kepler_{level}_package_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]) - on() rate(kepler_node_package_joules_total{{{vm_query}, mode='dynamic'}}[{interval}])) / on() rate(kepler_{level}_package_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]))",
-              "abs((rate(kepler_{level}_platform_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]) - on() rate(kepler_node_platform_joules_total{{{vm_query}, mode='dynamic'}}[{interval}])) / on() rate(kepler_{level}_platform_joules_total{{{query}, mode='dynamic', job='{metal_job_name}'}}[{interval}]))"
-          ]
-          {% endraw %}
-
     - name: Make stress test script executable
       file:
         path: "{{ stress_test_script_path }}"
