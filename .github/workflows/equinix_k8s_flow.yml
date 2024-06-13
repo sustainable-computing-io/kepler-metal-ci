@@ -20,6 +20,13 @@ on:
         required: false
         default: 'da'
 
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write
+  packages: write
+
+
 jobs:
   Create-k8s-cluster:
     name: "Create Cluster"
@@ -221,5 +228,7 @@ jobs:
           MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
           echo -n $MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
           git add docs/kepler-stress-test-metrics.md
-          git commit -m "Add kepler stress test metrics"
+          git commit -m "Add kepler stress test metrics" -s
           git push origin main
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
