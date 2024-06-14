@@ -1,7 +1,8 @@
-name: Equinix Metal Action
+name: Equinix Metal with kepler Action
 
 on:
   workflow_dispatch:
+  pull_request:
 
 jobs:
   Create-runner:
@@ -28,12 +29,26 @@ jobs:
       runner-name: ${{ runner.name }}
 
     steps:
+      - name: Setup runner
+        run: |
+          sudo yum -y install git
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.22.0/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/bin/
+          which kind
+          curl -LO https://dl.k8s.io/release/v1.25.4/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          sudo mv kubectl /usr/bin/
+          which kubectl
+          
       - name: use Kepler action to deploy cluster
-        uses: sustainable-computing-io/kepler-action@v0.0.7
+        uses: SamYuan1990/KeplerK8SAction@updateForrestartcontianerruntime
+        #sustainable-computing-io/kepler-action@v0.0.7
         with:
-          ebpfprovider: libbpf
+          install_containerruntime: true
           cluster_provider: kind
-          local_dev_cluster_version: v0.0.5
+          restartcontianerruntime: true
+          local_path: /usr/bin/
 
   Cleanup:
     name: "Cleanup"
