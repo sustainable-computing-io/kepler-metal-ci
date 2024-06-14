@@ -42,7 +42,7 @@ jobs:
           which kubectl
           
       - name: use Kepler action to deploy cluster
-        uses: SamYuan1990/kepler-action@updateForrestartcontianerruntime
+        uses: SamYuan1990/KeplerK8SAction@updateForrestartcontianerruntime
         #sustainable-computing-io/kepler-action@v0.0.7
         with:
           install_containerruntime: true
