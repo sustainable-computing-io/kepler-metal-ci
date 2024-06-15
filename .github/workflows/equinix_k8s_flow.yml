@@ -37,7 +37,7 @@ jobs:
     steps:
       - name: Validate termination time
         run: |
-          if [ ${{ github.event.inputs.termination_time }} -gt 48 ]; then
+          if [ ${{ github.event.inputs.termination_time || '1' }} -gt 48 ]; then
             echo "Error: Termination time cannot be more than 48 hours."
             exit 1
           fi
@@ -80,10 +80,10 @@ jobs:
           cd ~/kepler-metal-ci
           cp ansible/mask_ip_callback.py ~/.github/callback_plugins/mask_ip_callback.py
           # save input var into extra-vars.yaml
-          echo "termination_time: ${{ github.event.inputs.termination_time }}" > /tmp/extra-vars.yaml
-          echo "control_plan: ${{ github.event.inputs.control_plan }}" >> /tmp/extra-vars.yaml
-          echo "node_plan: ${{ github.event.inputs.node_plan }}" >> /tmp/extra-vars.yaml
-          echo "metro: ${{ github.event.inputs.metro }}" >> /tmp/extra-vars.yaml
+          echo "termination_time: ${{ github.event.inputs.termination_time || '1' }}" > /tmp/extra-vars.yaml
+          echo "control_plan: ${{ github.event.inputs.control_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
+          echo "node_plan: ${{ github.event.inputs.node_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
+          echo "metro: ${{ github.event.inputs.metro || 'da' }}" >> /tmp/extra-vars.yaml
           ansible-playbook ansible/k8s_kubeadm.yml \
             --extra-vars "@/tmp/extra-vars.yaml" >> k8s_kubeadm.log
           sudo cat /tmp/kubeconfig |jq -r '.stdout' > /tmp/k8sconfig
