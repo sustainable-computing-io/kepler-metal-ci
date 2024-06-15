@@ -85,7 +85,7 @@ jobs:
           echo "node_plan: ${{ github.event.inputs.node_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
           echo "metro: ${{ github.event.inputs.metro || 'da' }}" >> /tmp/extra-vars.yaml
           ansible-playbook ansible/k8s_kubeadm.yml \
-            --extra-vars "@/tmp/extra-vars.yaml" >> k8s_kubeadm.log
+            --extra-vars "@/tmp/extra-vars.yaml" 
           sudo cat /tmp/kubeconfig |jq -r '.stdout' > /tmp/k8sconfig
           sudo mv /tmp/k8sconfig /tmp/kubeconfig
 
