@@ -2,7 +2,6 @@ name: Equinix Metal with kepler Action
 
 on:
   workflow_dispatch:
-  pull_request:
 
 jobs:
   Create-runner:
