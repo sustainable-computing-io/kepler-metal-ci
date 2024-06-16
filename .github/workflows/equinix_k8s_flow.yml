@@ -85,7 +85,7 @@ jobs:
           echo "node_plan: ${{ github.event.inputs.node_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
           echo "metro: ${{ github.event.inputs.metro || 'da' }}" >> /tmp/extra-vars.yaml
           ansible-playbook ansible/k8s_kubeadm.yml \
-            --extra-vars "@/tmp/extra-vars.yaml" 
+            --extra-vars "@/tmp/extra-vars.yaml" 2>&1 >> k8s_kubeadm.log
           sudo cat /tmp/kubeconfig |jq -r '.stdout' > /tmp/k8sconfig
           sudo mv /tmp/k8sconfig /tmp/kubeconfig
 
@@ -228,7 +228,7 @@ jobs:
           MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
           echo $MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
           git add docs/kepler-stress-test-metrics.md
-          git commit -m "Add kepler stress test metrics" -s
+          git commit -m "kepler stress test metrics result at ${END_TIME}" -s
           git push origin main
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
