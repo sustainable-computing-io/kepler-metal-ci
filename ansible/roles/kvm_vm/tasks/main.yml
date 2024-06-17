@@ -11,6 +11,7 @@
           - cloud-init
           - guestfs-tools
           - python3-libvirt
+          - tuned
         state: present
 
     - name: pip install lxml
@@ -23,6 +24,12 @@
         name: libvirtd
         state: started
         enabled: yes
+
+    - name: Start and enable TuneD service
+      service:
+        name: tuned
+        enabled: yes
+        state: started
 
     - name: Generate SSH key pair
       community.crypto.openssh_keypair:
@@ -100,6 +107,19 @@
     - name: Sleep 30 seconds to allow the VM to boot
       pause:
         seconds: 30
+
+    - name: Create custom TuneD profile directory
+      ansible.builtin.file:
+        path: /etc/tuned/cpu-pinning
+        state: directory
+
+    - name: Create custom TuneD profile configuration
+      ansible.builtin.template:
+        src: tuned.conf.j2
+        dest: /etc/tuned/cpu-pinning/tuned.conf
+
+    - name: Apply CPU Partitioning Profile
+      command: tuned-adm profile cpu-pinning
 
     - name: Get the VM IP address using virsh domifaddr
       shell: virsh -c qemu:///system domifaddr {{ vm_name }} | grep ipv4 | awk '{print $4}' | cut -d'/' -f1
