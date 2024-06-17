@@ -2,7 +2,13 @@
   <name>{{ vm_name }}</name>
   <memory unit='MiB'>{{ memory_size }}</memory>
   <vcpu>{{ vcpu_count }}</vcpu>
-  <cpu mode='host-passthrough'/>
+  <cpu mode='host-passthrough'>
+  </cpu>
+  <cputune>
+    {% for i in range(vcpu_count) %}
+    <vcpupin vcpu='{{ i }}' cpuset='{{ cpu_pinning[i] }}'/>
+    {% endfor %}
+  </cputune>
   <os>
     <type arch='x86_64' machine='pc'>hvm</type>
     <boot dev='hd'/>
