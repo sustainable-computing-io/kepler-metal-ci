@@ -37,17 +37,16 @@
             pkey: /tmp/vm_ssh_key
 
           metal:
-            metal_job_name: node
-            vm_job_name: vm
             vm:
               name: my-vm
 
           prometheus:
+            job:
+              metal: node
+              vm: vm
             url: http://localhost:9090
-            interval: 300s
-            steps: 10s
-
-          query_path: ../query.json
+            rate_interval: 20s
+            steps: 5s
 
     - name: Create stress test script
       copy:
