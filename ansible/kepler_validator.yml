@@ -35,11 +35,9 @@
             host: my-vm
             username: root
             pkey: /tmp/vm_ssh_key
-
           metal:
             vm:
               name: my-vm
-
           prometheus:
             job:
               metal: node
@@ -47,6 +45,7 @@
             url: http://localhost:9090
             rate_interval: 20s
             steps: 5s
+          validations_file: ../validations.yaml
 
     - name: Create stress test script
       copy:
