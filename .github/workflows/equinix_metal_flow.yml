@@ -78,12 +78,12 @@ jobs:
           set -x
           export DATE_STR=$(date +%Y-%m-%d)
           cd ${GITHUB_WORKSPACE}
-          mkdir -p docs/valiation/${DATE_STR}
+          mkdir -p docs/validation/${DATE_STR}
           export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
           # copy the report to the directory
-          cp /tmp/report-${KEPLER_TAG}.md docs/valiation/${DATE_STR}/
-          cp -r /tmp/validator-${KEPLER_TAG} docs/valiation/${DATE_STR}/
-          echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](valiation/${DATE_STR}/report-${KEPLER_TAG}.md) | [Artifacts](valiation/${DATE_STR}/validator-${KEPLER_TAG}) |" \
+          cp /tmp/report-${KEPLER_TAG}.md docs/validation/${DATE_STR}/
+          cp -r /tmp/validator-${KEPLER_TAG} docs/validation/${DATE_STR}/
+          echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](validation/${DATE_STR}/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}) |" \
             >> docs/kepler-model-validation.md
           git config user.email "dependabot[bot]@users.noreply.github.com"
           git config user.name "dependabot[bot]"
