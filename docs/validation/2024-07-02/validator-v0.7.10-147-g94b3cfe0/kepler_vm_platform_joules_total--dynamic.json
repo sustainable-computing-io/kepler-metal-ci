@@ -1,0 +1,1 @@
+{"query": "rate( kepler_vm_platform_joules_total{ job=\"node\", vm_id=~\".*my-vm\", mode=\"dynamic\", }[20s] ) ", "values": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}
