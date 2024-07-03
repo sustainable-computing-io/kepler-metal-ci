@@ -6,7 +6,7 @@
     validator_repo: "https://github.com/sustainable-computing-io/kepler.git"
     validator_dir: "/opt/kepler/e2e/tools/validator/src"
     validator_yaml_path: "/opt/kepler/e2e/tools/validator/src/validator.yaml"
-    stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stress_test.sh"
+    stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stressor.sh"
     query_json_path: "/opt/kepler/e2e/tools/validator/query.json"
 
   tasks:
@@ -46,21 +46,6 @@
             rate_interval: 20s
             steps: 5s
           validations_file: ../validations.yaml
-
-    - name: Create stress test script
-      copy:
-        dest: "{{ stress_test_script_path }}"
-        content: |
-          #!/bin/bash
-           for level in $(seq 10 10 100); do
-              echo "Stress level: $level"
-              stress-ng --cpu $(nproc) --cpu-load $level --timeout 10s
-          done
-
-    - name: Make stress test script executable
-      file:
-        path: "{{ stress_test_script_path }}"
-        mode: '0755'
 
     - name: Install the validator
       shell: |
