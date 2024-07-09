@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: inspector-pod
+spec:
+  containers:
+  - name: inspect-models-container
+    image: busybox
+    command: ["/bin/sh", "-c", "tar -cvzf /mnt/trained_models.tar.gz -C /mnt ."]
+    volumeMounts:
+    - mountPath: "/mnt"
+      name: task-pv-storage
+  restartPolicy: Never
+  volumes:
+  - name: task-pv-storage
+    persistentVolumeClaim:
+      claimName: task-pvc

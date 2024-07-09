@@ -1,7 +1,6 @@
 name: Equinix k8s Action integration with Model Trainer
 
 on:
-  pull_request:
   workflow_dispatch:
     inputs:
       termination_time:
@@ -24,7 +23,6 @@ on:
         description: 'kepler model server'
         required: true
         default: 'quay.io/sustainable_computing_io/kepler_model_server:latest'
-
 
 permissions:
   pull-requests: write
@@ -105,17 +103,16 @@ jobs:
     needs: Create-k8s-cluster
     runs-on: ubuntu-latest
 
-    env:
-      TEKTON_PATH: '~/kepler-model-server/model-training/tekton'
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: mkdir tmp dirs
+      - name: Install kubectl
         run: |
-          mkdir -p /tmp/kubeconfig
-          mkdir -p ~/.kube/
+          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: mkdir ~/.kube
+        run: |
+          mkdir -p ~/.kube
 
       - name: Download kubeconfig
         uses: actions/download-artifact@v2
@@ -126,8 +123,7 @@ jobs:
       - name: Test k8s
         run: |
           ls -la ~/.kube/*
-          cp ~/.kube/kubeconfig ~/.kube/config
-          cp ~/.kube/kubeconfig /tmp/kubeconfig/config
+          mv ~/.kube/kubeconfig ~/.kube/config
           kubectl get nodes
           kubectl get pods --all-namespaces
 
@@ -139,12 +135,18 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install jq -y
+
+      - name: Checkout code
+        uses: actions/checkout@v3
       
-      - name: use Kepler action to deploy cluster
-        uses: sustainable-computing-io/kepler-action@main
-        with:
-          cluster_provider: existing
-          prometheus_enable: true
+      - name: Install Prometheus
+        run: |
+          git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
+          kubectl apply --server-side --validate=false -f manifests/setup
+          kubectl apply --validate=false -f manifests/
+          until kubectl -n monitoring get statefulset prometheus-k8s; do kubectl get all -n monitoring; echo "StatefulSet not created yet, waiting..."; sleep 5; done
+          kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
+          kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
 
       - name: Port forward prom
         run: |
@@ -159,7 +161,9 @@ jobs:
           export PATH=$PATH:/usr/local/bin
           helm repo add kepler https://sustainable-computing-io.github.io/kepler-helm-chart
           helm repo update
-          helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest
+          helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest \
+            --set extraEnvVars.EXPOSE_COMPONENT_POWER="false" --set extraEnvVars.EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" --set extraEnvVars.EXPOSE_BPF_METRICS="false" \
+            --set extraEnvVars.EXPERIMENTAL_BPF_SAMPLE_RATE=1000
 
       - name: Allow prometheus to scrape kepler metrics in kepler namespace
         run: |
@@ -189,8 +193,7 @@ jobs:
 
       - name: Wait for Kepler metrics kepler_node_package_joules_total is not empty through Prometheus query
         run: |
-          ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh      
-    
+          ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh
       - name: Install Tekton
         run: kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 
@@ -215,7 +218,7 @@ jobs:
           ${GITHUB_WORKSPACE}/util/wait_for_pipelineruns.sh
       
       - name: Deploy Model Inspector
-        run: kubectl apply -f ${GITHUB_WORKSPACE}/util/inspector.yaml
+        run: kubectl apply -f ${GITHUB_WORKSPACE}/util/inspect.yml
     
       - name: Wait for inspector pod to complete
         run: |
@@ -229,7 +232,7 @@ jobs:
             sleep 10
           done
 
-      - name: Copy models tarball from pod to runner
+      - name: Copy models from pod to runner
         run: |
           kubectl cp default/inspector-pod:/mnt/trained_models.tar.gz ./trained_models.tar.gz
       
