@@ -19,10 +19,10 @@ on:
         description: 'metro location'
         required: false
         default: 'da'
-      kepler_model_server_img:
+      kepler_model_server_repo:
         description: 'kepler model server'
         required: true
-        default: 'quay.io/sustainable_computing_io/kepler_model_server:latest'
+        default: 'https://github.com/sustainable-computing-io/kepler-model-server.git'
 
 permissions:
   pull-requests: write
@@ -200,7 +200,7 @@ jobs:
       - name: Clone Kepler Model Server
         run: |
           cd ~
-          git clone ${{ github.event.inputs.kepler_model_server_img }}
+          git clone ${{ github.event.inputs.kepler_model_server_repo }}
 
       - name: Deploy Tekton Training Tasks
         run: |
