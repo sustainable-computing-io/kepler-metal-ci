@@ -208,6 +208,9 @@ jobs:
 
       - name: Deploy Tekton Training Tasks
         run: |
+          ls ~/kepler-model-server/
+          ls ~/kepler-model-server/model-training/
+          ls ~/kepler-model-server/model-training/tekton
           kubectl apply -f ${TEKTON_PATH}/pvc/hostpath.yaml
           kubectl apply -f ${TEKTON_PATH}/tasks
           kubectl apply -f ${TEKTON_PATH}/tasks/s3
