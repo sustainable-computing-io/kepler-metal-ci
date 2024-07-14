@@ -13,8 +13,8 @@ query_prometheus() {
     echo $VALUES
 }
 
-# Retry 10 times with 5 seconds interval
-for i in {1..10}; do
+# Retry 20 times with 5 seconds interval
+for i in {1..20}; do
 VALUES=$(query_prometheus)
 if [ "$VALUES" -gt 0 ]; then
     echo "Values found in the query result."

@@ -204,7 +204,7 @@ jobs:
           export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           ../../../kube-burner init -c kubelet-density.yml -u http://localhost:9090 --metrics-profile metrics.yaml
           # sleep a min after test
-          sleep 120
+          sleep 60
           export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           touch /tmp/kepler-stress-test-metrics.txt
           # Retrieve metrics related to Kepler cpu and memory utilization over time
