@@ -139,10 +139,6 @@ jobs:
           prometheus_enable: true
           prometheus_operator_version: v0.13.0
 
-      - name: Port forward prom
-        run: |
-          kubectl port-forward -n monitoring svc/prometheus-k8s 9090:9090 &
-
       - name: Install Kepler helm chart
         run: |
           # Install helm binary first
@@ -181,6 +177,10 @@ jobs:
             name: prometheus-k8s
             namespace: monitoring
           EOF
+
+      - name: Port forward prom
+        run: |
+          kubectl port-forward -n monitoring svc/prometheus-k8s 9090:9090 &
 
       - name: Wait for Kepler metrics kepler_node_package_joules_total is not empty through Prometheus query
         run: |
