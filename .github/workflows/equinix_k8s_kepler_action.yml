@@ -213,6 +213,9 @@ jobs:
             --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
             | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
             | tee /tmp/kepler-stress-test-metrics.txt
+          kubectl port-forward -n kepler svc/kepler 9102:9102 &
+          curl localhost:9102/metrics
+
 
       - name: git add the /tmp/kepler-stress-test-metrics.txt
         run: |
