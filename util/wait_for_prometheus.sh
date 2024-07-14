@@ -28,6 +28,7 @@ done
 echo "Debugging"
 
 kubectl get po --all-namespaces
+kubectl get svc --all-namespaces
 
 echo "Exiting"
 #exit 1
