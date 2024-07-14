@@ -30,4 +30,4 @@ echo "Debugging"
 kubectl get po --all-namespaces
 
 echo "Exiting"
-exit 1
+#exit 1

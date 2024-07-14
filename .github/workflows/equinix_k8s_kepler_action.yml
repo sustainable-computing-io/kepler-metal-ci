@@ -154,7 +154,7 @@ jobs:
           helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest \
             --set extraEnvVars.EXPOSE_COMPONENT_POWER="false" --set extraEnvVars.EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" --set extraEnvVars.EXPOSE_BPF_METRICS="false" \
             --set extraEnvVars.EXPERIMENTAL_BPF_SAMPLE_RATE=1000
-            
+
       - name: Allow prometheus to scrape kepler metrics in kepler namespace
         run: |
           curl -O https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/manifests/k8s/config/rbac/prometheus_role.yaml
@@ -203,7 +203,7 @@ jobs:
           export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           ../../../kube-burner init -c kubelet-density.yml -u http://localhost:9090 --metrics-profile metrics.yaml
           # sleep a min after test
-          sleep 60
+          sleep 120
           export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           touch /tmp/kepler-stress-test-metrics.txt
           # Retrieve metrics related to Kepler cpu and memory utilization over time
