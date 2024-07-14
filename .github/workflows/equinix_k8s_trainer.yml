@@ -146,6 +146,7 @@ jobs:
           cluster_provider: existing
           prometheus_enable: true
           tekton_enable: true
+          prometheus_operator_version: v0.13.0
 
       - name: Port forward prom
         run: |
@@ -196,6 +197,11 @@ jobs:
         run: |
           cd ~
           git clone https://github.com/sustainable-computing-io/kepler-model-server.git
+          ls ${TEKTON_PATH}
+          ls ${TEKTON_PATH}/pvc/hostpath.yamls
+          ls ${TEKTON_PATH}/tasks
+          ls ${TEKTON_PATH}/tasks/s3
+          ls ${TEKTON_PATH}/pipelines
 
       - name: Deploy Tekton Training Tasks
         run: |

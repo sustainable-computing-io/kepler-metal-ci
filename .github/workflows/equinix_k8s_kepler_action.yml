@@ -137,6 +137,7 @@ jobs:
         with:
           cluster_provider: existing
           prometheus_enable: true
+          prometheus_operator_version: v0.13.0
 
       - name: Port forward prom
         run: |
