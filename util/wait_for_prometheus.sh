@@ -18,11 +18,16 @@ for i in {1..10}; do
 VALUES=$(query_prometheus)
 if [ "$VALUES" -gt 0 ]; then
     echo "Values found in the query result."
-    break
+    exit 0
 else
     echo "No values found yet, retrying in 5 seconds..."
     sleep 5
 fi
 done
 
+echo "Debugging"
+
+kubectl get po --all-namespaces
+
 echo "Exiting"
+exit 1
