@@ -145,6 +145,7 @@ jobs:
         with:
           cluster_provider: existing
           prometheus_enable: true
+          tekton_enable: true
 
       - name: Port forward prom
         run: |
@@ -190,10 +191,7 @@ jobs:
       - name: Wait for Kepler metrics kepler_node_package_joules_total is not empty through Prometheus query
         run: |
           ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh      
-    
-      - name: Install Tekton
-        run: kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
-
+  
       - name: Clone Kepler Model Server
         run: |
           cd ~
