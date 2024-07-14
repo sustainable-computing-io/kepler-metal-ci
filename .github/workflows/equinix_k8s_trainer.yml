@@ -195,7 +195,7 @@ jobs:
       - name: Clone Kepler Model Server
         run: |
           cd ~
-          git clone ${{ github.event.inputs.kepler_model_server_img }}
+          git clone https://github.com/sustainable-computing-io/kepler-model-server.git
 
       - name: Deploy Tekton Training Tasks
         run: |
