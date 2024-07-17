@@ -1,7 +1,6 @@
 name: Equinix k8s Action integration with Model Trainer
 
 on:
-  pull_request:
   workflow_dispatch:
     inputs:
       termination_time:
@@ -20,11 +19,10 @@ on:
         description: 'metro location'
         required: false
         default: 'da'
-      kepler_model_server_img:
+      kepler_model_server_repo:
         description: 'kepler model server'
         required: true
-        default: 'quay.io/sustainable_computing_io/kepler_model_server:latest'
-
+        default: 'https://github.com/sustainable-computing-io/kepler-model-server.git'
 
 permissions:
   pull-requests: write
@@ -106,16 +104,18 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TEKTON_PATH: '~/kepler-model-server/model-training/tekton'
+      TEKTON_PATH: ${{ github.workspace }}/kepler-model-server/model-training/tekton
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: mkdir tmp dirs
+      - name: Install kubectl
         run: |
-          mkdir -p /tmp/kubeconfig
-          mkdir -p ~/.kube/
+          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: mkdir ~/.kube
+        run: |
+          mkdir -p ~/.kube
 
       - name: Download kubeconfig
         uses: actions/download-artifact@v2
@@ -126,8 +126,7 @@ jobs:
       - name: Test k8s
         run: |
           ls -la ~/.kube/*
-          cp ~/.kube/kubeconfig ~/.kube/config
-          cp ~/.kube/kubeconfig /tmp/kubeconfig/config
+          mv ~/.kube/kubeconfig ~/.kube/config
           kubectl get nodes
           kubectl get pods --all-namespaces
 
@@ -139,6 +138,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install jq -y
+
+      - name: Checkout code
+        uses: actions/checkout@v3
       
       - name: use Kepler action to deploy cluster
         uses: sustainable-computing-io/kepler-action@main
@@ -161,7 +163,9 @@ jobs:
           export PATH=$PATH:/usr/local/bin
           helm repo add kepler https://sustainable-computing-io.github.io/kepler-helm-chart
           helm repo update
-          helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest
+          helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest \
+            --set extraEnvVars.EXPOSE_COMPONENT_POWER="false" --set extraEnvVars.EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" --set extraEnvVars.EXPOSE_BPF_METRICS="false" \
+            --set extraEnvVars.EXPERIMENTAL_BPF_SAMPLE_RATE=1000
 
       - name: Allow prometheus to scrape kepler metrics in kepler namespace
         run: |
@@ -205,6 +209,7 @@ jobs:
 
       - name: Deploy Tekton Training Tasks
         run: |
+          ls ${{ github.workspace }}/kepler-model-server/model-training/tekton
           kubectl apply -f ${TEKTON_PATH}/pvc/hostpath.yaml
           kubectl apply -f ${TEKTON_PATH}/tasks
           kubectl apply -f ${TEKTON_PATH}/tasks/s3
@@ -215,11 +220,11 @@ jobs:
       
       - name: Wait for Tekton Training
         run: |
-          chmod +x ${GITHUB_WORKSPACE}/util/wait_for_pipelineruns.sh
-          ${GITHUB_WORKSPACE}/util/wait_for_pipelineruns.sh
+          chmod +x ${{ github.workspace }}/util/wait_for_pipelineruns.sh
+          ${{ github.workspace }}/util/wait_for_pipelineruns.sh
       
       - name: Deploy Model Inspector
-        run: kubectl apply -f ${GITHUB_WORKSPACE}/util/inspector.yaml
+        run: kubectl apply -f ${{ github.workspace }}/util/inspect.yml
     
       - name: Wait for inspector pod to complete
         run: |
@@ -233,7 +238,7 @@ jobs:
             sleep 10
           done
 
-      - name: Copy models tarball from pod to runner
+      - name: Copy models from pod to runner
         run: |
           kubectl cp default/inspector-pod:/mnt/trained_models.tar.gz ./trained_models.tar.gz
       
