@@ -6,7 +6,8 @@ spec:
   containers:
   - name: inspect-models-container
     image: busybox
-    command: ["/bin/sh", "-c", "tar -cvzf /mnt/trained_models.tar.gz -C /mnt ."]
+    #command: ["/bin/sh", "-c", "tar -cvzf /mnt/trained_models.tar.gz -C /mnt ."]
+    command: ["tail", "-f", "/dev/null"]
     volumeMounts:
     - mountPath: "/mnt"
       name: task-pv-storage
