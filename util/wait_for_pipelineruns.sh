@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Function to check the status of pipelineruns
 check_pipelineruns() {
     statuses=$(kubectl get pipelineruns -o jsonpath='{range .items[*]}{.metadata.name} {.status.conditions[*].status} {.status.conditions[*].reason}{"\n"}{end}')
 
