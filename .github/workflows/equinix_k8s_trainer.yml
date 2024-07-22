@@ -204,16 +204,16 @@ jobs:
         run: |
           cd ~
           git clone ${{ github.event.inputs.kepler_model_server_repo }}
-          ls kepler-model-server
-          ls ~/kepler-model-server
           sleep 180
+          
+      - name: Apply Tekton Pipelines
           kubectl apply -f ~/${TEKTON_PATH}/pvc/hostpath.yaml
           kubectl apply -f ~/${TEKTON_PATH}/tasks
           kubectl apply -f ~/${TEKTON_PATH}/tasks/s3
           kubectl apply -f ~/${TEKTON_PATH}/pipelines
 
       - name: Run Complete Training
-        run: kubectl apply -f ~/${TEKTON_PATH}/examples/single-train/abs-power.yaml
+        run: kubectl apply -f ~/${TEKTON_PATH}/examples/single-train/default.yaml
       
       - name: Wait for Tekton Training
         run: |
@@ -226,12 +226,8 @@ jobs:
       - name: Wait for inspector pod to complete
         run: |
           POD_NAME="inspector-pod"
-          while [[ $(kubectl get pod $POD_NAME -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
-            echo "Waiting for pod $POD_NAME to be ready..."
-            sleep 10
-          done
-          while [[ $(kubectl get pod $POD_NAME -o 'jsonpath={..status.phase}') != "Succeeded" ]]; do
-            echo "Waiting for pod $POD_NAME to complete..."
+          while [[ $(kubectl get pod $POD_NAME -o 'jsonpath={..status.phase}') != "Succeeded" && $(kubectl get pod $POD_NAME -o 'jsonpath={.status.phase}') != "Failed" ]]; do
+            echo "waiting for pod $POD_NAME to complete..."
             sleep 10
           done
 
