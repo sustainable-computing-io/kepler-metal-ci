@@ -204,7 +204,8 @@ jobs:
         run: |
           cd ~
           git clone ${{ github.event.inputs.kepler_model_server_repo }}
-          ls ~
+          ls kepler-model-server
+          ls ~/kepler-model-server
           kubectl apply -f ~/${TEKTON_PATH}/pvc/hostpath.yaml
           kubectl apply -f ~/${TEKTON_PATH}/tasks
           kubectl apply -f ~/${TEKTON_PATH}/tasks/s3
