@@ -202,7 +202,8 @@ jobs:
 
       - name: Clone Kepler Model Server
         run: |
-          git clone ~/${{ github.event.inputs.kepler_model_server_repo }}
+          cd ~
+          git clone ${{ github.event.inputs.kepler_model_server_repo }}
           ls ~/${TEKTON_PATH}
 
       - name: Deploy Tekton Training Tasks
