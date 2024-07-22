@@ -204,7 +204,7 @@ jobs:
         run: |
           cd ~
           git clone ${{ github.event.inputs.kepler_model_server_repo }}
-          ls ~/${TEKTON_PATH}
+          ls ~
 
       - name: Deploy Tekton Training Tasks
         run: |
