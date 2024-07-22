@@ -231,11 +231,19 @@ jobs:
             echo "waiting for pod $POD_NAME to complete..."
             sleep 10
           done
-
-      - name: Copy models from pod to runner
+          
+      - name: Copy models from inspector pod to runner
         run: |
-          kubectl cp default/inspector-pod:/mnt/trained_models.tar.gz ./trained_models.tar.gz
-          ls .
+          mkdir -p ./mnt
+          kubectl cp default/inspector-pod:/mnt ./mnt
+
+      - name: Compress models
+        run: |
+          tar -czvf ./trained_models.tar.gz -C ./mnt .
+
+      - name: Terminate inspector pod
+        run: |
+          kubectl delete pod default/inspector-pod
       
       - name: Upload models as artifacts
         uses: actions/upload-artifact@v2
