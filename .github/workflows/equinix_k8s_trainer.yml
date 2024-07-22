@@ -207,6 +207,7 @@ jobs:
           sleep 180
           
       - name: Apply Tekton Pipelines
+        run: |
           kubectl apply -f ~/${TEKTON_PATH}/pvc/hostpath.yaml
           kubectl apply -f ~/${TEKTON_PATH}/tasks
           kubectl apply -f ~/${TEKTON_PATH}/tasks/s3
