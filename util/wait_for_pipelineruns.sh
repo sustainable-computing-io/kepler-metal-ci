@@ -21,6 +21,6 @@ while true; do
         break
     else
         echo "waiting for trainer pipelineRuns to complete..."
-        sleep 10 
+        sleep 60 
     fi
 done
