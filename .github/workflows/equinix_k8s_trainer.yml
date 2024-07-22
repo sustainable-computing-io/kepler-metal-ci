@@ -235,6 +235,7 @@ jobs:
       - name: Copy models from pod to runner
         run: |
           kubectl cp default/inspector-pod:/mnt/trained_models.tar.gz ./trained_models.tar.gz
+          ls .
       
       - name: Upload models as artifacts
         uses: actions/upload-artifact@v2
