@@ -205,9 +205,6 @@ jobs:
           cd ~
           git clone ${{ github.event.inputs.kepler_model_server_repo }}
           ls ~
-
-      - name: Deploy Tekton Training Tasks
-        run: |
           kubectl apply -f ~/${TEKTON_PATH}/pvc/hostpath.yaml
           kubectl apply -f ~/${TEKTON_PATH}/tasks
           kubectl apply -f ~/${TEKTON_PATH}/tasks/s3
