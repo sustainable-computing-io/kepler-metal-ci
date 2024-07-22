@@ -208,7 +208,7 @@ jobs:
           ls ~/kepler-model-server
           kubectl apply -f ~/${TEKTON_PATH}/pvc/hostpath.yaml
           kubectl apply -f ~/${TEKTON_PATH}/tasks
-          kubectl apply -f ~/${TEKTON_PATH}/tasks/s3
+          #kubectl apply -f ~/${TEKTON_PATH}/tasks/s3
           kubectl apply -f ~/${TEKTON_PATH}/pipelines
 
       - name: Run Complete Training
