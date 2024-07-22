@@ -142,14 +142,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      - name: Install Prometheus
-        run: |
-          git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
-          kubectl apply --server-side --validate=false -f manifests/setup
-          kubectl apply --validate=false -f manifests/
-          until kubectl -n monitoring get statefulset prometheus-k8s; do kubectl get all -n monitoring; echo "StatefulSet not created yet, waiting..."; sleep 5; done
-          kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
-          kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
+      - name: use Kepler action to deploy cluster
+        uses: sustainable-computing-io/kepler-action@main
+        with:
+          cluster_provider: existing
+          prometheus_enable: true
+          tekton_enable: true
+          prometheus_operator_version: v0.13.0
 
       - name: Port forward prom
         run: |
@@ -196,14 +195,17 @@ jobs:
 
       - name: Wait for Kepler metrics kepler_node_package_joules_total is not empty through Prometheus query
         run: |
-          ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh
-      - name: Install Tekton
-        run: kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
-
+          ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh      
+  
       - name: Clone Kepler Model Server
         run: |
-          cd ${{ github.workspace }}
-          git clone ${{ github.event.inputs.kepler_model_server_repo }}
+          cd ~
+          git clone https://github.com/sustainable-computing-io/kepler-model-server.git
+          ls ${TEKTON_PATH}
+          ls ${TEKTON_PATH}/pvc/hostpath.yamls
+          ls ${TEKTON_PATH}/tasks
+          ls ${TEKTON_PATH}/tasks/s3
+          ls ${TEKTON_PATH}/pipelines
 
       - name: Deploy Tekton Training Tasks
         run: |
