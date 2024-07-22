@@ -104,7 +104,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TEKTON_PATH: ${{ github.workspace }}/kepler-model-server/model-training/tekton
+      TEKTON_PATH: ${GITHUB_WORKSPACE}/kepler-model-server/model-training/tekton
 
     steps:
       - name: Install kubectl
@@ -202,12 +202,12 @@ jobs:
 
       - name: Clone Kepler Model Server
         run: |
-          cd ${{ github.workspace }}
+          cd ${GITHUB_WORKSPACE}
           git clone ${{ github.event.inputs.kepler_model_server_repo }}
 
       - name: Deploy Tekton Training Tasks
         run: |
-          ls ${{ github.workspace }}/kepler-model-server/model-training/tekton
+          ls ${GITHUB_WORKSPACE}/kepler-model-server/model-training/tekton
           kubectl apply -f ${TEKTON_PATH}/pvc/hostpath.yaml
           kubectl apply -f ${TEKTON_PATH}/tasks
           kubectl apply -f ${TEKTON_PATH}/tasks/s3
@@ -218,8 +218,8 @@ jobs:
       
       - name: Wait for Tekton Training
         run: |
-          chmod +x ${{ github.workspace }}/util/wait_for_pipelineruns.sh
-          ${{ github.workspace }}/util/wait_for_pipelineruns.sh
+          chmod +x ${GITHUB_WORKSPACE}/util/wait_for_pipelineruns.sh
+          ${GITHUB_WORKSPACE}/util/wait_for_pipelineruns.sh
       
       - name: Deploy Model Inspector
         run: kubectl apply -f ${{ github.workspace }}/util/inspect.yml
