@@ -227,7 +227,7 @@ jobs:
       - name: Wait for inspector pod to complete
         run: |
           POD_NAME="inspector-pod"
-          while [[ $(kubectl get pod $POD_NAME -o 'jsonpath={..status.phase}') != "Succeeded" && $(kubectl get pod $POD_NAME -o 'jsonpath={.status.phase}') != "Failed" ]]; do
+          while [[ $(kubectl get pod $POD_NAME -o 'jsonpath={..status.phase}') != "Running" ]]; do
             echo "waiting for pod $POD_NAME to complete..."
             sleep 10
           done
