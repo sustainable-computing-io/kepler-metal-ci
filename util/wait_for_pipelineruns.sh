@@ -17,10 +17,10 @@ check_pipelineruns() {
 
 while true; do
     if [ "$(check_pipelineruns)" == "true" ]; then
-        echo "All PipelineRuns have completed."
+        echo "trainer pipelineruns are complete."
         break
     else
-        echo "Waiting for PipelineRuns to complete..."
+        echo "waiting for trainer pipelineRuns to complete..."
         sleep 10 
     fi
 done
