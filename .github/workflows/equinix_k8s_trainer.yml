@@ -53,7 +53,7 @@ jobs:
       - name: Download kubeconfig
         uses: actions/download-artifact@v2
         with:
-          name: kubeconfig-10030324197
+          name: kubeconfig-10041599148
           path: ~/.kube/
 
       - name: Test k8s
