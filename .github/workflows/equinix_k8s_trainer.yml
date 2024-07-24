@@ -212,14 +212,18 @@ jobs:
           kubectl apply -f ~/${TEKTON_PATH}/tasks
           kubectl apply -f ~/${TEKTON_PATH}/tasks/s3
           kubectl apply -f ~/${TEKTON_PATH}/pipelines
+          sleep 100
 
       - name: Run Complete Training
-        run: kubectl apply -f ~/${TEKTON_PATH}/examples/single-train/default.yaml
+        run: kubectl apply -f ~/${TEKTON_PATH}/examples/complete-pipelinerun.yaml
       
       - name: Wait for Tekton Training
         run: |
+          kubectl get taskruns -o yaml
           chmod +x ${GITHUB_WORKSPACE}/util/wait_for_pipelineruns.sh
           ${GITHUB_WORKSPACE}/util/wait_for_pipelineruns.sh
+          kubectl get pipelineruns
+          kubectl get pipelineruns -o yaml
       
       - name: Deploy Model Inspector
         run: kubectl apply -f ${GITHUB_WORKSPACE}/util/inspect.yml
