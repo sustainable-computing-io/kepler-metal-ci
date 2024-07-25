@@ -203,7 +203,7 @@ jobs:
       - name: Clone Kepler Model Server
         run: |
           cd ~
-          git clone ${{ github.event.inputs.kepler_model_server_repo }}
+          git clone -b change-prom-url ${{ github.event.inputs.kepler_model_server_repo }}
           sleep 180
           
       - name: Apply Tekton Pipelines
