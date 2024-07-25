@@ -52,6 +52,7 @@
               image: quay.io/sustainable_computing_io/kepler_model_server:v0.7.7
               volumes:
                 - estimator-mnt:/mnt
+                - /tmp:/tmp
               network_mode: "host"
               environment:
                 - NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
@@ -104,7 +105,8 @@
       when: compose_pull.changed
 
     # Note instead of sleeping, wait until Docker Compose Services are running
-    - name: Wait for Model Server Services to Start
+    # Specifically, wait until kepler metrics are available and uses trained_models not rapl
+    - name: Wait for Model Server Services to Stabilize
       ansible.builtin.pause:
-        seconds: 30
+        seconds: 45
    
