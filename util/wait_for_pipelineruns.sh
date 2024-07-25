@@ -18,6 +18,15 @@ check_pipelineruns() {
 while true; do
     if [ "$(check_pipelineruns)" == "true" ]; then
         echo "trainer pipelineruns are complete."
+        pipelinerun_name="example-complete-train-pipeline"
+        pods=$(kubectl get pods --selector=tekton.dev/pipelineRun=$pipelinerun_name -o jsonpath='{.items[*].metadata.name}')
+        for pod in $pods; do
+          containers=$(kubectl get pod $pod -o jsonpath='{.spec.containers[*].name}')
+          for container in $containers; do
+            echo "Logs for pod $pod, container $container:"
+            kubectl logs $pod -c $container
+          done
+        done
         break
     else
         echo "waiting for trainer pipelineRuns to complete..."
