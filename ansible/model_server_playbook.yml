@@ -13,7 +13,17 @@
       ansible.builtin.dnf:
         name: docker
         state: present
+      register: install_docker
+      changed_when: install_docker == 0
+      failed_when: install_docker != 0
       when: docker_version.rc != 0
+
+    - name: Enable and Start Docker Service
+      ansible.builtin.systemd: 
+        name: docker
+        enabled: yes
+        state: started
+      when: docker_version.rc == 0 or install_docker.changed
 
     - name: Check Docker Compose Installed
       ansible.builtin.command: docker-compose --version
@@ -81,11 +91,9 @@
             model-server-mnt:
         dest: "{{ compose_path }}"
 
-    - name: Enable and Start Docker Service
-      ansible.builtin.systemd: 
-        name: docker
-        enabled: yes
-        state: started
+    - name: Check Docker Compose file
+      ansible.builtin.command: cat {{ compose_path }}
+      ignore_errors: true
 
     - name: Pull Images
       ansible.builtin.command:
