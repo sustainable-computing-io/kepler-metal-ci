@@ -1,0 +1,11 @@
+name: Equinix Metal Action with Model Server Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: placeholder step
+        run: echo "placeholder"
