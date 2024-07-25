@@ -1,0 +1,112 @@
+- name: Deploy Model Server
+  hosts: model_server
+  become: yes
+  vars:
+    compose_path: /tmp/model-server-docker-compose.yml
+  tasks:
+    - name: Check Docker Installed
+      ansible.builtin.command: docker --version
+      register: docker_version
+      ignore_errors: true
+
+    - name: Install Docker
+      ansible.builtin.dnf:
+        name: docker
+        state: present
+      when: docker_version.rc != 0
+
+    - name: Check Docker Compose Installed
+      ansible.builtin.command: docker-compose --version
+      register: docker_compose_version
+      ignore_errors: true
+
+    - name: Install Docker Compose
+      ansible.builtin.shell: |
+        mkdir -p ~/.docker/cli-plugins
+        curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+      register: install_docker_compose
+      changed_when: install_docker_compose.rc == 0
+      failed_when: install_docker_compose.rc != 0
+      when: docker_compose_version.rc != 0
+
+    - name: Apply Executable Docker Compose Permissions
+      ansible.builtin.file:
+        path: ~/.docker/cli-plugins/docker-compose
+        mode: '0755'
+        state: file
+      #when: install_docker_compose.rc | default(1) == 0
+      when: install_docker_compose.changed
+
+      # add kepler service if necessary
+      # change v0.7.7 to latest
+    - name: Create Docker Compose Model Server file
+      copy:
+        content: |
+          version: '3'
+            estimator:
+              entrypoint:
+                - python3.8
+              command:
+                - -u
+                - src/estimate/estimator.py
+              image: quay.io/sustainable_computing_io/kepler_model_server:v0.7.7
+              volumes:
+                - estimator-mnt:/mnt
+                - /tmp:/tmp
+              network_mode: "host"
+              environment:
+                - NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
+                - NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
+                - NODE_TOTAL_INIT_URL={{ node_total_init_url }}
+                - NODE_COMPONENTS_INIT_URL={{ node_components_init_url }} 
+            model-server:
+              entrypoint:
+                - python3.8
+              ports:
+                - 8100
+              command:
+                - -u
+                - src/server/model_server.py
+              image: quay.io/sustainable_computing_io/kepler_model_server:v0.7.7
+              volumes:
+                - model-server-mnt:/mnt
+              network_mode: "host"
+              environment:
+                - NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
+                - NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
+                - NODE_TOTAL_INIT_URL={{ node_total_init_url }}
+                - NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}
+          volumes:
+            estimator-mnt:
+            model-server-mnt:
+        dest: "{{ compose_path }}"
+
+    - name: Enable and Start Docker Service
+      ansible.builtin.systemd: 
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Pull Images
+      ansible.builtin.command:
+        cmd: docker-compose -f {{ compose_path }} pull
+        chdir: "{{ compose_path | dirname }}"
+      register: compose_pull
+      changed_when: compose_pull.rc == 0
+      failed_when: compose_pull.rc != 0
+
+    - name: Force Rebuild Docker Compose
+      ansible.builtin.command:
+        cmd: docker-compose -f {{ compose_path }} up --force-recreate -d
+        chdir: "{{ compose_path | dirname }}"
+      register: deploy_output
+      changed_when: deploy_output.rc == 0
+      failed_when: deploy_output.rc != 0
+      when: compose_pull.changed
+
+    # Note instead of sleeping, wait until Docker Compose Services are running
+    # Specifically, wait until kepler metrics are available and uses trained_models not rapl
+    - name: Wait for Model Server Services to Stabilize
+      ansible.builtin.pause:
+        seconds: 45
+   
