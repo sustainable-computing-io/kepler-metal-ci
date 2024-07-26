@@ -4,31 +4,59 @@
   vars:
     compose_path: /tmp/model-server-docker-compose.yml
   tasks:
-    - name: Check Docker Installed
-      ansible.builtin.command: docker --version
-      register: docker_version
-      ignore_errors: true
+    # - name: Check Docker Installed
+    #   ansible.builtin.command: docker --version
+    #   register: docker_version
+    #   ignore_errors: yes
 
-    - name: Install Docker
+    # - name: Install Docker
+    #   ansible.builtin.dnf:
+    #     name: docker
+    #     state: present
+    #   register: install_docker
+    #   changed_when: install_docker == 0
+    #   failed_when: install_docker != 0
+    #   when: docker_version.rc != 0
+
+    # - name: Enable and Start Docker Service
+    #   ansible.builtin.systemd: 
+    #     name: docker
+    #     enabled: yes
+    #     state: started
+    #   when: docker_version.rc == 0 or install_docker.changed
+
+    - name: Check Podman Installed
+      ansible.builtin.command: podman --version
+      register: podman_version
+      ignore_errors: yes
+
+    - name: Install Podman
       ansible.builtin.dnf:
-        name: docker
+        name: podman
         state: present
-      register: install_docker
-      changed_when: install_docker == 0
-      failed_when: install_docker != 0
-      when: docker_version.rc != 0
+      register: podman_install
+      changed_when: podman_install == 0
+      failed_when: podman_install != 0
+      when: podman_version.rc != 0
 
-    - name: Enable and Start Docker Service
-      ansible.builtin.systemd: 
-        name: docker
-        enabled: yes
-        state: started
-      when: docker_version.rc == 0 or install_docker.changed
+    - name: Check podman-docker Installed
+      ansible.builtin.command: rpm -q podman-docker
+      register: podman_docker_version
+      ignore_errors: yes
+
+    - name: Install podman-docker
+      ansible.builtin.dnf:
+        name: podman-docker
+        state: present
+      register: podman_docker_install
+      changed_when: podman_docker_install.rc == 0
+      failed_when: podman_docker_install.rc != 0
+      when: podman_docker_version.rc != 0
 
     - name: Check Docker Compose Installed
       ansible.builtin.command: docker-compose --version
       register: docker_compose_version
-      ignore_errors: true
+      ignore_errors: yes
 
     - name: Install Docker Compose
       ansible.builtin.shell: |
@@ -46,6 +74,12 @@
         state: file
       #when: install_docker_compose.rc | default(1) == 0
       when: install_docker_compose.changed
+
+    - name: Enable podman.socket
+      ansible.builtin.systemd:
+        name: podman.socket
+        enabled: yes
+        state: started
 
       # add kepler service if necessary
       # change v0.7.7 to latest
