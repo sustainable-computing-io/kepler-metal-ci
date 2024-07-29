@@ -151,5 +151,12 @@
     # Specifically, wait until kepler metrics are available and uses trained_models not rapl
     - name: Wait for Model Server Services to Stabilize
       ansible.builtin.pause:
-        seconds: 45
-   
+        seconds: 60
+        
+    - name: Fetch Kepler logs related to Model Server
+      ansible.builtin.shell: podman logs kepler | grep "Using Power Model"
+      register: kepler_logs
+
+    - name: Display Kepler logs
+      ansible.builtin.debug:
+        var: kepler_logs.stdout
