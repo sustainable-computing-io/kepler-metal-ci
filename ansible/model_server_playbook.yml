@@ -86,7 +86,8 @@
     - name: Create Docker Compose Model Server file
       copy:
         content: |
-          version: '3'
+          version: '3.8'
+          services:
             estimator:
               entrypoint:
                 - python3.8
