@@ -54,7 +54,7 @@
       when: podman_docker_version.rc != 0
 
     - name: Check Docker Compose Installed
-      ansible.builtin.command: docker-compose --version
+      ansible.builtin.command: docker compose --version
       register: docker_compose_version
       ignore_errors: yes
 
@@ -131,7 +131,7 @@
 
     - name: Pull Images
       ansible.builtin.command:
-        cmd: docker-compose -f {{ compose_path }} pull
+        cmd: docker compose -f {{ compose_path }} pull
         chdir: "{{ compose_path | dirname }}"
       register: compose_pull
       changed_when: compose_pull.rc == 0
@@ -139,7 +139,7 @@
 
     - name: Force Rebuild Docker Compose
       ansible.builtin.command:
-        cmd: docker-compose -f {{ compose_path }} up --force-recreate -d
+        cmd: docker compose -f {{ compose_path }} up --force-recreate -d
         chdir: "{{ compose_path | dirname }}"
       register: deploy_output
       changed_when: deploy_output.rc == 0
