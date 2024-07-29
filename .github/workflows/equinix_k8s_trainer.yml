@@ -219,6 +219,8 @@ jobs:
       
       - name: Wait for Tekton Training
         run: |
+          curl http://localhost:9090/
+          curl http://localhost:9090
           kubectl get taskruns -o yaml
           chmod +x ${GITHUB_WORKSPACE}/util/wait_for_pipelineruns.sh
           ${GITHUB_WORKSPACE}/util/wait_for_pipelineruns.sh
