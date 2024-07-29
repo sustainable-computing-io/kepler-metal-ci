@@ -34,7 +34,7 @@
       ansible.builtin.dnf:
         name: podman
         state: present
-      register: podman_install
+      # register: podman_install
       # changed_when: podman_install == 0
       # failed_when: podman_install != 0
       when: podman_version.rc != 0
