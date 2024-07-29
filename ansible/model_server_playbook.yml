@@ -54,7 +54,7 @@
       when: podman_docker_version.rc != 0
 
     - name: Check Docker Compose Installed
-      ansible.builtin.command: docker compose --version
+      ansible.builtin.command: docker compose version
       register: docker_compose_version
       ignore_errors: yes
 
