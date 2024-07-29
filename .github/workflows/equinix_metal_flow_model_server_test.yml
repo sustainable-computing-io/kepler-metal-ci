@@ -84,7 +84,8 @@ jobs:
           cp /tmp/report-${KEPLER_TAG}.md docs/validation/${DATE_STR}/
           cp -r /tmp/validator-${KEPLER_TAG} docs/validation/${DATE_STR}/
           cat docs/validation/${DATE_STR}/report-${KEPLER_TAG}.md
-          cat docs/validation/${DATE_STR}/validator-${KEPLER_TAG}/kepler_node_core_joules_total+dynamic.json
+          ls -l docs/validation/${DATE_STR}/validator-${KEPLER_TAG}
+          #cat docs/validation/${DATE_STR}/validator-${KEPLER_TAG}/kepler_node_core_joules_total+dynamic.json
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](validation/${DATE_STR}/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}) |" \
             >> docs/kepler-model-validation.md
         env:
