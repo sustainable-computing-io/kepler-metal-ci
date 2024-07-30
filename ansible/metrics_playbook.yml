@@ -16,6 +16,9 @@
   hosts: localhost
   become: true
   vars:
+    prometheus_global:
+      scrape_interval: 3s
+
     prometheus_scrape_configs:
       - job_name: "node"
         static_configs:
