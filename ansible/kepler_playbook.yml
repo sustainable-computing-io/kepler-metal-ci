@@ -146,3 +146,12 @@
     - name: Output Kepler Logs
       ansible.builtin.debug:
         var: kepler_logs.stdout
+
+    - name: Docker Compose Logs
+      ansible.builtin.shell: |
+        docker compose logs
+      register: docker_compose_logs
+
+    - name: Output Docker Compose Logs
+      ansible.builtin.debug:
+        var: docker_compose_logs.stdout
