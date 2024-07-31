@@ -140,7 +140,7 @@
 
     - name: Grep Kepler Metrics
       ansible.builtin.shell: |
-        podman logs kepler | grep "Using Power Model"
+        podman logs kepler
       register: kepler_logs
 
     - name: Output Kepler Logs
