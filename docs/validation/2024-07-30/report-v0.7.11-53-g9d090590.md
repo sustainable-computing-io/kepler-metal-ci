@@ -2,11 +2,11 @@
 
 ## Build Info
 
-  * `kepler_exporter_build_info{arch="amd64", branch="main", instance="localhost:8888", job="node", os="linux", revision="9d090590c35f8a025575622f6def1b008199b2f9", version="v0.7.11-53-g9d090590"}`
+  * `kepler_exporter_build_info{arch="amd64", branch="main", instance="localhost:8888", job="metal", os="linux", revision="9d090590c35f8a025575622f6def1b008199b2f9", version="v0.7.11-53-g9d090590"}`
   * `kepler_exporter_build_info{arch="amd64", branch="main", instance="localhost:9999", job="vm", os="linux", revision="9d090590c35f8a025575622f6def1b008199b2f9", version="v0.7.11-53-g9d090590"}`
 ## Node Info
 
-  * `kepler_node_info{components_power_source="rapl-sysfs", cpu_architecture="Coffee Lake", instance="localhost:8888", job="node", platform_power_source="acpi", source="os"}`
+  * `kepler_node_info{components_power_source="rapl-sysfs", cpu_architecture="Coffee Lake", instance="localhost:8888", job="metal", platform_power_source="acpi", source="os"}`
   * `kepler_node_info{components_power_source="estimator", cpu_architecture="Coffee Lake", instance="localhost:9999", job="vm", platform_power_source="none", source="os"}`
 ## Specs
 ### Host CPU Specs
@@ -24,75 +24,75 @@
 ### VM DRAM Size
 | Size |
 |------|
-| 32601200 kB |
+| 32601204 kB |
 
 ## Validation Results
 
-   * Started At: `2024-07-30 20:11:30.713426`
-   * Ended   At: `2024-07-30 20:14:51.653984`
-   * Duration  : `0:03:20.940558`
+   * Started At: `2024-07-30 20:45:23.557831`
+   * Ended   At: `2024-07-30 20:48:44.415270`
+   * Duration  : `0:03:20.857439`
 
 ### Validate - platform - dynamic
 
   * expected:  `rate( kepler_node_platform_joules_total{ job="vm", mode="dynamic", }[20s] ) `
-  * actual:  `rate( kepler_vm_platform_joules_total{ job="node", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
+  * actual:  `rate( kepler_vm_platform_joules_total{ job="metal", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
 #### Errors
 
-  * MSE: 1563.5053658130632
+  * MSE: 1677.9683570273935
   * MAPE: inf
 ### Validate - package - dynamic
 
   * expected:  `rate( kepler_node_package_joules_total{ job="vm", mode="dynamic", }[20s] ) `
-  * actual:  `rate( kepler_vm_package_joules_total{ job="node", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
+  * actual:  `rate( kepler_vm_package_joules_total{ job="metal", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
 #### Errors
 
-  * MSE: 1083.6922467402715
-  * MAPE: 60.67393557932456
+  * MSE: 1134.6474278453509
+  * MAPE: 61.40343943968888
 ### Validate - core - dynamic
 
   * expected:  `rate( kepler_node_core_joules_total{ job="vm", mode="dynamic", }[20s] ) `
-  * actual:  `rate( kepler_vm_core_joules_total{ job="node", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
+  * actual:  `rate( kepler_vm_core_joules_total{ job="metal", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
 #### Errors
 
-  * MSE: 1091.1548280274012
-  * MAPE: 60.75980176020157
+  * MSE: 1143.8132859717564
+  * MAPE: 61.49539414240559
 ### Validate - dram - dynamic
 
   * expected:  `rate( kepler_node_dram_joules_total{ job="vm", mode="dynamic", }[20s] ) `
-  * actual:  `rate( kepler_vm_dram_joules_total{ job="node", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
+  * actual:  `rate( kepler_vm_dram_joules_total{ job="metal", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
 #### Errors
 
-  * MSE: 23.694634566251384
+  * MSE: 25.428438773454516
   * MAPE: inf
 ### Validate - platform - idle
 
   * expected:  `rate( kepler_node_platform_joules_total{ job="vm", mode="idle", }[20s] ) `
-  * actual:  `rate( kepler_vm_platform_joules_total{ job="node", vm_id=~".*my-vm", mode="idle", }[20s] ) `
+  * actual:  `rate( kepler_vm_platform_joules_total{ job="metal", vm_id=~".*my-vm", mode="idle", }[20s] ) `
 #### Errors
 
-  * MSE: 5674703129.572374
-  * MAPE: 99.70742001673504
+  * MSE: 5504117338.886709
+  * MAPE: 99.70293362802494
 ### Validate - package - idle
 
   * expected:  `rate( kepler_node_package_joules_total{ job="vm", mode="idle", }[20s] ) `
-  * actual:  `rate( kepler_vm_package_joules_total{ job="node", vm_id=~".*my-vm", mode="idle", }[20s] ) `
+  * actual:  `rate( kepler_vm_package_joules_total{ job="metal", vm_id=~".*my-vm", mode="idle", }[20s] ) `
 #### Errors
 
-  * MSE: 4867.900284382244
-  * MAPE: 47523.47769246675
+  * MSE: 4869.012073312447
+  * MAPE: 50322.87344846842
 ### Validate - core - idle
 
   * expected:  `rate( kepler_node_core_joules_total{ job="vm", mode="idle", }[20s] ) `
-  * actual:  `rate( kepler_vm_core_joules_total{ job="node", vm_id=~".*my-vm", mode="idle", }[20s] ) `
+  * actual:  `rate( kepler_vm_core_joules_total{ job="metal", vm_id=~".*my-vm", mode="idle", }[20s] ) `
 #### Errors
 
-  * MSE: 4871.2461412910125
-  * MAPE: 56821.9317369549
+  * MSE: 4872.335614193842
+  * MAPE: 60774.47528122025
 ### Validate - dram - idle
 
   * expected:  `rate( kepler_node_dram_joules_total{ job="vm", mode="idle", }[20s] ) `
-  * actual:  `rate( kepler_vm_dram_joules_total{ job="node", vm_id=~".*my-vm", mode="idle", }[20s] ) `
+  * actual:  `rate( kepler_vm_dram_joules_total{ job="metal", vm_id=~".*my-vm", mode="idle", }[20s] ) `
 #### Errors
 
-  * MSE: 2218.006202263879
-  * MAPE: 101473.68331973984
+  * MSE: 2218.0773057359693
+  * MAPE: 103467.58256910136
