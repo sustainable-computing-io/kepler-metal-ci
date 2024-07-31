@@ -133,3 +133,16 @@
       ansible.builtin.dnf:
         name: stress-ng
         state: present
+
+    - name: Sleep
+      ansible.builtin.pause:
+        seconds: 60
+
+    - name: Grep Kepler Metrics
+      ansible.builtin.shell: |
+        podman logs kepler | grep "Using Power Model"
+      register: kepler_logs
+
+    - name: Output Kepler Logs
+      ansible.builtin.debug:
+        var: kepler_logs.stdout
