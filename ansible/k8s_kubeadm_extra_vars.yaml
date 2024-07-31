@@ -1,5 +1,5 @@
 termination_time: 1
 control_plan: c3.small.x86
 node_plan: c3.small.x86
-metro: da  
+metro: da
 
