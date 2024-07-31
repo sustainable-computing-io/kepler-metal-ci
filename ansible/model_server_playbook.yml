@@ -152,3 +152,12 @@
     - name: Wait for Model Server Services to Stabilize
       ansible.builtin.pause:
         seconds: 60
+
+    - name: Docker Compose Logs
+      ansible.builtin.shell: |
+        docker compose -f {{ compose_path }} logs
+      register: docker_compose_logs
+
+    - name: Output Docker Compose Logs
+      ansible.builtin.debug:
+        var: docker_compose_logs.stdout
