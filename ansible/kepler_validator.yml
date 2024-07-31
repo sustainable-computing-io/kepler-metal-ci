@@ -40,7 +40,7 @@
               name: my-vm
           prometheus:
             job:
-              metal: node
+              metal: metal
               vm: vm
             url: http://localhost:9090
             rate_interval: 20s
