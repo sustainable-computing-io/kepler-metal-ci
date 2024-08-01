@@ -5,6 +5,8 @@ from datetime import datetime
 from openai import OpenAI
 from github import Github
 
+github_token = os.getenv("GITHUB_TOKEN")
+repo_name = "sustainable-computing-io/kepler-metal-ci"
 # Directory containing the validation reports
 validation_dir = "docs/validation"
 
@@ -25,11 +27,13 @@ def check_regression(report_content):
     prompt = f"""
     Please check if there is any performance regression from the test results. 
     A regression is defined as a significant increase in MSE or MAPE in model performance compared to the previous test results. 
-    Report: {report_content}
-    Provide a detailed analysis and conclusion. 
+    
+    Report: 
+    {report_content}
+
     In order to help parsing the analysis, please output the summary first. 
     The summary should be in this format: 
-    if there is any significant regression, the summary is exactly "Significant Regression Detected" and then followed by the detailed analysis and conclusion. 
+    if there is any significant regression, the summary is exactly "Significant Regression Detected" and then followed by those with only the significant increase and conclusion. 
     Otherwise, the summary should be exactly "No Significant Regression" and then stop generating any content, just stop there.
     """
     client = OpenAI(
@@ -42,7 +46,7 @@ def check_regression(report_content):
                 "content": prompt,
             }
         ],
-        model="gpt-4o",
+        model="gpt-4-turbo",
         temperature=0,
     )
     print(completion.choices[0].message.content)
