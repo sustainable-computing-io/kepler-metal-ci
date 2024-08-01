@@ -39,7 +39,7 @@ def check_regression(report):
                 "content": prompt,
             }
         ],
-        model="gpt-4",
+        model="gpt-4-turbo",
         temperature=0,
     )
     print(completion.choices[0].message.content)
