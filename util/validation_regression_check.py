@@ -27,7 +27,8 @@ def check_regression(report_content):
     prompt = f"""
     Please check if there is any performance regression from the test results. 
     A regression is defined as a significant increase in MSE or MAPE in model performance compared to the previous test results. 
-    
+    Please only focus on MSE and MAPE that are in dynamic mode and ignore any regression in idle mode.
+
     Report: 
     {report_content}
 
