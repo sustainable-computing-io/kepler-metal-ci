@@ -17,6 +17,7 @@ def fetch_report(url):
 def check_regression(report):
     prompt = f"""
     Please check if there is any performance regression from the test results. 
+    A regression is defined as a significant increase in CPU utilization or Std Dev compared to the previous test results.
     Please read this test report and tell me what happened in the last two days' results. 
 
     Report:
@@ -24,8 +25,8 @@ def check_regression(report):
 
     Provide a detailed analysis and conclusion. 
     In order to help parsing the analysis, please output the summary first. 
-    The summary should be in this format: if there is any significant regression, 
-    the summary is exactly "Significant Regression Detected" and then followed by the detailed analysis and conclusion. 
+    The summary should be in this format: 
+    if there is any significant regression, the summary is exactly "Significant Regression Detected" and then followed by the detailed analysis and conclusion. 
     Otherwise, the summary should be exactly "No Significant Regression" and then stop generating any content, just stop there.
     """
     client = OpenAI(
@@ -39,6 +40,7 @@ def check_regression(report):
             }
         ],
         model="gpt-4",
+        temperature=0,
     )
     print(completion.choices[0].message.content)
     return completion.choices[0].message.content
