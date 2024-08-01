@@ -37,9 +37,9 @@ BEGIN {
 
 END {
     if (n == 0) {
-        print "| N/A | N/A | N/A | N/A |\n"
+        print "| N/A | N/A |"
         exit
     }
     stats(utilization, n, result)
-    printf "| %.10f%% | %.10f%% | %.10f%% | %.10f%% |\n", result["mean"], result["stddev"], result["min"], result["max"]
+    printf "| %.10f%% | %.10f%% |", result["mean"], result["stddev"]
 }
