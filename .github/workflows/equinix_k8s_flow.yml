@@ -235,7 +235,7 @@ jobs:
           END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); echo -n "| " $END_TIME >> docs/kepler-stress-test-metrics.md
           MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
           KUBE_APISERVER_MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-kube-apiserver-metrics.txt)
-          echo $MEAN_SD_OUTPUT "***" $KUBE_APISERVER_MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
+          echo $MEAN_SD_OUTPUT "  " $KUBE_APISERVER_MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
           git add docs/kepler-stress-test-metrics.md
           git commit -m "kepler stress test metrics result at ${END_TIME}" -s
           git push origin main
