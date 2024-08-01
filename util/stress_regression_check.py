@@ -68,7 +68,7 @@ def main():
         print("Creating GitHub issue...")
         g = Github(github_token)
         repo = g.get_repo(repo_name)
-        title = "Regression Detected in Model Performance"
+        title = "Regression Detected in Kepler or kube-apiserver CPU Utilization Performance"
         body = f"Regression detected from the following reports:\n\nReport: {url}\n\nDetails:\n{result}"
         create_github_issue(repo, title, body)
 

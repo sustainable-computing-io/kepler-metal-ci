@@ -29,3 +29,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python util/stress_regression_check.py
+          python util/validation_regression_check.py
