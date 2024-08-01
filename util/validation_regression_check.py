@@ -3,6 +3,7 @@ import re
 import requests
 from datetime import datetime
 from openai import OpenAI
+from github import Github
 
 # Directory containing the validation reports
 validation_dir = "docs/validation"
@@ -57,13 +58,14 @@ def main():
     for folder in latest_folders:
         folder_path = os.path.join(validation_dir, folder)
         this_content = read_report(folder_path)
-
         report_content += f"Report Date: {folder}, Content: {this_content} \n"
+
     if report_content:
         regression_check_result = check_regression(report_content)
         print(f"Regression Check Result: {regression_check_result}")
         print("-" + "=" * 40 + "-")
-        # Analyze the result for regression
+
+    # Analyze the result for regression
     print("Analyzing the result...")
     regression_detected = False
     if "Significant Regression Detected".lower() in regression_check_result.lower():
