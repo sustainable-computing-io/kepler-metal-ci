@@ -66,12 +66,13 @@
 
     - name: Sleep
       ansible.builtin.pause:
-        seconds: 90
+        seconds: 300
         
     - name: Retrieve Kepler container logs
-      ansible.builtin.shell: podman logs kepler
-      register: kepler_logs
+      ansible.builtin.shell: |
+        curl http://localhost:8888/metrics
+      register: kepler_metrics
 
     - name: Output Kepler container logs
       ansible.builtin.debug:
-        var: kepler_logs.stdout
+        var: kepler_metrics.stdout
