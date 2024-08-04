@@ -231,4 +231,12 @@
     - name: wait
       ansible.builtin.pause:
         seconds: 200
-        
+
+    - name: metric results
+      ansible.builtin.shell: |
+        curl http://localhost:8888/metrics
+      register: metric_res
+
+    - name: output result
+      ansible.builtin.debug:
+        var: metric_res.stdout_lines
