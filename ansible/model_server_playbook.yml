@@ -1,5 +1,5 @@
 - name: Setup Kepler and OpenMetrics
-  hosts: localhost
+  hosts: my-vm
   become: yes
   tasks:
     - name: Install podman
