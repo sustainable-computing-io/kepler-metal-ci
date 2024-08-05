@@ -1,174 +1,252 @@
-- name: Deploy Model Server
-  hosts: my-vm
+- name: Setup Kepler and OpenMetrics
+  hosts: localhost
   become: yes
-  vars:
-    compose_path: /tmp/model-server-docker-compose.yml
   tasks:
-    - name: Check Podman Installed
-      ansible.builtin.command: which podman
-      register: podman_version
-      ignore_errors: yes
-
-    - name: Install Podman
+    - name: Install podman
       ansible.builtin.dnf:
         name: podman
         state: present
-      when: podman_version.rc != 0
 
-    - name: Check podman-docker Installed
-      ansible.builtin.command: rpm -q podman-docker
-      register: podman_docker_version
-      ignore_errors: yes
+    - name: Create Kepler systemd unit file
+      copy:
+        content: |
+          [Unit]
+          Description=Podman container-kepler.service
+          Documentation=man:podman-generate-systemd(1)
+          Wants=network-online.target
+          After=network-online.target
+          RequiresMountsFor=%t/containers
 
-    - name: Install podman-docker
-      ansible.builtin.dnf:
-        name: podman-docker
-        state: present
-      register: podman_docker_install
-      changed_when: podman_docker_install.rc == 0
-      failed_when: podman_docker_install.rc != 0
-      when: podman_docker_version.rc != 0
+          [Service]
+          Environment=PODMAN_SYSTEMD_UNIT=%n
+          Restart=always
+          TimeoutStopSec=70
+          ExecStartPre=/bin/rm -f %t/%n.ctr-id
+          ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
+              --privileged --network=host --pid=host --rm -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e KEPLER_LOG_LEVEL="8" -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc -v /tmp:/tmp \
+              quay.io/sustainable_computing_io/kepler:latest -address="0.0.0.0:8888" -v="8"
+          ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+          ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+          Type=notify
+          NotifyAccess=all
 
-    - name: Check Docker Compose Installed
-      ansible.builtin.command: docker compose version
-      register: docker_compose_version
-      ignore_errors: yes
+          [Install]
+          WantedBy=multi-user.target default.target
+        dest: /etc/systemd/system/container-kepler.service
 
-    - name: Install Docker Compose
-      ansible.builtin.shell: |
-        mkdir -p ~/.docker/cli-plugins
-        curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
-      register: install_docker_compose
-      changed_when: install_docker_compose.rc == 0
-      failed_when: install_docker_compose.rc != 0
-      when: docker_compose_version.rc != 0
-
-    - name: Apply Executable Docker Compose Permissions
-      ansible.builtin.file:
-        path: ~/.docker/cli-plugins/docker-compose
-        mode: '0755'
-        state: file
-      #when: install_docker_compose.rc | default(1) == 0
-      when: install_docker_compose.changed
-
-    - name: Enable podman.socket
+    - name: Reload systemd daemon
       ansible.builtin.systemd:
-        name: podman.socket
+        daemon_reload: yes
+
+    - name: Enable and start Kepler service
+      ansible.builtin.systemd:
+        name: container-kepler
         enabled: yes
         state: started
 
-    - name: Create Docker Compose Model Server file
-      copy:
-        content: |
-          version: '3.8'
-          services:
-            kepler:
-              image: quay.io/sustainable_computing_io/kepler:latest
-              container_name: kepler
-              restart: always
-              ports:
-                - "8888:8888"
-              privileged: true
-              pid: "host"
-              network_mode: "host"
-              environment:
-                - EXPOSE_ESTIMATED_IDLE_POWER_METRICS=true
-                - ENABLE_PROCESS_METRICS=true
-                # - MODEL_SERVER_ENABLE=true
-                # - MODEL_SERVER_URL="http://model-server:8100"
-                # - MODEL_CONFIG= |
-                #     NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
-                #     NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
-                #     NODE_TOTAL_INIT_URL={{ node_total_init_url }}
-                #     NODE_COMPONENTS_INIT_URL={{ node_components_init_url }} 
-              volumes:
-                - type: bind
-                  source: /proc
-                  target: /proc
-                - type: bind
-                  source: /sys
-                  target: /sys
-                - type: bind
-                  source: /lib/modules
-                  target: /lib/modules
-                - type: bind
-                  source: /usr/src
-                  target: /usr/src
-                - type: bind
-                  source: /etc
-                  target: /etc
-                - kepler-tmp:/tmp
-              cap_add:
-                - ALL
-              entrypoint:
-                - /usr/bin/bash
-                - -c
-              command:
-                - |
-                   set -x;
-                   /usr/bin/kepler \
-                   -address "0.0.0.0:8888" \
-                   -v "8" \
-          volumes:
-            kepler-tmp:
-        dest: "{{ compose_path }}"
-
-    - name: Check Docker Compose file
-      ansible.builtin.command: cat {{ compose_path }}
-      register: docker_compose_file
-
-    - name: Output Docker Compose file
-      ansible.builtin.debug:
-        var: docker_compose_file.stdout
-
-    - name: Pull Images
-      ansible.builtin.command:
-        cmd: docker compose -f {{ compose_path }} pull
-        chdir: "{{ compose_path | dirname }}"
-      register: compose_pull
-      changed_when: compose_pull.rc == 0
-      failed_when: compose_pull.rc != 0
-
-    - name: Force Rebuild Docker Compose
-      ansible.builtin.command:
-        cmd: docker compose -f {{ compose_path }} up --force-recreate -d
-        chdir: "{{ compose_path | dirname }}"
-      register: deploy_output
-      changed_when: deploy_output.rc == 0
-      failed_when: deploy_output.rc != 0
-      when: compose_pull.changed
-
-    - name: Check if Kepler is active
+    - name: Wait for Kepler to start (retry logic)
       ansible.builtin.shell: |
-        docker compose ps
-        for i in {1..10}; do
+        for i in {1..5}; do
           echo "Attempt $i"
           ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
           if [ ${ret} -eq 200 ]; then
-            echo "Kepler Active"
-            echo curl http://localhost:8888/metrics
             exit 0
           fi
           sleep 5
         done
-        echo "Kepler Inactive"
+        echo "Kepler did not start in time"
         exit 1
       register: kepler_start
       failed_when: kepler_start.rc != 0
 
-    - name: Output result
-      ansible.builtin.debug:
-        var: kepler_start.stdout_lines
+    - name: Install stress-ng
+      ansible.builtin.dnf:
+        name: stress-ng
+        state: present
 
-    - name: wait
+    - name: Sleep
       ansible.builtin.pause:
-        seconds: 200
-
-    - name: metric results
+        seconds: 300
+        
+    - name: Retrieve Kepler container logs
       ansible.builtin.shell: |
         curl http://localhost:8888/metrics
-      register: metric_res
+      register: kepler_metrics
 
-    - name: output result
+    - name: Output Kepler container logs
       ansible.builtin.debug:
-        var: metric_res.stdout_lines
+        var: kepler_metrics.stdout
+# - name: Deploy Model Server
+#   hosts: my-vm
+#   become: yes
+#   vars:
+#     compose_path: /tmp/model-server-docker-compose.yml
+#   tasks:
+#     - name: Check Podman Installed
+#       ansible.builtin.command: which podman
+#       register: podman_version
+#       ignore_errors: yes
+
+#     - name: Install Podman
+#       ansible.builtin.dnf:
+#         name: podman
+#         state: present
+#       when: podman_version.rc != 0
+
+#     - name: Check podman-docker Installed
+#       ansible.builtin.command: rpm -q podman-docker
+#       register: podman_docker_version
+#       ignore_errors: yes
+
+#     - name: Install podman-docker
+#       ansible.builtin.dnf:
+#         name: podman-docker
+#         state: present
+#       register: podman_docker_install
+#       changed_when: podman_docker_install.rc == 0
+#       failed_when: podman_docker_install.rc != 0
+#       when: podman_docker_version.rc != 0
+
+#     - name: Check Docker Compose Installed
+#       ansible.builtin.command: docker compose version
+#       register: docker_compose_version
+#       ignore_errors: yes
+
+#     - name: Install Docker Compose
+#       ansible.builtin.shell: |
+#         mkdir -p ~/.docker/cli-plugins
+#         curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+#       register: install_docker_compose
+#       changed_when: install_docker_compose.rc == 0
+#       failed_when: install_docker_compose.rc != 0
+#       when: docker_compose_version.rc != 0
+
+#     - name: Apply Executable Docker Compose Permissions
+#       ansible.builtin.file:
+#         path: ~/.docker/cli-plugins/docker-compose
+#         mode: '0755'
+#         state: file
+#       #when: install_docker_compose.rc | default(1) == 0
+#       when: install_docker_compose.changed
+
+#     - name: Enable podman.socket
+#       ansible.builtin.systemd:
+#         name: podman.socket
+#         enabled: yes
+#         state: started
+
+#     - name: Create Docker Compose Model Server file
+#       copy:
+#         content: |
+#           version: '3.8'
+#           services:
+#             kepler:
+#               image: quay.io/sustainable_computing_io/kepler:latest
+#               container_name: kepler
+#               restart: always
+#               ports:
+#                 - "8888:8888"
+#               privileged: true
+#               pid: "host"
+#               network_mode: "host"
+#               environment:
+#                 - EXPOSE_ESTIMATED_IDLE_POWER_METRICS=true
+#                 - ENABLE_PROCESS_METRICS=true
+#                 # - MODEL_SERVER_ENABLE=true
+#                 # - MODEL_SERVER_URL="http://model-server:8100"
+#                 # - MODEL_CONFIG= |
+#                 #     NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
+#                 #     NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
+#                 #     NODE_TOTAL_INIT_URL={{ node_total_init_url }}
+#                 #     NODE_COMPONENTS_INIT_URL={{ node_components_init_url }} 
+#               volumes:
+#                 - type: bind
+#                   source: /proc
+#                   target: /proc
+#                 - type: bind
+#                   source: /sys
+#                   target: /sys
+#                 - type: bind
+#                   source: /lib/modules
+#                   target: /lib/modules
+#                 - type: bind
+#                   source: /usr/src
+#                   target: /usr/src
+#                 - type: bind
+#                   source: /etc
+#                   target: /etc
+#                 - kepler-tmp:/tmp
+#               cap_add:
+#                 - ALL
+#               entrypoint:
+#                 - /usr/bin/bash
+#                 - -c
+#               command:
+#                 - |
+#                    set -x;
+#                    /usr/bin/kepler \
+#                    -address "0.0.0.0:8888" \
+#                    -v "8" \
+#           volumes:
+#             kepler-tmp:
+#         dest: "{{ compose_path }}"
+
+#     - name: Check Docker Compose file
+#       ansible.builtin.command: cat {{ compose_path }}
+#       register: docker_compose_file
+
+#     - name: Output Docker Compose file
+#       ansible.builtin.debug:
+#         var: docker_compose_file.stdout
+
+#     - name: Pull Images
+#       ansible.builtin.command:
+#         cmd: docker compose -f {{ compose_path }} pull
+#         chdir: "{{ compose_path | dirname }}"
+#       register: compose_pull
+#       changed_when: compose_pull.rc == 0
+#       failed_when: compose_pull.rc != 0
+
+#     - name: Force Rebuild Docker Compose
+#       ansible.builtin.command:
+#         cmd: docker compose -f {{ compose_path }} up --force-recreate -d
+#         chdir: "{{ compose_path | dirname }}"
+#       register: deploy_output
+#       changed_when: deploy_output.rc == 0
+#       failed_when: deploy_output.rc != 0
+#       when: compose_pull.changed
+
+#     - name: Check if Kepler is active
+#       ansible.builtin.shell: |
+#         docker compose ps
+#         for i in {1..10}; do
+#           echo "Attempt $i"
+#           ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
+#           if [ ${ret} -eq 200 ]; then
+#             echo "Kepler Active"
+#             echo curl http://localhost:8888/metrics
+#             exit 0
+#           fi
+#           sleep 5
+#         done
+#         echo "Kepler Inactive"
+#         exit 1
+#       register: kepler_start
+#       failed_when: kepler_start.rc != 0
+
+#     - name: Output result
+#       ansible.builtin.debug:
+#         var: kepler_start.stdout_lines
+
+#     - name: wait
+#       ansible.builtin.pause:
+#         seconds: 200
+
+#     - name: metric results
+#       ansible.builtin.shell: |
+#         curl http://localhost:8888/metrics
+#       register: metric_res
+
+#     - name: output result
+#       ansible.builtin.debug:
+#         var: metric_res.stdout_lines
