@@ -104,11 +104,11 @@
                 - /usr/bin/bash
                 - -c
               command:
-                -|
-                  set -x;
-                  /usr/bin/kepler
-                  -address="0.0.0.0:8888"
-                  -v="8"
+                - |
+                   set -x;
+                   /usr/bin/kepler \
+                   -address "0.0.0.0:8888" \
+                   -v "8" \
           volumes:
             kepler-tmp:
         dest: "{{ compose_path }}"
