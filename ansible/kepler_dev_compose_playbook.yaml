@@ -1,0 +1,19 @@
+---
+- name: Deploy and run the Kepler Dev Compose
+  hosts: localhost
+  become: yes
+  vars:
+    kepler_repo: "https://github.com/sustainable-computing-io/kepler.git"
+    
+  tasks:
+    - name: Clone kepler repo
+      git:
+        repo: "{{ kepler_repo }}"
+        dest: "/opt/kepler"
+        version: main
+
+    - name: Get details
+      shell: |
+        cd /opt/kepler
+        ls -ltr
+        git log -n 1

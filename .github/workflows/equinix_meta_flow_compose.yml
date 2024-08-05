@@ -1,7 +1,9 @@
 name: Equinix Metal Flow Compose
 
 on:
-  pull_request:
+  push:
+    branches:
+      - add-dk-w
 
 jobs:
   create-runner:
@@ -17,7 +19,7 @@ jobs:
           metal_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
           metro: "da"
           plan: "c3.small.x86"
-          os: "ubuntu_24_04"
+          os: "rhel_9"
 
   setup-runner:
     name: "Setup Runner"
@@ -37,7 +39,8 @@ jobs:
           sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
           sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
           # install ansible
-          sudo apt install -y ansible python3-pip
+          sudo dnf -y install ansible-core python3-pip
+          sudo dnf install -y rhel-system-roles
           sudo ansible-galaxy collection install community.crypto
 
       - name: Checkout code
@@ -61,4 +64,3 @@ jobs:
           authToken: ${{ secrets.EQUINIX_API_TOKEN }}
           projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
           runnerName: ${{ needs.setup-runner.outputs.runner-name }}
-
