@@ -1,30 +1,9 @@
 - name: Deploy Model Server
-  hosts: model_server
+  hosts: my-vm
   become: yes
   vars:
     compose_path: /tmp/model-server-docker-compose.yml
   tasks:
-    # - name: Check Docker Installed
-    #   ansible.builtin.command: docker --version
-    #   register: docker_version
-    #   ignore_errors: yes
-
-    # - name: Install Docker
-    #   ansible.builtin.dnf:
-    #     name: docker
-    #     state: present
-    #   register: install_docker
-    #   changed_when: install_docker == 0
-    #   failed_when: install_docker != 0
-    #   when: docker_version.rc != 0
-
-    # - name: Enable and Start Docker Service
-    #   ansible.builtin.systemd: 
-    #     name: docker
-    #     enabled: yes
-    #     state: started
-    #   when: docker_version.rc == 0 or install_docker.changed
-
     - name: Check Podman Installed
       ansible.builtin.command: which podman
       register: podman_version
@@ -34,9 +13,6 @@
       ansible.builtin.dnf:
         name: podman
         state: present
-      # register: podman_install
-      # changed_when: podman_install == 0
-      # failed_when: podman_install != 0
       when: podman_version.rc != 0
 
     - name: Check podman-docker Installed
@@ -81,54 +57,74 @@
         enabled: yes
         state: started
 
-      # add kepler service if necessary
-      # change v0.7.7 to latest
     - name: Create Docker Compose Model Server file
       copy:
         content: |
           version: '3.8'
           services:
-            estimator:
-              entrypoint:
-                - python3.8
-              command:
-                - -u
-                - src/estimate/estimator.py
-              image: quay.io/sustainable_computing_io/kepler_model_server:v0.7.7
-              volumes:
-                - estimator-mnt:/mnt
-                - /tmp:/tmp
-              network_mode: "host"
-              environment:
-                - NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
-                - NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
-                - NODE_TOTAL_INIT_URL={{ node_total_init_url }}
-                - NODE_COMPONENTS_INIT_URL={{ node_components_init_url }} 
-            model-server:
-              entrypoint:
-                - python3.8
+            kepler:
+              image: quay.io/sustainable_computing_io/kepler:latest
+              container_name: kepler
+              restart: always
               ports:
-                - 8100
-              command:
-                - -u
-                - src/server/model_server.py
-              image: quay.io/sustainable_computing_io/kepler_model_server:v0.7.7
-              volumes:
-                - model-server-mnt:/mnt
+                - "8888:8888"
+              privileged: true
+              pid: "host"
               network_mode: "host"
               environment:
-                - NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
-                - NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
-                - NODE_TOTAL_INIT_URL={{ node_total_init_url }}
-                - NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}
+                - EXPOSE_ESTIMATED_IDLE_POWER_METRICS=true
+                - ENABLE_PROCESS_METRICS=true
+                - MODEL_SERVER_ENABLE=true
+                - MODEL_SERVER_URL="http://model-server:8100"
+                - MODEL_CONFIG= |
+                    NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
+                    NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
+                    NODE_TOTAL_INIT_URL={{ node_total_init_url }}
+                    NODE_COMPONENTS_INIT_URL={{ node_components_init_url }} 
+              volumes:
+                - type: bind
+                  source: /proc
+                  target: /proc
+                - type: bind
+                  source: /sys
+                  target: /sys
+                - type: bind
+                  source: /lib/modules
+                  target: /lib/modules
+                - type: bind
+                  source: /usr/src
+                  target: /usr/src
+                - type: bind
+                  source: /etc
+                  target: /etc
+                - kepler-tmp:/tmp
+              cap_add:
+                - ALL
+              entrypoint:
+                - /usr/bin/bash
+                - -c
+              command:
+                - echo "Waiting for estimator socket";
+                  until [[ -e /tmp/estimator.sock ]]; do
+                  echo " ... waiting for socket";
+                  sleep 1;
+                  done;
+                  echo "starting kepler";
+                  set -x;
+                  /usr/bin/kepler
+                  -address="0.0.0.0:8888"
+                  -v="8"
           volumes:
-            estimator-mnt:
-            model-server-mnt:
+            kepler-tmp:
         dest: "{{ compose_path }}"
 
     - name: Check Docker Compose file
       ansible.builtin.command: cat {{ compose_path }}
-      ignore_errors: true
+      register: docker_compose_file
+
+    - name: Output Docker Compose file
+      ansible.builtin.debug:
+        var: docker_compose_file.stdout
 
     - name: Pull Images
       ansible.builtin.command:
@@ -147,17 +143,36 @@
       failed_when: deploy_output.rc != 0
       when: compose_pull.changed
 
-    # Note instead of sleeping, wait until Docker Compose Services are running
-    # Specifically, wait until kepler metrics are available and uses trained_models not rapl
-    - name: Wait for Model Server Services to Stabilize
-      ansible.builtin.pause:
-        seconds: 60
-
-    - name: Docker Compose Logs
+    - name: Check if Kepler is active
       ansible.builtin.shell: |
-        docker compose -f {{ compose_path }} logs
-      register: docker_compose_logs
+        for i in {1..5}; do
+          echo "Attempt $i"
+          ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
+          if [ ${ret} -eq 200 ]; then
+            echo "Kepler Active"
+            echo curl http://localhost:8888/metrics
+            exit 0
+          fi
+          sleep 5
+        done
+        echo "Kepler Inactive"
+        exit 1
+      register: kepler_start
+      failed_when: kepler_start.rc != 0
 
-    - name: Output Docker Compose Logs
+    - name: Output result
       ansible.builtin.debug:
-        var: docker_compose_logs.stdout
+        var: kepler_start.stdout_lines
+
+    - name: wait
+      ansible.builtin.pause:
+        seconds: 200
+
+    - name: metric results
+      ansible.builtin.shell: |
+        curl http://localhost:8888/metrics
+      register: metric_res
+
+    - name: output result
+      ansible.builtin.debug:
+        var: metric_res.stdout_lines
