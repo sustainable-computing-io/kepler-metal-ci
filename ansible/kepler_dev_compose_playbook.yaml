@@ -1,0 +1,112 @@
+---
+- name: Deploy and run the Kepler Dev Compose
+  hosts: localhost
+  become: yes
+  vars:
+    kepler_repo: "https://github.com/sustainable-computing-io/kepler.git"
+    kepler_dir: "/opt/kepler"
+    validator_dir: "/opt/kepler/e2e/tools/validator"
+    compose_dir: "/opt/kepler/manifests/compose"
+  tasks:
+    - name: Install necessary packages
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - jq
+
+    - name: Install hatch
+      pip:
+        name: hatch
+        state: latest
+
+    - name: Add Docker official GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Set up Docker stable repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+        filename: docker
+
+    - name: Update the apt package index again
+      apt:
+        update_cache: yes
+
+    - name: Install Docker Engine and containerd
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+          - docker-buildx-plugin
+        state: latest
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+
+    - name: Add user to Docker group
+      user:
+        name: "root"
+        groups: docker
+        append: yes
+
+    - name: Verify Docker installation
+      command: docker --version
+      register: docker_version
+
+    - name: Verify Docker ps command
+      command: docker ps
+      register: docker_ps
+
+    - name: Display Docker version
+      debug:
+        msg: "{{ docker_version.stdout }}"
+
+    - name: Display Docker ps
+      debug:
+        msg: "{{ docker_ps.stdout }}"
+
+    - name: Clone kepler repo
+      git:
+        repo: "{{ kepler_repo }}"
+        dest: "{{ kepler_dir }}"
+        version: main
+
+    - name: Get details
+      shell: |
+        cd {{ kepler_dir }}
+        git log -n 1
+
+    - name: Docker compose up
+      shell: |
+        cd {{ compose_dir }}/mock-acpi
+        docker compose up -d
+
+    # - name: Docker compose up
+    #   community.docker.docker_compose_v2:
+    #     project_src: "{{ compose_dir }}/mock-acpi"
+    #     build: always
+    #     files: compose.yaml
+
+      # TODO: find why Kepler takes time to start producing metrics and figure out a better way to wait 
+    - name: Check Prometheus metrics
+      shell: |
+        sleep 120
+        curl http://localhost:9090/api/v1/query -G -d query='kepler_exporter_build_info' | jq
+        curl http://localhost:9090/api/v1/query -G -d query='kepler_node_info' | jq
+  
+    - name: Run mock-acpi validator
+      shell: |
+        cd {{ validator_dir }}
+        sleep 60
+        hatch run validator -f ./validator.mock-acpi.yaml validate-acpi -d 1m
+
+    # - name: Validate mock-acpi compose
+    #   shell: |
+    #     curl http://localhost:9090/api/v1/query -G -d query='kepler_exporter_build_info' | jq

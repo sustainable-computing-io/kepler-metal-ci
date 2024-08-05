@@ -1,0 +1,72 @@
+name: Equinix Metal Compose
+
+on:
+  push:
+    branches:
+      - add-dk-w
+
+jobs:
+  create-runner:
+    name: "Create Runner"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: metal-runner-action
+        uses: rootfs/metal-runner-action@main
+        with:
+          github_token: ${{ secrets.GH_SELF_HOSTED_RUNNER_TOKEN }}
+          metal_auth_token: ${{ secrets.EQUINIX_API_TOKEN }}
+          metal_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
+          metro: "da"
+          plan: "c3.small.x86"
+          os: "ubuntu_20_04"
+
+  setup-runner:
+    name: "Setup Runner"
+    needs: create-runner
+    runs-on: self-hosted
+    continue-on-error: true
+    outputs:
+      runner-name: ${{ runner.name }}
+
+    steps:
+      - name: Setup runner
+        run: |
+          echo "Runner: ${{ runner.name }}"
+          echo "OS: ${{ runner.os }}"
+          # config ssh
+          sudo ssh-keygen -t rsa -b 4096 -f /root/.ssh/ansible_rsa -N ''
+          sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
+          sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
+          # install ansible
+          # sudo apt update -y
+          # sudo apt install software-properties-common -y
+          # sudo add-apt-repository --yes --update ppa:ansible/ansible
+          sudo apt install -y ansible python3-pip
+          sudo ansible-galaxy collection install community.crypto
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run playbook
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible
+          echo "Launch dev compose"
+          ansible-playbook -vvv -i inventory.yml kepler_dev_compose_playbook.yaml
+
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+
+  cleanup:
+    name: "Cleanup"
+    runs-on: ubuntu-latest
+    needs: [setup-runner]
+
+    steps:
+      - name: delete runner
+        uses: rootfs/metal-delete-action@main
+        with:
+          authToken: ${{ secrets.EQUINIX_API_TOKEN }}
+          projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
+          runnerName: ${{ needs.setup-runner.outputs.runner-name }}
+
