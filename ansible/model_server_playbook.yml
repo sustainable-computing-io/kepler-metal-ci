@@ -104,12 +104,7 @@
                 - /usr/bin/bash
                 - -c
               command:
-                - echo "Waiting for estimator socket";
-                  until [[ -e /tmp/estimator.sock ]]; do
-                  echo " ... waiting for socket";
-                  sleep 1;
-                  done;
-                  echo "starting kepler";
+                -|
                   set -x;
                   /usr/bin/kepler
                   -address="0.0.0.0:8888"
