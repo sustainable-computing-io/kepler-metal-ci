@@ -1,6 +1,7 @@
 name: Equinix k8s Action integration with scalability benchmark suite
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       termination_time:
