@@ -126,8 +126,6 @@
                 - kepler-tmp:/tmp
               network_mode: "host"
               environment:
-                - EXPOSE_ESTIMATED_IDLE_POWER_METRICS=true
-                - ENABLE_PROCESS_METRICS=true
                 - MODEL_SERVER_ENABLE=true
                 - MODEL_SERVER_URL="http://model-server:8100"
                 - MODEL_CONFIG= |
@@ -148,8 +146,6 @@
                 - model-server-mnt:/mnt
               network_mode: "host"
               environment:
-                - EXPOSE_ESTIMATED_IDLE_POWER_METRICS=true
-                - ENABLE_PROCESS_METRICS=true
                 - MODEL_SERVER_ENABLE=true
                 - MODEL_SERVER_URL="http://model-server:8100"
                 - MODEL_CONFIG= |
@@ -214,7 +210,6 @@
           ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
           if [ ${ret} -eq 200 ]; then
             echo "Kepler Active"
-            echo curl http://localhost:8888/metrics
             exit 0
           fi
           sleep 5
@@ -231,12 +226,4 @@
     - name: wait
       ansible.builtin.pause:
         seconds: 200
-
-    - name: metric results
-      ansible.builtin.shell: |
-        curl http://localhost:8888/metrics
-      register: metric_res
-
-    - name: output result
-      ansible.builtin.debug:
-        var: metric_res.stdout_lines
+        
