@@ -64,10 +64,10 @@ jobs:
           ansible-playbook ssh_tunnel_playbook.yml
           echo "Install Prometheus"
           ansible-playbook -i inventory.yml metrics_playbook.yml
-          echo "Install Kepler"
-          ansible-playbook -i inventory.yml kepler_playbook.yml
           echo "Install Model Server"
           ansible-playbook -i inventory.yml model_server_playbook.yml
+          echo "Install Kepler"
+          ansible-playbook -i inventory.yml kepler_playbook.yml
           echo "Create ssh tunnel"
           ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
           echo "Run validation test"
