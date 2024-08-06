@@ -52,6 +52,15 @@
         cd {{ validator_dir }}
         pip3.11 install ..
 
+    - name: Query Prometheus for kepler_node_dram_joules_total metric
+      ansible.builtin.shell: >
+        curl -s 'http://localhost:9090/api/v1/query?query=kepler_node_dram_joules_total{job="vm", mode="dynamic"}'
+      register: prometheus_query_result
+    
+    - name: Debug Prometheus query result
+      ansible.builtin.debug:
+        var: prometheus_query_result.stdout
+
     - name: Run the validator
       shell: |
         cd {{ validator_dir }}
