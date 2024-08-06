@@ -71,8 +71,9 @@ jobs:
           echo "Create ssh tunnel"
           ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
           echo "Run validation test"
-          ansible-playbook kepler_validator.yml
+          ansible-playbook -vvv kepler_validator.yml
           echo "Checkout the report"
+          ls /tmp
           cat /tmp/report-*.md || true
           # create a directory to store the artifacts, the directory is the current date 
           set -x
