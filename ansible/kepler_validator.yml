@@ -31,6 +31,7 @@
       copy:
         dest: "{{ validator_yaml_path }}"
         content: |
+          log_level: info
           remote:
             host: my-vm
             username: root
