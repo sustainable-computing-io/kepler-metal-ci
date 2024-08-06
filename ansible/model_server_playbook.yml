@@ -62,7 +62,8 @@
               --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
               -v /mnt:/mnt -v /tmp:/tmp \
               quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
-              python3.8 -u src/estimate/estimator.py
+              --entrypoint python3.8 \ 
+              -u src/estimate/estimator.py
           ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
           ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
           Type=notify
@@ -92,7 +93,8 @@
               -v /mnt:/mnt \
               -p 8100:8100 \
               quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
-              python3.8 -u src/server/model_server.py
+              --entrypoint python3.8 \ 
+              -u src/server/model_server.py
           ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
           ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
           Type=notify
