@@ -193,7 +193,8 @@ jobs:
           --set kubeProxy.enabled=false \
           --set kubeScheduler.enabled=false \
           --set-json 'prometheus.prometheusSpec.serviceMonitorSelector.matchLabels={"app.kubernetes.io/name":"kepler"}' \
-          -n overhead --create-namespace
+          -n overhead --create-namespace \
+          --wait
 
       - name: Port forward prom
         run: |
