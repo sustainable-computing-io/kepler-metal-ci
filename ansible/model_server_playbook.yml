@@ -25,8 +25,8 @@
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
               --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
               -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc -v /tmp:/tmp \
-              --entrypoint /usr/bin/bash -c quay.io/sustainable_computing_io/kepler:latest \
-              'echo "Waiting for estimator socket"; \
+              --entrypoint /usr/bin/bash quay.io/sustainable_computing_io/kepler:latest \
+              -c 'echo "Waiting for estimator socket"; \
               until [[ -e /tmp/estimator.sock ]]; do \
               echo " ... waiting for socket"; \
               sleep 1; \
