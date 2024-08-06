@@ -82,7 +82,7 @@ jobs:
           mkdir -p docs/validation/${DATE_STR}
           export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
           # copy the report to the directory
-          cp /tmp/report-${KEPLER_TAG}.md docs/validation/${DATE_STR}/
+          mv /tmp/validator-${KEPLER_TAG}/report-${KEPLER_TAG}.md docs/validation/${DATE_STR}/
           cp -r /tmp/validator-${KEPLER_TAG} docs/validation/${DATE_STR}/
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](validation/${DATE_STR}/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}) |" \
             >> docs/kepler-model-validation.md
