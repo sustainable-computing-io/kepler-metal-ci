@@ -139,6 +139,43 @@
       register: kepler_start
       failed_when: kepler_start.rc != 0
 
+    - name: Sleep
+      ansible.builtin.pause:
+        seconds: 100
+        
+    - name: Retrieve Kepler container logs
+      ansible.builtin.shell: |
+        curl http://localhost:8888/metrics
+      register: kepler_metrics
+
+    - name: Output Kepler container logs
+      ansible.builtin.debug:
+        var: kepler_metrics.stdout
+
+    - name: Retrieve logs for Kepler container
+      ansible.builtin.shell: journalctl -u container-kepler.service
+      register: kepler_logs
+    
+    - name: Display Kepler logs
+      ansible.builtin.debug:
+        msg: "{{ kepler_logs.stdout }}"
+    
+    - name: Retrieve logs for Estimator container
+      ansible.builtin.shell: journalctl -u container-estimator.service
+      register: estimator_logs
+    
+    - name: Display Estimator logs
+      ansible.builtin.debug:
+        msg: "{{ estimator_logs.stdout }}"
+    
+    - name: Retrieve logs for Model Server container
+      ansible.builtin.shell: journalctl -u container-model-server.service
+      register: model_server_logs
+    
+    - name: Display Model Server logs
+      ansible.builtin.debug:
+        msg: "{{ model_server_logs.stdout }}"
+
     - name: Dump Kepler metrics
       ansible.builtin.shell: curl -s http://localhost:8888/metrics | grep ^kepler_
 
@@ -213,44 +250,6 @@
       ansible.builtin.dnf:
         name: stress-ng
         state: present
-
-    - name: Sleep
-      ansible.builtin.pause:
-        seconds: 60
-        
-    - name: Retrieve Kepler container logs
-      ansible.builtin.shell: |
-        curl http://localhost:8888/metrics
-      register: kepler_metrics
-
-    - name: Output Kepler container logs
-      ansible.builtin.debug:
-        var: kepler_metrics.stdout
-
-    - name: Retrieve logs for Kepler container
-      ansible.builtin.shell: journalctl -u container-kepler.service
-      register: kepler_logs
-    
-    - name: Display Kepler logs
-      ansible.builtin.debug:
-        msg: "{{ kepler_logs.stdout }}"
-    
-    - name: Retrieve logs for Estimator container
-      ansible.builtin.shell: journalctl -u container-estimator.service
-      register: estimator_logs
-    
-    - name: Display Estimator logs
-      ansible.builtin.debug:
-        msg: "{{ estimator_logs.stdout }}"
-    
-    - name: Retrieve logs for Model Server container
-      ansible.builtin.shell: journalctl -u container-model-server.service
-      register: model_server_logs
-    
-    - name: Display Model Server logs
-      ansible.builtin.debug:
-        msg: "{{ model_server_logs.stdout }}"
-
 
 # - name: Deploy Model Server
 #   hosts: model_server
