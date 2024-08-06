@@ -20,17 +20,17 @@
 ### Host DRAM Size
 | Size |
 |------|
-| 32749856 kB |
+| 32750340 kB |
 ### VM DRAM Size
 | Size |
 |------|
-| 32601196 kB |
+| 32601200 kB |
 
 ## Validation Results
 
-   * Started At: `2024-08-05 20:42:13.943821`
-   * Ended   At: `2024-08-05 20:45:34.517072`
-   * Duration  : `0:03:20.573251`
+   * Started At: `2024-08-05 21:43:07.820110`
+   * Ended   At: `2024-08-05 21:46:28.875391`
+   * Duration  : `0:03:21.055281`
 
 ### Validate - platform - dynamic
 
@@ -38,61 +38,61 @@
   * actual:  `rate( kepler_vm_platform_joules_total{ job="metal", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
 #### Errors
 
-  * MSE: 2384.8738755111667
-  * MAPE: 7333.296356164047
+  * MSE: 2616.5955755739233
+  * MAPE: 25623.422740188722
 ### Validate - package - dynamic
 
   * expected:  `rate( kepler_node_package_joules_total{ job="vm", mode="dynamic", }[20s] ) `
   * actual:  `rate( kepler_vm_package_joules_total{ job="metal", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
 #### Errors
 
-  * MSE: 1377.170841147956
-  * MAPE: 7938.6128143378055
+  * MSE: 1470.164713975971
+  * MAPE: 26297.09755206788
 ### Validate - core - dynamic
 
   * expected:  `rate( kepler_node_core_joules_total{ job="vm", mode="dynamic", }[20s] ) `
   * actual:  `rate( kepler_vm_core_joules_total{ job="metal", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
 #### Errors
 
-  * MSE: 1377.3560429354598
-  * MAPE: 8009.078234553617
+  * MSE: 1470.3118258582629
+  * MAPE: 26296.480910712027
 ### Validate - dram - dynamic
 
   * expected:  `rate( kepler_node_dram_joules_total{ job="vm", mode="dynamic", }[20s] ) `
   * actual:  `rate( kepler_vm_dram_joules_total{ job="metal", vm_id=~".*my-vm", mode="dynamic", }[20s] ) `
 #### Errors
 
-  * MSE: 85.1556245434266
-  * MAPE: 209373.82139030733
+  * MSE: 86.72368048100098
+  * MAPE: inf
 ### Validate - platform - idle
 
   * expected:  `rate( kepler_node_platform_joules_total{ job="vm", mode="idle", }[20s] ) `
   * actual:  `rate( kepler_vm_platform_joules_total{ job="metal", vm_id=~".*my-vm", mode="idle", }[20s] ) `
 #### Errors
 
-  * MSE: 48433.01441756164
-  * MAPE: 26544.277773735987
+  * MSE: 48302.13524283694
+  * MAPE: 19467.36741132134
 ### Validate - package - idle
 
   * expected:  `rate( kepler_node_package_joules_total{ job="vm", mode="idle", }[20s] ) `
   * actual:  `rate( kepler_vm_package_joules_total{ job="metal", vm_id=~".*my-vm", mode="idle", }[20s] ) `
 #### Errors
 
-  * MSE: 4871.388754294847
-  * MAPE: 57948.853611188315
+  * MSE: 4842.42207145389
+  * MAPE: 21130.091065850887
 ### Validate - core - idle
 
   * expected:  `rate( kepler_node_core_joules_total{ job="vm", mode="idle", }[20s] ) `
   * actual:  `rate( kepler_vm_core_joules_total{ job="metal", vm_id=~".*my-vm", mode="idle", }[20s] ) `
 #### Errors
 
-  * MSE: 4873.745655038507
-  * MAPE: 67460.21661493255
+  * MSE: 4845.001250113774
+  * MAPE: 22394.998983669713
 ### Validate - dram - idle
 
   * expected:  `rate( kepler_node_dram_joules_total{ job="vm", mode="idle", }[20s] ) `
   * actual:  `rate( kepler_vm_dram_joules_total{ job="metal", vm_id=~".*my-vm", mode="idle", }[20s] ) `
 #### Errors
 
-  * MSE: 2217.7906760183932
-  * MAPE: 97504.99621318675
+  * MSE: 2217.4223765822535
+  * MAPE: 89747.21736600494
