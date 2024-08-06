@@ -1,0 +1,283 @@
+- name: Deploy Model Server
+  hosts: model_server
+  become: yes
+  tasks:
+    - name: Install podman
+      ansible.builtin.dnf:
+        name: podman
+        state: present
+
+    - name: Create Kepler systemd unit file
+      copy:
+        content: |
+          [Unit]
+          Description=Podman container-kepler.service
+          Documentation=man:podman-generate-systemd(1)
+          Wants=network-online.target
+          After=network-online.target
+          RequiresMountsFor=%t/containers
+    
+          [Service]
+          Environment=PODMAN_SYSTEMD_UNIT=%n
+          Restart=always
+          TimeoutStopSec=70
+          ExecStartPre=/bin/rm -f %t/%n.ctr-id
+          ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
+              -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc -v /tmp:/tmp \
+              --entrypoint /usr/bin/bash quay.io/sustainable_computing_io/kepler:latest \
+              -c 'echo "Waiting for estimator socket"; \
+              until [[ -e /tmp/estimator.sock ]]; do \
+              echo " ... waiting for socket"; \
+              sleep 1; \
+              done; \
+              echo "starting kepler"; \
+              set -x; \
+              /usr/bin/kepler -address="0.0.0.0:8888" -v="8"'
+          ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+          ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+          Type=notify
+          NotifyAccess=all
+    
+          [Install]
+          WantedBy=multi-user.target default.target
+        dest: /etc/systemd/system/container-kepler.service
+
+    - name: Create Estimator systemd unit file
+      copy:
+        content: |
+          [Unit]
+          Description=Podman container-estimator.service
+          Documentation=man:podman-generate-systemd(1)
+          Wants=network-online.target
+          After=network-online.target
+          RequiresMountsFor=%t/containers
+    
+          [Service]
+          Environment=PODMAN_SYSTEMD_UNIT=%n
+          Restart=always
+          TimeoutStopSec=70
+          ExecStartPre=/bin/rm -f %t/%n.ctr-id
+          ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name estimator \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
+              -v /mnt:/mnt -v /tmp:/tmp \
+              --entrypoint python3.8 quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
+              -u src/estimate/estimator.py
+          ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+          ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+          Type=notify
+          NotifyAccess=all
+    
+          [Install]
+          WantedBy=multi-user.target default.target
+        dest: /etc/systemd/system/container-estimator.service
+
+    - name: Create Model Server systemd unit file
+      copy:
+        content: |
+          [Unit]
+          Description=Podman container-model-server.service
+          Documentation=man:podman-generate-systemd(1)
+          Wants=network-online.target
+          After=network-online.target
+          RequiresMountsFor=%t/containers
+    
+          [Service]
+          Environment=PODMAN_SYSTEMD_UNIT=%n
+          Restart=always
+          TimeoutStopSec=70
+          ExecStartPre=/bin/rm -f %t/%n.ctr-id
+          ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name model-server \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
+              -v /mnt:/mnt \
+              -p 8100:8100 \
+              --entrypoint python3.8 quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
+              -u src/server/model_server.py
+          ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+          ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+          Type=notify
+          NotifyAccess=all
+    
+          [Install]
+          WantedBy=multi-user.target default.target
+        dest: /etc/systemd/system/container-model-server.service
+    
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Enable and start Estimator service
+      ansible.builtin.systemd:
+        name: container-estimator
+        enabled: yes
+        state: started
+
+    - name: Enable and start Model Server service
+      ansible.builtin.systemd:
+        name: container-model-server
+        enabled: yes
+        state: started
+
+    - name: Enable and start Kepler service
+      ansible.builtin.systemd:
+        name: container-kepler
+        enabled: yes
+        state: started
+
+    - name: Check if Model Server is being used
+      ansible.builtin.shell: |
+        for i in {1..10}; do
+          echo "Checking Model Server in use. Attempt $i"
+          if journalctl -u container-estimator.service | grep "Using the EstimatorSidecar"; then
+            echo "Model Server Estimator Active"
+            exit 0
+          fi
+          sleep 10
+        done
+        echo "Model Server Estimator Inactive"
+        exit 1
+      register: model_server_start
+      failed_when: model_server_start.rc != 0
+
+    - name: Check if Set Models are being used
+      ansible.builtin.shell: |
+        if [ "{{ node_total_estimator }}" = "true" ]; then
+          found=false
+          for i in {1..10}; do
+            echo "Checking: {{ node_total_init_url }}"
+            if journalctl -u container-kepler.service | grep {{ node_total_init_url }}; then
+              found=true
+              break
+            fi
+            sleep 10
+          done
+          if [ "$found" = "false" ]; then
+            echo "Failed to Find Node Total Estimator"
+            exit 1
+          fi
+        fi
+
+        if [ "{{ node_components_estimator }}" = "true" ]; then
+          found=false
+          for i in {1..10}; do
+            echo "Checking {{ node_components_init_url }}"
+            if journalctl -u container-kepler.service | grep {{ node_components_init_url }}; then
+              found=true
+              break
+            fi
+            sleep 10
+          done 
+          if [ "$found" = "false" ]; then
+            echo "Failed to Find Node Components Estimator"
+            exit 1
+          fi
+        fi
+        echo "All Models are being used as expected"
+        exit 0
+      register: model_use
+      failed_when: model_use.rc != 0    
+
+    - name: Wait for Kepler to start (retry logic)
+      ansible.builtin.shell: |
+        for i in {1..5}; do
+          echo "Attempt $i"
+          ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
+          if [ ${ret} -eq 200 ]; then
+            exit 0
+          fi
+          sleep 5
+        done
+        echo "Kepler did not start in time"
+        exit 1
+      register: kepler_start
+      failed_when: kepler_start.rc != 0
+
+    - name: Validate Raw Kepler Metric
+      ansible.builtin.shell: |
+        for i in {1..10}; do
+          echo "Check kepler_node_package_joules_total active"
+          if curl http://localhost:8888/metrics | grep kepler_node_package_joules_total; then
+            echo "Metric Validated"
+            exit 0
+          fi
+          sleep 10
+        done
+        echo "Metric not Validated"
+        exit 1
+      register: kepler_metric
+      failed_when: kepler_metric.rc != 0
+        
+    - name: Dump Kepler metrics
+      ansible.builtin.shell: curl -s http://localhost:8888/metrics | grep ^kepler_
+
+    - name: Install OpenMetrics
+      ansible.builtin.yum:
+        name: pcp-pmda-openmetrics
+        state: present
+
+    - name: Configure OpenMetrics for Kepler
+      ansible.builtin.shell: |
+        cd /var/lib/pcp/pmdas/openmetrics/
+        echo "http://localhost:8888/metrics" > config.d/kepler.url
+        ./Install
+
+    - name: Validate Kepler metrics
+      ansible.builtin.shell: |
+        pminfo openmetrics | grep kepler
+        pmrep -s 10 openmetrics.kepler.kepler_node_package_joules_total
+
+    - name: Create Kepler pmlogger config directory
+      ansible.builtin.file:
+        path: /etc/pcp/pmlogconf/kepler
+        state: directory
+
+    - name: Create Kepler pmlogger config
+      ansible.builtin.copy:
+        dest: /etc/pcp/pmlogconf/kepler/kepler
+        content: |
+          #pmlogconf-setup 2.0
+          ident  metrics used by the kepler node
+          probe  openmetrics.kepler.kepler_node_package_joules_total
+            openmetrics.kepler.kepler_node_package_joules_total
+            openmetrics.kepler.kepler_node_dram_joules_total
+            openmetrics.kepler.kepler_node_core_joules_total
+
+    - name: Configure pmlogger with Kepler
+      ansible.builtin.command: pmlogconf -r -g kepler /etc/pcp/pmlogconf/kepler/kepler
+
+    - name: Restart pmlogger
+      ansible.builtin.systemd:
+        name: pmlogger
+        state: restarted
+
+    - name: Restart pmproxy
+      ansible.builtin.systemd:
+        name: pmproxy
+        state: restarted
+
+    - name: Wait for pmseries
+      ansible.builtin.pause:
+        seconds: 10
+
+    - name: Check pmseries for Kepler metrics
+      ansible.builtin.shell: pmseries openmetrics.kepler.kepler_node_package_joules_total
+      register: pmseries_output
+
+    - name: Debug pmseries output
+      ansible.builtin.debug:
+        var: pmseries_output.stdout
+
+    - name: Check pmproxy metrics query
+      ansible.builtin.uri:
+        url: "http://localhost:44322/metrics?names=openmetrics.kepler.kepler_node_package_joules_total"
+        method: GET
+      register: pmproxy_output
+
+    - name: Debug pmproxy output
+      ansible.builtin.debug:
+        var: pmproxy_output
+
+    - name: Install stress-ng
+      ansible.builtin.dnf:
+        name: stress-ng
+        state: present
