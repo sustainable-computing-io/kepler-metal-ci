@@ -308,9 +308,9 @@
       ansible.builtin.debug:
         var: kepler_start.stdout_lines
 
-    - name: wait
-      ansible.builtin.pause:
-        seconds: 500
+    # - name: wait
+    #   ansible.builtin.pause:
+    #     seconds: 500
 
     - name: metric results
       ansible.builtin.shell: |
