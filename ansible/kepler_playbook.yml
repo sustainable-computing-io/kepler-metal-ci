@@ -133,6 +133,3 @@
       ansible.builtin.dnf:
         name: stress-ng
         state: present
-    - name: sleep
-      ansible.builtin.pause:
-        seconds: 300
