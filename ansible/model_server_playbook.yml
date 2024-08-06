@@ -25,7 +25,7 @@
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
               --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
               -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc -v /tmp:/tmp \
-              quay.io/sustainable_computing_io/kepler:latest /usr/bin/bash -c \
+              --entrypoint /usr/bin/bash -c quay.io/sustainable_computing_io/kepler:latest \
               'echo "Waiting for estimator socket"; \
               until [[ -e /tmp/estimator.sock ]]; do \
               echo " ... waiting for socket"; \
@@ -61,8 +61,7 @@
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name estimator \
               --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
               -v /mnt:/mnt -v /tmp:/tmp \
-              quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
-              --entrypoint python3.8 \ 
+              --entrypoint python3.8 quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
               -u src/estimate/estimator.py
           ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
           ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
@@ -92,8 +91,7 @@
               --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
               -v /mnt:/mnt \
               -p 8100:8100 \
-              quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
-              --entrypoint python3.8 \ 
+              --entrypoint python3.8 quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
               -u src/server/model_server.py
           ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
           ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
@@ -143,7 +141,7 @@
 
     - name: Sleep
       ansible.builtin.pause:
-        seconds: 100
+        seconds: 60
         
     - name: Retrieve Kepler container logs
       ansible.builtin.shell: |
