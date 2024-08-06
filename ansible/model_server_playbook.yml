@@ -106,21 +106,21 @@
       ansible.builtin.systemd:
         daemon_reload: yes
 
-    - name: Enable and start Kepler service
-      ansible.builtin.systemd:
-        name: container-kepler
-        enabled: yes
-        state: started
-
     - name: Enable and start Estimator service
       ansible.builtin.systemd:
         name: container-estimator
         enabled: yes
         state: started
-    
+
     - name: Enable and start Model Server service
       ansible.builtin.systemd:
         name: container-model-server
+        enabled: yes
+        state: started
+
+    - name: Enable and start Kepler service
+      ansible.builtin.systemd:
+        name: container-kepler
         enabled: yes
         state: started
 
@@ -216,7 +216,7 @@
 
     - name: Sleep
       ansible.builtin.pause:
-        seconds: 350
+        seconds: 60
         
     - name: Retrieve Kepler container logs
       ansible.builtin.shell: |
