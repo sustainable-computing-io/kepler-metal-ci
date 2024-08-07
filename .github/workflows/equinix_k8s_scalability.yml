@@ -216,7 +216,7 @@ jobs:
           cd ~/scalability-benchmark-suite
           KEPLER_PROM_SERVER=http://localhost:9091 KEPLER_PROM_LABEL_MATCHER='pod=~"prometheus-kepler.*"' \
           MULTIPLE_KEPLER_PROM_INSTANCES=true KEPLER_LABEL_MATCHER='pod=~"kepler.*"' INCREMENT_INTERVAL=300 \
-          RESULTS_DIR=./_output/results/ ./script.sh run_benchmark
+          RESULTS_DIR=./_output/results/ bash -x ./script.sh run_benchmark
 
       - name: Compress result directory
         run: |
