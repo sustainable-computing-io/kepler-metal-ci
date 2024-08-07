@@ -128,7 +128,7 @@
       ansible.builtin.shell: |
         for i in {1..10}; do
           echo "Checking Model Server in use. Attempt $i"
-          if journalctl -u container-estimator.service | grep "Using the EstimatorSidecar"; then
+          if journalctl -u container-kepler.service | grep "Using the EstimatorSidecar"; then
             echo "Model Server Estimator Active"
             exit 0
           fi
@@ -145,7 +145,7 @@
           found=false
           for i in {1..10}; do
             echo "Checking: {{ node_total_init_url }}"
-            if journalctl -u container-kepler.service | grep {{ node_total_init_url }}; then
+            if journalctl -u container-kepler.service | grep "{{ node_total_init_url }}"; then
               found=true
               break
             fi
@@ -161,7 +161,7 @@
           found=false
           for i in {1..10}; do
             echo "Checking {{ node_components_init_url }}"
-            if journalctl -u container-kepler.service | grep {{ node_components_init_url }}; then
+            if journalctl -u container-kepler.service | grep "{{ node_components_init_url }}"; then
               found=true
               break
             fi
@@ -196,7 +196,7 @@
       ansible.builtin.shell: |
         for i in {1..10}; do
           echo "Check kepler_node_package_joules_total active"
-          if curl http://localhost:8888/metrics | grep kepler_node_package_joules_total; then
+          if curl http://localhost:8888/metrics | grep "kepler_node_package_joules_total"; then
             echo "Metric Validated"
             exit 0
           fi
