@@ -1,0 +1,29 @@
+---
+- name: Append Daily Validations Report
+  hosts: localhost
+  become: yes
+  vars:
+    validation_report_path: "docs/daily-validations/extended-validation-report.md"
+    error_metrics:
+      platform_dynamic: 0
+      package_dynamic: 0
+      core_dynamic: 0
+      dram_dynamic: 0
+      platform_idle: 0
+      package_idle: 0
+      core_idle: 0
+      dram_idle: 0
+
+  tasks:
+    - name: Check Validations file
+      ansible.builtin.stat:
+        path: "{{ validation_report_path }}"
+      register: validations_file
+      failed_when: not validations_file.stat.exists
+
+    - name: Append Error Metric Row
+      ansible.builtin.blockinfile:
+        path: "{{ validation_report_path }}"
+        block: |
+          | {{ platform_dynamic }} | {{ package_dynamic }} | {{ core_dynamic }} | {{ dram_dynamic }} | \
+          {{ platform_idle }} | {{ package_idle }} | {{ core_idle }} | {{ dram_idle }} |
