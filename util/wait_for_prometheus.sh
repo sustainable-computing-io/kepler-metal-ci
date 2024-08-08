@@ -1,10 +1,10 @@
 #!/bin/bash
 # Prometheus server URL
 set -x
-PROMETHEUS_URL="http://localhost:9090/api/v1/query"
+export PROMETHEUS_URL=${:-"http://localhost:9090/api/v1/query"}
 
 # Prometheus query
-QUERY="kepler_node_package_joules_total"
+export QUERY=${QUERY:-"kepler_node_package_joules_total"}
 
 # Function to query Prometheus and check for values
 query_prometheus() {
