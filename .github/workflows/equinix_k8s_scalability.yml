@@ -220,7 +220,7 @@ jobs:
           cd ~/scalability-benchmark-suite
           KEPLER_PROM_SERVER=http://localhost:9091 KEPLER_PROM_LABEL_MATCHER='pod=~"prometheus-kepler.*"' \
           MULTIPLE_KEPLER_PROM_INSTANCES=true KEPLER_LABEL_MATCHER='pod=~"kepler.*"' INCREMENT_INTERVAL=300 \
-          RESULTS_DIR=./_output/results/ bash -x ./script.sh run_benchmark
+          RESULTS_DIR=./_output/results/ bash ./script.sh run_benchmark
 
       - name: Compress result directory
         run: |
@@ -230,5 +230,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: benchmark-results-${{ github.run_id }}
-          path: ~/results.tar.g
+          path: ~/results.tar.gz
           retention-days: 30  
