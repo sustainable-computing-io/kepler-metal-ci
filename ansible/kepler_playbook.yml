@@ -1,5 +1,5 @@
 - name: Setup Kepler and OpenMetrics
-  hosts: localhost
+  hosts: "{{ target_host | default('all') }}"
   become: yes
   tasks:
     - name: Install podman
