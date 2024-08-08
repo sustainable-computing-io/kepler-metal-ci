@@ -209,7 +209,11 @@ jobs:
 
       - name: Wait for Kepler metrics kepler_node_package_joules_total is not empty through Prometheus query
         run: |
-          ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh
+          PROMETHEUS_URL=http://localhost:9091/api/v1/query ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh
+
+      - name: Wait for overhead metrics container_cpu_usage_seconds_total is not empty through Prometheus query
+        run: |
+          QUERY=container_cpu_usage_seconds_total ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh
       
       - name: Run Benchmark
         run: |
