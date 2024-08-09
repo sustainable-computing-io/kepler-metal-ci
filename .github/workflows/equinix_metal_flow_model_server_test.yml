@@ -2,8 +2,6 @@ name: Equinix Metal with Model Server Action Test
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 18 * * *'
 
 permissions:
   pull-requests: write
@@ -67,7 +65,7 @@ jobs:
           echo "Install Prometheus"
           ansible-playbook -i inventory.yml metrics_playbook.yml
           echo "Install Kepler"
-          ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
+          ansible-playbook -i inventory.yml -vvv kepler_playbook.yml -e "target_host=localhost"
           echo "Install Model Server"
           ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
           echo "Create ssh tunnel"
@@ -90,11 +88,6 @@ jobs:
           cp -r /tmp/validator-${KEPLER_TAG} docs/validation/${DATE_STR}/$VAL_DIRNAME
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](validation/${DATE_STR}/$VAL_REPORT_NAME) | [Artifacts](validation/${DATE_STR}/$VAL_DIRNAME) |" \
             >> docs/kepler-model-validation.md
-          # git config user.email "dependabot[bot]@users.noreply.github.com"
-          # git config user.name "dependabot[bot]"
-          # git add docs/*
-          # git commit -m "Add validation report for ${DATE_STR}" -s
-          # git push
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
