@@ -1,4 +1,4 @@
-name: Equinix Metal with Model Server Action
+name: Equinix Metal with Model Server Action Test
 
 on:
   workflow_dispatch:
