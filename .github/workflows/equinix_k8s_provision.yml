@@ -140,6 +140,7 @@ jobs:
 
       - name: Allow prometheus to scrape kepler metrics in kepler namespace
         run: |
+          kubectl create namespace kepler
           curl -O https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/manifests/k8s/config/rbac/prometheus_role.yaml
           sed -i 's/namespace: system/namespace: kepler/' prometheus_role.yaml
           kubectl apply -f prometheus_role.yaml
