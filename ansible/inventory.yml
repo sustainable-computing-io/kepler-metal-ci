@@ -47,3 +47,12 @@ all:
         remote_port: 8888
         ssh_key_path: "/tmp/vm_ssh_key"
         systemd_service_path: "/etc/systemd/system/{{ ssh_tunnel_service_name }}.service"
+    model_server:
+      hosts:
+        my-vm:
+          ansible_ssh_private_key_file: /tmp/vm_ssh_key
+      vars:
+        node_total_estimator: "true"
+        node_components_estimator: "true"
+        node_total_init_url: "https://raw.githubusercontent.com/sustainable-computing-io/kepler-model-db/main/models/v0.7/specpower/acpi/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0.zip"
+        node_components_init_url: "https://raw.githubusercontent.com/sustainable-computing-io/kepler-model-db/main/models/v0.7/ec2/intel_rapl/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0.zip"

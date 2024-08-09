@@ -1,11 +1,113 @@
-name: Equinix Metal Action with Model Server Test
+name: Equinix Metal with Model Server Action Test
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 18 * * *'
+
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write
+  packages: write
 
 jobs:
-  placeholder:
+  Create-runner:
+    name: "Create Runner"
     runs-on: ubuntu-latest
+
     steps:
-      - name: placeholder step
-        run: echo "placeholder"
+      - name: metal-runner-action
+        uses: rootfs/metal-runner-action@main
+        with:
+          github_token: ${{ secrets.GH_SELF_HOSTED_RUNNER_TOKEN }}
+          metal_auth_token: ${{ secrets.EQUINIX_API_TOKEN }}
+          metal_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
+          metro: "da"
+          plan: "c3.small.x86"
+          os: "rhel_9"
+
+  Install:
+    name: "Install"
+    needs: Create-runner
+    runs-on: self-hosted
+    continue-on-error: true
+    outputs:
+      runner-name: ${{ runner.name }}
+
+    steps:
+      - name: Setup runner
+        run: |
+          echo "This is runner: ${{ runner.name }}"
+          echo "Running on ${{ runner.arch }} ${{ runner.os }}"
+          # config ssh
+          sudo ssh-keygen -t rsa -b 4096 -f /root/.ssh/ansible_rsa -N ''
+          sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
+          sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
+          # install ansible
+          sudo dnf -y install ansible-core python3-pip
+          sudo dnf install -y rhel-system-roles
+          sudo ansible-galaxy collection install prometheus.prometheus
+          sudo ansible-galaxy collection install community.crypto
+          sudo ansible-galaxy collection install community.libvirt
+          sudo ansible-config init --disabled | sed "s/;host_key_checking=True/host_key_checking=False/g" | sed "s/;private_key_file=/private_key_file=~\/.ssh\/ansible_rsa/g" | sed 's|;roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles" }}|roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles;/root/.ansible/collections/ansible_collections/community/libvirt/roles" }}|' > /etc/ansible/ansible.cfg
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run playbook
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible
+          cp roles/kvm_vm/files/meta-data /tmp/meta-data
+          cp cloud-init-script.sh /tmp/cloud-init-script.sh
+          echo "Create VM"
+          ansible-playbook -i inventory.yml kvm_playbook.yml
+          echo "Install SSH tunnel"
+          ansible-playbook ssh_tunnel_playbook.yml
+          echo "Install Prometheus"
+          ansible-playbook -i inventory.yml metrics_playbook.yml
+          echo "Install Kepler"
+          ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
+          echo "Install Model Server"
+          ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
+          echo "Create ssh tunnel"
+          ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
+          echo "Run validation test"
+          ansible-playbook -vvv kepler_validator.yml
+          echo "Checkout the report"
+          ls /tmp
+          cat /tmp/report-*.md || true
+          # create a directory to store the artifacts, the directory is the current date 
+          set -x
+          export DATE_STR=$(date +%Y-%m-%d)
+          cd ${GITHUB_WORKSPACE}
+          mkdir -p docs/validation/${DATE_STR}
+          export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
+          # copy the report to the directory
+          VAL_REPORT_NAME=report-${KEPLER_TAG}-extended.md
+          VAL_DIRNAME=validator-${KEPLER_TAG}-extended
+          mv /tmp/validator-${KEPLER_TAG}/report-${KEPLER_TAG}.md docs/validation/${DATE_STR}/$VAL_REPORT_NAME
+          cp -r /tmp/validator-${KEPLER_TAG} docs/validation/${DATE_STR}/$VAL_DIRNAME
+          echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](validation/${DATE_STR}/$VAL_REPORT_NAME) | [Artifacts](validation/${DATE_STR}/$VAL_DIRNAME) |" \
+            >> docs/kepler-model-validation.md
+          # git config user.email "dependabot[bot]@users.noreply.github.com"
+          # git config user.name "dependabot[bot]"
+          # git add docs/*
+          # git commit -m "Add validation report for ${DATE_STR}" -s
+          # git push
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+
+  Cleanup:
+    name: "Cleanup"
+    runs-on: ubuntu-latest
+    needs: [Install]
+
+    steps:
+      - name: delete runner
+        uses: rootfs/metal-delete-action@main
+        with:
+          authToken: ${{ secrets.EQUINIX_API_TOKEN }}
+          projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
+          runnerName: ${{ needs.Install.outputs.runner-name }}
