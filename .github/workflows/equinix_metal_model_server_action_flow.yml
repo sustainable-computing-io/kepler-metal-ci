@@ -3,7 +3,7 @@ name: Equinix Metal with Model Server Action
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 18 * * *'
+    - cron: '0 23 * * *'
 
 permissions:
   pull-requests: write
