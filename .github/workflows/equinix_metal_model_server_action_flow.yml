@@ -84,11 +84,11 @@ jobs:
           mkdir -p docs/validation/${DATE_STR}
           export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
           # copy the report to the directory
-          VAL_REPORT_NAME=report-${KEPLER_TAG}-extended.md
-          VAL_DIRNAME=validator-${KEPLER_TAG}-extended
+          VAL_REPORT_NAME=report-${KEPLER_TAG}-model-server.md
+          VAL_DIRNAME=validator-${KEPLER_TAG}-model-server
           mv /tmp/validator-${KEPLER_TAG}/report-${KEPLER_TAG}.md docs/validation/${DATE_STR}/$VAL_REPORT_NAME
           cp -r /tmp/validator-${KEPLER_TAG} docs/validation/${DATE_STR}/$VAL_DIRNAME
-          echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](validation/${DATE_STR}/$VAL_REPORT_NAME) | [Artifacts](validation/${DATE_STR}/$VAL_DIRNAME) |" \
+          echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-model-server " | [Report](validation/${DATE_STR}/$VAL_REPORT_NAME) | [Artifacts](validation/${DATE_STR}/$VAL_DIRNAME) |" \
             >> docs/kepler-model-validation.md
           git config user.email "dependabot[bot]@users.noreply.github.com"
           git config user.name "dependabot[bot]"
