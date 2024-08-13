@@ -1,0 +1,80 @@
+- name: Run Model Trainer
+  hosts: localhost
+  become: yes
+  vars:
+    stress_iterations: 10
+    model_server_repo: "https://github.com/sustainable-computing-io/kepler-model-server.git"
+    kepler_repo: "https://github.com/sustainable-computing-io/kepler.git"
+    model_server_path: "/opt/kepler-model-server"
+    kepler_path: "/opt/kepler"
+    stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stressor.sh"
+    model_train_path: "/opt/kepler-model-server/cmd"
+    model_export_path: "/tmp/trained_models"
+  tasks:
+    - name: yum install stress-ng, git and python3.11
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - python3.11
+        - python3.11-pip
+        - stress-ng
+
+    # - name: Check Model Server Exists
+    #   ansible.builtin.stat:
+    #     path: "{{ model_server_path }}"
+    #   register: repo_directory
+
+    - name: Clone Model Server
+      ansible.builtin.git:
+        repo: "{{ model_server_repo }}"
+        dest: "{{ model_server_path }}"
+        version: main
+        force: yes
+
+    - name: Clone Kepler
+      ansible.builtin.git:
+        repo: "{{ kepler_repo }}"
+        dest: "{{ kepler_path }}"
+        version: main
+        force: yes
+
+    - name: Define Training Metric Vars
+      ansible.builtin.shell: |
+        BENCHMARK=Equinix_Models
+        PROM_URL="http://localhost:9090"
+        timestamp=$(date +%s)
+        COLLECT_ID="{{ BENCHMARK }}_{{ timestamp }}"
+    
+    - name: Run Stress-ng schedule
+      ansible.builtin.shell: |
+        chmod +x {{ stress_test_script_path }}
+        START_TIME=$(date +%Y-%m-%dT%H:%M:%SZ)
+        # train with 10 stress iterations of data
+        for i in {1.."{{ stress_iterations }}"}; do
+          echo "Iteration: $i"
+          {{ stress_test_script_path }}
+        done 
+        END_TIME=$(date +%Y-%m-%dT%H:%M:%SZ)
+
+    - name: Collect Metrics
+      ansible.builtin.shell: |
+        DATAPATH=/path/to/workspace python {{ model_train_path }}/main.py query \ 
+        --benchmark $BENCHMARK --server $PROM_URL \ 
+        --output kepler_query --start-time $START_TIME \
+        --end-time $END_TIME --id $COLLECT_ID
+
+    - name: Train Models
+      ansible.builtin.shell: |
+        PIPELINE_NAME="Equinix_Pipeline"
+        DATAPATH=/path/to/workspace MODEL_PATH=/path/to/workspace python {{ model_train_path }}/main.py train \ 
+        --pipeline-name $PIPELINE_NAME --input kepler_query \ 
+        --id $COLLECT_ID
+
+    - name: Export Models
+      ansible.builtin.shell: |
+        EXPORT_PATH="{{ model_export_path }}"
+        PUBLISHER="Kaiyi"
+        
+    # upload these exported models as artifacts
