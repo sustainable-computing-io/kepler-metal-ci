@@ -1,15 +1,15 @@
 - name: Run Model Trainer
-  hosts: localhost
+  hosts: model_trainer
   become: yes
-  vars:
-    stress_iterations: 10
-    model_server_repo: "https://github.com/sustainable-computing-io/kepler-model-server.git"
-    kepler_repo: "https://github.com/sustainable-computing-io/kepler.git"
-    model_server_path: "/opt/kepler-model-server"
-    kepler_path: "/opt/kepler"
-    stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stressor.sh"
-    model_train_path: "/opt/kepler-model-server/cmd"
-    model_export_path: "/tmp/trained_models"
+  # vars:
+  #   stress_iterations: 10
+  #   model_server_repo: "https://github.com/sustainable-computing-io/kepler-model-server.git"
+  #   kepler_repo: "https://github.com/sustainable-computing-io/kepler.git"
+  #   model_server_path: "/opt/kepler-model-server"
+  #   kepler_path: "/opt/kepler"
+  #   stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stressor.sh"
+  #   model_train_path: "/opt/kepler-model-server/cmd"
+  #   model_export_path: "/tmp/trained_models"
   tasks:
     - name: yum install stress-ng, git and python3.11
       yum:
@@ -76,5 +76,5 @@
       ansible.builtin.shell: |
         EXPORT_PATH="{{ model_export_path }}"
         PUBLISHER="Kaiyi"
-        
+
     # upload these exported models as artifacts
