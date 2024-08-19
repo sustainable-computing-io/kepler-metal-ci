@@ -139,8 +139,11 @@
         name: container-kepler
         enabled: yes
         state: started
-
     
+    - name: sleep
+      ansible.builtin.pause:
+        seconds: 120
+  
     - name: Get logs from container-kepler.service using journalctl
       ansible.builtin.command:
         cmd: journalctl -u container-kepler.service
@@ -157,8 +160,7 @@
 
     - name: Display logs in readable format
       ansible.builtin.debug:
-        msg: "{{ elogs_output.stdout_lines }}" 
-        
+        msg: "{{ elogs_output.stdout_lines }}"
 
     - name: Check if Model Server is being used
       ansible.builtin.shell: |
