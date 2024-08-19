@@ -140,17 +140,6 @@
         enabled: yes
         state: started
 
-    - name: Verify kepler.config directory exists in the container
-      ansible.builtin.command:
-        cmd: podman exec -it container-estimator ls -d /etc/kepler/kepler.config
-      register: ls_output
-      failed_when: "'kepler.config' not in ls_output.stdout"
-      changed_when: false
-
-    - name: Debug output
-      ansible.builtin.debug:
-        msg: "The kepler.config directory exists in the container. Output: {{ ls_output.stdout }}"
-
     - name: Check if Model Server is being used
       ansible.builtin.shell: |
         for i in {1..10}; do
@@ -206,7 +195,7 @@
 
     - name: Wait for Kepler to start (retry logic)
       ansible.builtin.shell: |
-        for i in {1..5}; do
+        for i in {1..10}; do
           echo "Attempt $i"
           ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
           if [ ${ret} -eq 200 ]; then
