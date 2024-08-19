@@ -94,11 +94,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Start python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-
       - name: Update model validation chart
         run: |
           export DATE_STR=$(date +%Y-%m-%d)
