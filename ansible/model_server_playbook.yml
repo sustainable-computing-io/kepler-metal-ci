@@ -192,6 +192,24 @@
       register: kepler_start
       failed_when: kepler_start.rc != 0
 
+    - name: Get logs from container-kepler.service using journalctl
+      ansible.builtin.command:
+        cmd: journalctl -u container-kepler.service
+      register: logs_output
+
+    - name: Display logs in readable format
+      ansible.builtin.debug:
+        msg: "{{ logs_output.stdout_lines }}"   
+
+    - name: Get logs from container-estimator.service using journalctl
+      ansible.builtin.command:
+        cmd: journalctl -u container-estimator.service
+      register: elogs_output
+
+    - name: Display logs in readable format
+      ansible.builtin.debug:
+        msg: "{{ elogs_output.stdout_lines }}"   
+
     - name: Validate Raw Kepler Metric
       ansible.builtin.shell: |
         for i in {1..10}; do
