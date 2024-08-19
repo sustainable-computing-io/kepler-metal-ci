@@ -55,4 +55,4 @@ all:
         node_total_estimator: "true"
         node_components_estimator: "true"
         node_total_init_url: "https://raw.githubusercontent.com/sustainable-computing-io/kepler-model-db/main/models/v0.7/specpower/acpi/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0.zip"
-        node_components_init_url: "https://raw.githubusercontent.com/sustainable-computing-io/kepler-model-db/main/models/v0.7/ec2/intel_rapl/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0.zip"
+        node_components_init_url: "https://raw.githubusercontent.com/sustainable-computing-io/kepler-model-db/revertec2/models/v0.7/ec2/intel_rapl/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0.zip"
