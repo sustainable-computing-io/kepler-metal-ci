@@ -1,11 +1,27 @@
 - name: Deploy Model Server
   hosts: model_server
   become: yes
+  vars:
+    model_config: |
+      NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
+      NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
+      NODE_TOTAL_INIT_URL={{ node_total_init_url }}
+      NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}
   tasks:
     - name: Install podman
       ansible.builtin.dnf:
         name: podman
         state: present
+
+    - name: Create kepler.config
+      ansible.builtin.file:
+        path: /mnt/kepler-config/kepler.config
+        state: directory
+
+    - name: Create MODEL_CONFIG
+      ansible.builtin.copy:
+        dest: /mnt/kepler-config/kepler.config/MODEL_CONFIG
+        content: "{{ model_config }}"
 
     - name: Create Kepler systemd unit file
       copy:
@@ -23,8 +39,8 @@
           TimeoutStopSec=70
           ExecStartPre=/bin/rm -f %t/%n.ctr-id
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
-              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
-              -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc -v /tmp:/tmp \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" \
+              -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc -v /tmp:/tmp -v /mnt/kepler-config:/etc/kepler \
               --entrypoint /usr/bin/bash quay.io/sustainable_computing_io/kepler:latest \
               -c 'echo "Waiting for estimator socket"; \
               until [[ -e /tmp/estimator.sock ]]; do \
@@ -59,8 +75,8 @@
           TimeoutStopSec=70
           ExecStartPre=/bin/rm -f %t/%n.ctr-id
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name estimator \
-              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
-              -v /mnt:/mnt -v /tmp:/tmp \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" \
+              -v /mnt:/mnt -v /tmp:/tmp -v /mnt/kepler-config:/etc/kepler \
               --entrypoint python3.8 quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
               -u src/estimate/estimator.py
           ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
@@ -88,8 +104,8 @@
           TimeoutStopSec=70
           ExecStartPre=/bin/rm -f %t/%n.ctr-id
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name model-server \
-              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" -e MODEL_CONFIG="NODE_TOTAL_ESTIMATOR={{ node_total_estimator }} NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }} NODE_TOTAL_INIT_URL={{ node_total_init_url }} NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}" \
-              -v /mnt:/mnt \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" \
+              -v /mnt:/mnt -v /mnt/kepler-config:/etc/kepler \
               -p 8100:8100 \
               --entrypoint python3.8 quay.io/sustainable_computing_io/kepler_model_server:v0.7.7 \
               -u src/server/model_server.py
@@ -123,6 +139,17 @@
         name: container-kepler
         enabled: yes
         state: started
+
+    - name: Verify kepler.config directory exists in the container
+      ansible.builtin.command:
+        cmd: podman exec -it container-estimator ls -d /etc/kepler/kepler.config
+      register: ls_output
+      failed_when: "'kepler.config' not in ls_output.stdout"
+      changed_when: false
+
+    - name: Debug output
+      ansible.builtin.debug:
+        msg: "The kepler.config directory exists in the container. Output: {{ ls_output.stdout }}"
 
     - name: Check if Model Server is being used
       ansible.builtin.shell: |
