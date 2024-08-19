@@ -22,23 +22,23 @@
 | Intel(R) Xeon(R) E-2278G CPU @ 3.40GHz | 16 | 16 | 1 | `fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves arat vnmi umip md_clear flush_l1d arch_capabilities` |
 ## Validation Results
 
-   - Started At: `2024-08-19 12:18:32.753803`
-   - Ended   At: `2024-08-19 12:35:17.300559`
-   - Duration  : `0:16:44.546756`
+   - Started At: `2024-08-19 14:41:32.342342`
+   - Ended   At: `2024-08-19 14:58:15.903984`
+   - Duration  : `0:16:43.561642`
 ## Validations
 
 ### Summary
 
 | Name | MSE | MAPE | Pass / Fail |
 | --- | --- | --- | --- |
-| platform - dynamic | 1655.34 | inf | PASS |
-| package - dynamic | 703.38 | 62.28 | PASS |
-| core - dynamic | 709.53 | 62.36 | PASS |
-| dram - dynamic | 23.28 | 2369.58 | PASS |
-| platform - idle | 7196699315.80 | 99.74 | PASS |
-| package - idle | 4866.63 | 44889.23 | PASS |
-| core - idle | 4870.46 | 54564.81 | PASS |
-| dram - idle | 2218.97 | 130969.15 | PASS |
+| platform - dynamic | 823.72 | 53.64 | PASS |
+| package - dynamic | 706.16 | 59.92 | PASS |
+| core - dynamic | 702.89 | 59.89 | PASS |
+| dram - dynamic | 24.61 | inf | PASS |
+| platform - idle | 48356.83 | 21904.60 | PASS |
+| package - idle | 4870.11 | 53397.94 | PASS |
+| core - idle | 4872.83 | 62763.24 | PASS |
+| dram - idle | 2216.81 | 79846.54 | PASS |
 ### Details
 
 #### platform - dynamic
@@ -49,8 +49,8 @@
    - Expected: `rate( kepler_node_platform_joules_total{ job="vm", mode="dynamic", }[20s] ) `
 
 **Results**:
-   - MSE  : `1655.34`
-   - MAPE : `inf %`
+   - MSE  : `823.72`
+   - MAPE : `53.64 %`
 #### package - dynamic
 
 
@@ -59,8 +59,8 @@
    - Expected: `rate( kepler_node_package_joules_total{ job="vm", mode="dynamic", }[20s] ) `
 
 **Results**:
-   - MSE  : `703.38`
-   - MAPE : `62.28 %`
+   - MSE  : `706.16`
+   - MAPE : `59.92 %`
 #### core - dynamic
 
 
@@ -69,8 +69,8 @@
    - Expected: `rate( kepler_node_core_joules_total{ job="vm", mode="dynamic", }[20s] ) `
 
 **Results**:
-   - MSE  : `709.53`
-   - MAPE : `62.36 %`
+   - MSE  : `702.89`
+   - MAPE : `59.89 %`
 #### dram - dynamic
 
 
@@ -79,8 +79,8 @@
    - Expected: `rate( kepler_node_dram_joules_total{ job="vm", mode="dynamic", }[20s] ) `
 
 **Results**:
-   - MSE  : `23.28`
-   - MAPE : `2369.58 %`
+   - MSE  : `24.61`
+   - MAPE : `inf %`
 #### platform - idle
 
 
@@ -89,8 +89,8 @@
    - Expected: `rate( kepler_node_platform_joules_total{ job="vm", mode="idle", }[20s] ) `
 
 **Results**:
-   - MSE  : `7196699315.80`
-   - MAPE : `99.74 %`
+   - MSE  : `48356.83`
+   - MAPE : `21904.60 %`
 #### package - idle
 
 
@@ -99,8 +99,8 @@
    - Expected: `rate( kepler_node_package_joules_total{ job="vm", mode="idle", }[20s] ) `
 
 **Results**:
-   - MSE  : `4866.63`
-   - MAPE : `44889.23 %`
+   - MSE  : `4870.11`
+   - MAPE : `53397.94 %`
 #### core - idle
 
 
@@ -109,8 +109,8 @@
    - Expected: `rate( kepler_node_core_joules_total{ job="vm", mode="idle", }[20s] ) `
 
 **Results**:
-   - MSE  : `4870.46`
-   - MAPE : `54564.81 %`
+   - MSE  : `4872.83`
+   - MAPE : `62763.24 %`
 #### dram - idle
 
 
@@ -119,5 +119,5 @@
    - Expected: `rate( kepler_node_dram_joules_total{ job="vm", mode="idle", }[20s] ) `
 
 **Results**:
-   - MSE  : `2218.97`
-   - MAPE : `130969.15 %`
+   - MSE  : `2216.81`
+   - MAPE : `79846.54 %`
