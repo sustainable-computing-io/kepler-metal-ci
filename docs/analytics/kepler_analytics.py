@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 import base64
 from io import BytesIO
+from scipy import signal
 
 NUM_DAYS = 5  # Number of days to analyze
 BASE_DIR = '../validation'
@@ -19,6 +20,44 @@ REPORT_FILE = '../kepler-model-validation-chart.md'
 
 def mean_absolute_percentage_error(y_true, y_pred):
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
+
+def clean_data(df):
+    df = df.dropna(subset=['Watts'])
+    df['Watts'] = df['Watts'].interpolate()
+
+    return df
+
+
+def align_time_series(df_metal, df_vm):
+    freq = '1S'
+    df_metal = df_metal.set_index('Timestamp').resample(
+        freq).mean().reset_index()
+    df_vm = df_vm.set_index('Timestamp').resample(freq).mean().reset_index()
+
+    df_metal = clean_data(df_metal)
+    df_vm = clean_data(df_vm)
+
+    correlation = signal.correlate(df_metal['Watts'],
+                                   df_vm['Watts'],
+                                   mode='full')
+    lags = signal.correlation_lags(len(df_metal['Watts']),
+                                   len(df_vm['Watts']),
+                                   mode='full')
+    lag = lags[np.argmax(correlation)]
+
+    print(f"Applying lag: {lag}")
+    if lag > 0:
+        df_vm = df_vm.iloc[lag:]
+        df_metal = df_metal.iloc[:len(df_vm)]
+    elif lag < 0:
+        df_metal = df_metal.iloc[-lag:]
+        df_vm = df_vm.iloc[:len(df_metal)]
+
+    df_metal.reset_index(drop=True, inplace=True)
+    df_vm.reset_index(drop=True, inplace=True)
+
+    return df_metal, df_vm
 
 
 def process_date(date):
@@ -63,26 +102,23 @@ def process_date(date):
                 print(f"File {json_file} not found in folder {folder_name}")
 
         if df_metal is not None and df_vm is not None:
-            df_merged = pd.merge(df_metal,
-                                 df_vm,
-                                 on='Timestamp',
-                                 how='inner',
-                                 suffixes=('_metal', '_vm'))
+            df_metal_aligned, df_vm_aligned = align_time_series(
+                df_metal, df_vm)
 
-            if not df_merged.empty:
-                mse = mean_squared_error(df_merged['Watts_metal'],
-                                         df_merged['Watts_vm'])
-                mape = mean_absolute_percentage_error(df_merged['Watts_metal'],
-                                                      df_merged['Watts_vm'])
+            mse = mean_squared_error(df_metal_aligned['Watts'],
+                                     df_vm_aligned['Watts'])
+            mape = mean_absolute_percentage_error(
+                df_metal_aligned['Watts'].values,
+                df_vm_aligned['Watts'].values)
 
-                results.append({
-                    'date': date_str,
-                    'folder': folder_name,
-                    'df_metal': df_metal,
-                    'df_vm': df_vm,
-                    'mse': mse,
-                    'mape': mape
-                })
+            results.append({
+                'date': date_str,
+                'folder': folder_name,
+                'df_metal': df_metal_aligned,
+                'df_vm': df_vm_aligned,
+                'mse': mse,
+                'mape': mape
+            })
 
     return results
 
