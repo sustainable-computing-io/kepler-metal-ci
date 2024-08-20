@@ -90,41 +90,48 @@ def process_date(date):
 def create_chart(result, compare_to=None):
     fig, ax1 = plt.subplots(figsize=(14, 7))
 
-    ax1.plot(result['df_metal']['Timestamp'],
+    result['df_metal']['Data_Point'] = range(len(result['df_metal']))
+    result['df_vm']['Data_Point'] = range(len(result['df_vm']))
+
+    ax1.plot(result['df_metal']['Data_Point'],
              result['df_metal']['Watts'],
              marker='x',
              color='#024abf',
-             label='metal data')
-    ax1.set_xlabel('Timestamp')
+             label=f'metal data ({result["date"]})')
+    ax1.set_xlabel('Data Points')
     ax1.set_ylabel('Metal [Watts]', color='#024abf')
     ax1.tick_params(axis='y')
 
     ax2 = ax1.twinx()
-    ax2.plot(result['df_vm']['Timestamp'],
+    ax2.plot(result['df_vm']['Data_Point'],
              result['df_vm']['Watts'],
              marker='o',
              color='#ff742e',
-             label='vm data')
+             label=f'vm data ({result["date"]})')
     ax2.set_ylabel('VM [Watts]', color='#ff742e')
     ax2.tick_params(axis='y')
 
     if compare_to:
-        ax1.plot(compare_to['df_metal']['Timestamp'],
+        compare_to['df_metal']['Data_Point'] = range(
+            len(compare_to['df_metal']))
+        compare_to['df_vm']['Data_Point'] = range(len(compare_to['df_vm']))
+
+        ax1.plot(compare_to['df_metal']['Data_Point'],
                  compare_to['df_metal']['Watts'],
                  linestyle='--',
                  color='#024abf',
                  alpha=0.5,
-                 label='metal data (previous)')
-        ax2.plot(compare_to['df_vm']['Timestamp'],
+                 label=f'metal data ({compare_to["date"]})')
+
+        ax2.plot(compare_to['df_vm']['Data_Point'],
                  compare_to['df_vm']['Watts'],
                  linestyle='--',
                  color='#ff742e',
                  alpha=0.5,
-                 label='vm data (previous)')
+                 label=f'vm data ({compare_to["date"]})')
 
     plt.title(
         f'Kepler Metal & VM / {result["folder"]} / Date: {result["date"]}')
-    plt.xticks(rotation=45)
     plt.grid(True)
 
     lines, labels = ax1.get_legend_handles_labels()
@@ -140,6 +147,8 @@ def create_chart(result, compare_to=None):
              verticalalignment='top',
              horizontalalignment='right',
              bbox=dict(facecolor='white', alpha=0.5))
+
+    plt.tight_layout()
 
     img = BytesIO()
     plt.savefig(img, format='png')
