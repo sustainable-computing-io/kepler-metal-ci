@@ -69,7 +69,7 @@ jobs:
           echo "Create ssh tunnel"
           ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
           echo "Deploy Trainer"
-          ansible-playbook -i inventory.yml model_trainer_playbook.yml -e "model_export_path=/refined-models"
+          ansible-playbook -i inventory.yml -vvv model_trainer_playbook.yml -e "model_export_path=/refined-models"
           ls -l /refined-models
 
           #echo "Install Prometheus"
