@@ -56,3 +56,22 @@ all:
         node_components_estimator: "true"
         node_total_init_url: "https://raw.githubusercontent.com/sustainable-computing-io/kepler-model-db/main/models/v0.7/specpower-0.7.11/acpi/AbsPower/BPFOnly/SGDRegressorTrainer_0.zip"
         node_components_init_url: "https://raw.githubusercontent.com/sustainable-computing-io/kepler-model-db/main/models/v0.7/ec2-0.7.11/rapl-sysfs/AbsPower/BPFOnly/SGDRegressorTrainer_0.zip"
+    model_trainer:
+      hosts:
+        localhost:
+          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
+      vars:
+        stress_iterations: 1
+        model_server_repo: "https://github.com/sustainable-computing-io/kepler-model-server.git"
+        kepler_repo: "https://github.com/sustainable-computing-io/kepler.git"
+        model_server_path: "/opt/kepler-model-server"
+        kepler_path: "/opt/kepler"
+        data_path: "/opt/data"
+        model_path: "{{ data_path }}/models"
+        model_export_path: "/refined-models"
+        benchmark: "Equinix_Models"
+        collect_id: "workflow_run" 
+        prom_url: "http://localhost:9090"
+        pipeline_name: "Equinix_Pipeline"
+        stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stressor.sh"
+        model_train_path: "/opt/kepler-model-server/cmd/main.py"
