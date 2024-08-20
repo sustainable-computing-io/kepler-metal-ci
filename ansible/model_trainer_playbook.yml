@@ -41,37 +41,37 @@
         echo {{ model_export_path }}
         mkdir -p {{ model_export_path }}
 
-        # Stress
+        # # Stress
 
-        chmod +x {{ stress_test_script_path }}
-        export START_TIME=$(date +%s)
-        for i in {1..{{ stress_iterations }}}; do
-          echo "Iteration: $i"
-          {{ stress_test_script_path }}
-        done 
-        export END_TIME=$(date +%s)
-        export INTERVAL=$((END_TIME - START_TIME))
-        echo $INTERVAL
+        # chmod +x {{ stress_test_script_path }}
+        # export START_TIME=$(date +%s)
+        # for i in {1..{{ stress_iterations }}}; do
+        #   echo "Iteration: $i"
+        #   {{ stress_test_script_path }}
+        # done 
+        # export END_TIME=$(date +%s)
+        # export INTERVAL=$((END_TIME - START_TIME))
+        # echo $INTERVAL
 
-        # Collect
+        # # Collect
 
-        python3.11 {{ model_train_path }} query \
-          --benchmark $BENCHMARK \
-          --server $PROM_URL \
-          --output kepler_query \
-          --interval $INTERVAL \
-          --id $COLLECT_ID
+        # python3.11 {{ model_train_path }} query \
+        #   --benchmark $BENCHMARK \
+        #   --server $PROM_URL \
+        #   --output kepler_query \
+        #   --interval $INTERVAL \
+        #   --id $COLLECT_ID
 
-        # Train
+        # # Train
 
-        python3.11 {{ model_train_path }} train \
-          --pipeline-name $PIPELINE_NAME \
-          --input kepler_query --id $COLLECT_ID
+        # python3.11 {{ model_train_path }} train \
+        #   --pipeline-name $PIPELINE_NAME \
+        #   --input kepler_query --id $COLLECT_ID
 
         
-        # Move to Models Directory
+        # # Move to Models Directory
 
-        mv $MODEL_PATH/$PIPELINE_NAME/rapl-sysfs/* {{ model_export_path }}
+        # mv $MODEL_PATH/$PIPELINE_NAME/rapl-sysfs/* {{ model_export_path }}
       
       environment:
         BENCHMARK: "{{ benchmark }}"
