@@ -78,5 +78,5 @@
         PROM_URL: "{{ prom_url }}"
         COLLECT_ID: "{{ collect_id }}"
         DATAPATH: "{{ data_path }}"
-        # MODEL_PATH: "{{ model_path }}"
+        MODEL_PATH: "{{ model_path }}"
         PIPELINE_NAME: "{{ pipeline_name }}"
