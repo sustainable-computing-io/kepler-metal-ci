@@ -57,11 +57,12 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
           echo "Install Prometheus"
-          ansible-playbook -i inventory.yml metrics_playbook.yml --tags "prometheus_configure"
+          ansible-playbook -i inventory.yml -vvv metrics_playbook.yml --tags "prometheus_configure_metal"
           echo "Install Kepler"
           ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
           echo "Deploy Trainer"
-          ansible-playbook -i inventory.yml model_trainer_playbook.yml -e "model_export_path=/refined-models"        
+          ansible-playbook -i inventory.yml model_trainer_playbook.yml -e "model_export_path=/refined-models"
+          ls -l /refined-models
       
       - name: Archive Models
         run: tar -czf trained-equinix-models.tar.gz /refined-models/
