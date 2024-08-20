@@ -39,7 +39,7 @@
           TimeoutStopSec=70
           ExecStartPre=/bin/rm -f %t/%n.ctr-id
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
-              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="{{ model_server_enable }}" -e MODEL_SERVER_URL="{{ model_server_url }}" \
               -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc -v /tmp:/tmp -v /mnt/kepler-config:/etc/kepler \
               --entrypoint /usr/bin/bash quay.io/sustainable_computing_io/kepler:latest \
               -c 'echo "Waiting for estimator socket"; \
@@ -75,7 +75,7 @@
           TimeoutStopSec=70
           ExecStartPre=/bin/rm -f %t/%n.ctr-id
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name estimator \
-              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="{{ model_server_enable }}" -e MODEL_SERVER_URL="{{ model_server_url }}" \
               -v /mnt:/mnt -v /tmp:/tmp -v /mnt/kepler-config:/etc/kepler \
               --entrypoint python3.10 quay.io/sustainable_computing_io/kepler_model_server:v0.7.11 \
               -u src/estimate/estimator.py
@@ -104,7 +104,7 @@
           TimeoutStopSec=70
           ExecStartPre=/bin/rm -f %t/%n.ctr-id
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name model-server \
-              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="true" -e MODEL_SERVER_URL="http://model-server:8100" \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="{{ model_server_enable }}" -e MODEL_SERVER_URL="{{ model_server_url }}" \
               -v /mnt:/mnt -v /mnt/kepler-config:/etc/kepler \
               -p 8100:8100 \
               --entrypoint python3.10 quay.io/sustainable_computing_io/kepler_model_server:v0.7.11 \
