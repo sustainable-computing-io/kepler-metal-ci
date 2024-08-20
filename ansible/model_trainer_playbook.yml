@@ -33,13 +33,13 @@
 
     - name: Train Models
       ansible.builtin.shell: |
-        
-        echo $DATAPATH
-        mkdir -p "$DATAPATH"
-        echo $MODEL_PATH
-        mkdir -p "$MODEL_PATH"
-        echo {{ model_export_path }}
-        mkdir -p {{ model_export_path }}
+        echo "test"
+        # echo $DATAPATH
+        # mkdir -p "$DATAPATH"
+        # echo $MODEL_PATH
+        # mkdir -p "$MODEL_PATH"
+        # echo {{ model_export_path }}
+        # mkdir -p {{ model_export_path }}
 
         # # Stress
 
@@ -73,10 +73,10 @@
 
         # mv $MODEL_PATH/$PIPELINE_NAME/rapl-sysfs/* {{ model_export_path }}
       
-      environment:
-        BENCHMARK: "{{ benchmark }}"
-        PROM_URL: "{{ prom_url }}"
-        COLLECT_ID: "{{ collect_id }}"
-        DATAPATH: "{{ data_path }}"
-        MODEL_PATH: "{{ model_path }}"
-        PIPELINE_NAME: "{{ pipeline_name }}"
+      # environment:
+      #   BENCHMARK: "{{ benchmark }}"
+      #   PROM_URL: "{{ prom_url }}"
+      #   COLLECT_ID: "{{ collect_id }}"
+      #   DATAPATH: "{{ data_path }}"
+      #   MODEL_PATH: "{{ model_path }}"
+      #   PIPELINE_NAME: "{{ pipeline_name }}"
