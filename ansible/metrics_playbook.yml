@@ -32,3 +32,21 @@
         roles_path: /root/.ansible/collections/ansible_collections/prometheus/prometheus/roles
   tags: 
     - prometheus_configure
+
+- name: Use Prometheus role to configure Prometheus server for strictly metal
+  hosts: localhost
+  become: true
+  vars:
+    prometheus_global:
+      scrape_interval: 3s
+
+    prometheus_scrape_configs:
+      - job_name: "metal"
+        static_configs:
+          - targets: ["localhost:8888"]
+  roles:
+    - role: prometheus.prometheus.prometheus
+      vars:
+        roles_path: /root/.ansible/collections/ansible_collections/prometheus/prometheus/roles
+  tags: 
+    - prometheus_configure_metal
