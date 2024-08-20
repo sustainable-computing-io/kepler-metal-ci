@@ -94,6 +94,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      - name: Update model validation chart
+        run: |
+          export DATE_STR=$(date +%Y-%m-%d)
+          cd ${GITHUB_WORKSPACE}
+          cd docs/analytics
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python ./kepler_analytics.py
+          # update git
+          git config user.email "dependabot[bot]@users.noreply.github.com"
+          git config user.name "dependabot[bot]"
+          cd ${GITHUB_WORKSPACE}
+          git add docs/analytics/*
+          git add docs/kepler-model-validation-chart.md
+          git commit -m "Add validation chart for ${DATE_STR}" -s
+          git push
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   Cleanup:
     name: "Cleanup"
