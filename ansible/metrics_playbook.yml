@@ -30,4 +30,5 @@
     - role: prometheus.prometheus.prometheus
       vars:
         roles_path: /root/.ansible/collections/ansible_collections/prometheus/prometheus/roles
-
+  tags: 
+    - prometheus_configure
