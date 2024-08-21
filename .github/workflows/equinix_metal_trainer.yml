@@ -62,8 +62,10 @@ jobs:
           # ansible-playbook -i inventory.yml kvm_playbook.yml
           # echo "Install SSH tunnel"
           # ansible-playbook ssh_tunnel_playbook.yml
+          # echo "Install Prometheus"
+          # ansible-playbook -i inventory.yml metrics_playbook.yml
           echo "Install Prometheus"
-          ansible-playbook -i inventory.yml metrics_playbook.yml
+          ansible-playbook -i inventory.yml -vvv metal_prometheus.yml
           echo "Install Kepler"
           ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
           # echo "Create ssh tunnel"
