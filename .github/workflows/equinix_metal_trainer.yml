@@ -76,7 +76,9 @@ jobs:
           #ansible-playbook -i inventory.yml -vvv metrics_playbook.yml --tags "prometheus_configure_metal"
           #echo "Install Kepler"
           #ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
-          
+
+      - name: Set Model Date Creatinon
+        run: echo "MODEL_CREATION=$(date +%F)-$(date +%s)" >> $GITHUB_ENV
       
       - name: Archive Models
         run: tar -czf trained-equinix-models.tar.gz /refined-models/
