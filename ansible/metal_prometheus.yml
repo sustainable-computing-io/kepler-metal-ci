@@ -1,41 +1,15 @@
-- name: Deploy Prometheus Locally
+- name: Use Prometheus role to configure Prometheus server for strictly metal
   hosts: localhost
   become: true
-  tasks:
-    - name: Install Prometheus
-      package:
-        name: prometheus
-        state: present
+  vars:
+    prometheus_global:
+      scrape_interval: 3s
 
-    - name: Create Prometheus configuration directory
-      file:
-        path: /etc/prometheus
-        state: directory
-
-    - name: Create Prometheus configuration file
-      copy:
-        dest: /etc/prometheus/prometheus.yml
-        content: |
-          global:
-            scrape_interval: 15s
-
-          scrape_configs:
-            - job_name: 'metal'
-              static_configs:
-                - targets: ['localhost:8888']
-
-    - name: Enable and start Prometheus service
-      systemd:
-        name: prometheus
-        enabled: true
-        state: started
-
-    - name: Check Prometheus service status
-      systemd:
-        name: prometheus
-        state: started
-        enabled: true
-      register: prometheus_status
-
-    - debug:
-        var: prometheus_status
+    prometheus_scrape_configs:
+      - job_name: "metal"
+        static_configs:
+          - targets: ["localhost:8888"]
+  roles:
+    - role: prometheus.prometheus.prometheus
+      vars:
+        roles_path: /root/.ansible/collections/ansible_collections/prometheus/prometheus/roles
