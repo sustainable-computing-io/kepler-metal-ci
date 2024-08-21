@@ -33,13 +33,12 @@
 
     - name: Train Models
       ansible.builtin.shell: |
-        echo "test"
-        # echo $DATAPATH
-        # mkdir -p "$DATAPATH"
-        # echo $MODEL_PATH
-        # mkdir -p "$MODEL_PATH"
-        # echo {{ model_export_path }}
-        # mkdir -p {{ model_export_path }}
+        echo $DATAPATH
+        mkdir -p "$DATAPATH"
+        echo $MODEL_PATH
+        mkdir -p "$MODEL_PATH"
+        echo {{ model_export_path }}
+        mkdir -p {{ model_export_path }}
 
         # # Stress
 
