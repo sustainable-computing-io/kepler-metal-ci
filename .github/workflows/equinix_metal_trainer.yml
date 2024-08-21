@@ -70,7 +70,7 @@ jobs:
           # ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
           echo "Deploy Trainer"
           ansible-playbook -i inventory.yml -vvv model_trainer_playbook.yml -e "model_export_path=/refined-models"
-          ls -l /refined-models
+          #ls -l /refined-models
 
           #echo "Install Prometheus"
           #ansible-playbook -i inventory.yml -vvv metrics_playbook.yml --tags "prometheus_configure_metal"
