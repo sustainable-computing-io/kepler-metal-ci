@@ -79,14 +79,14 @@ jobs:
           #echo "Install Kepler"
           #ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
       
-      - name: Archive Models
-        run: tar -czf trained-equinix-models.tar.gz /refined-models/
+      # - name: Archive Models
+      #   run: tar -czf trained-equinix-models.tar.gz /refined-models/
 
       - name: Upload models as artifacts
         uses: actions/upload-artifact@v2
         with:
           name: trained-equinix-models
-          path: trained-equinix-models.tar.gz
+          path: /refined-models/
           retention-days: 2
 
   Cleanup:
