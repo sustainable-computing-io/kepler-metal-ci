@@ -77,8 +77,8 @@
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name estimator \
               --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="{{ model_server_enable }}" -e MODEL_SERVER_URL="{{ model_server_url }}" \
               -v /mnt:/mnt -v /tmp:/tmp -v /mnt/kepler-config:/etc/kepler \
-              --entrypoint python3.10 quay.io/sustainable_computing_io/kepler_model_server:v0.7.11 \
-              -u src/estimate/estimator.py
+              --entrypoint {{ model_server_entrypoint }} \
+              -u src/kepler_model/estimate/estimator.py
           ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
           ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
           Type=notify
@@ -107,8 +107,8 @@
               --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="{{ model_server_enable }}" -e MODEL_SERVER_URL="{{ model_server_url }}" \
               -v /mnt:/mnt -v /mnt/kepler-config:/etc/kepler \
               -p 8100:8100 \
-              --entrypoint python3.10 quay.io/sustainable_computing_io/kepler_model_server:v0.7.11 \
-              -u src/server/model_server.py
+              --entrypoint {{ model_server_entrypoint }} \
+              -u src/kepler_model/server/model_server.py
           ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
           ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
           Type=notify
