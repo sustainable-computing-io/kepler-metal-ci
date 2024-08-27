@@ -146,9 +146,46 @@ jobs:
           kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
           kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
 
+      - name: Pull kube-burner
+        run: |
+          git clone https://github.com/kube-burner/kube-burner
+          curl -sS -L "https://github.com/kube-burner/kube-burner/releases/download/v1.9.5/kube-burner-V1.9.5-linux-x86_64.tar.gz" | tar -xzC kube-burner/ kube-burner
+
       - name: Port forward prom
         run: |
           kubectl port-forward -n monitoring svc/prometheus-k8s 9090:9090 &
+      
+      - name: Run node-density w/ churn w/o kepler
+        run: |
+          cp kube-burner/examples/metrics-profiles/metrics.yaml kube-burner/examples/workloads/kubelet-density/metrics.yaml
+          cd kube-burner/examples/workloads/kubelet-density
+          cp kubelet-density.yml kubelet-density-churn.yml
+          sed -i 's/qps: 2/qps: 20/g' kubelet-density-churn.yml
+          sed -i 's/burst: 2/burst: 20/g' kubelet-density-churn.yml
+          sed -i 's/jobIterations: 25/jobIterations: 80/g' kubelet-density-churn.yml
+          echo "indexers:" >> kubelet-density-churn.yml
+          echo " - type: local" >> kubelet-density-churn.yml
+          echo "   metricsDirectory: collected-metrics" >> kubelet-density-churn.yml
+          sed -i 's/namespacedIterations: false/namespacedIterations: true/g' \
+          sed -i '/namespacedIterations: true/a\
+              iterationsPerNamespace: 1\
+              churn: true\
+              churnCycles: 0\
+              churnDuration: 1h0m0s\
+              churnPercent: 10\
+              churnDelay: 2m0s\
+              churnDeletionStrategy: default\
+          ' kubelet-density-churn.yml
+          export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          ../../../kube-burner init -ckubelet-density-churn.yml -u http://localhost:9090 --metrics-profile metrics.yaml
+          # sleep a min after test
+          sleep 60
+          export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          touch /tmp/nokepler-churn-node-cpu.json
+          # Retrieve metrics related to Kepler cpu and memory utilization over time
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=(100 * avg by (instance,mode) (rate(node_cpu_seconds_total{mode!="idle"}[1m])))' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" | tee /tmp/nokepler-chrun-node-cpu.json
 
       - name: Install Kepler helm chart
         run: |
@@ -193,11 +230,6 @@ jobs:
         run: |
           ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh
 
-      - name: Pull kube-burner
-        run: |
-          git clone https://github.com/kube-burner/kube-burner
-          curl -sS -L "https://github.com/kube-burner/kube-burner/releases/download/v1.9.5/kube-burner-V1.9.5-linux-x86_64.tar.gz" | tar -xzC kube-burner/ kube-burner
-          
       - name: Run kube-burner node-density
         run: |
           cp kube-burner/examples/metrics-profiles/metrics.yaml kube-burner/examples/workloads/kubelet-density/metrics.yaml
@@ -226,6 +258,29 @@ jobs:
             --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
             | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
             | tee -a /tmp/kepler-stress-test-kube-apiserver-metrics.txt
+
+      - name: Run kube-burner node-density w/ churn w/ kepler
+        run: |
+          export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          ../../../kube-burner init -c kubelet-density-churn.yml -u http://localhost:9090 --metrics-profile metrics.yaml
+          # sleep a min after test
+          sleep 60
+          export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          touch /tmp/kepler-churn-node-cpu.json
+          # Retrieve metrics related to Kepler cpu and memory utilization over time
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=(100 * avg by (instance,mode) (rate(node_cpu_seconds_total{mode!="idle"}[1m])))' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" | tee /tmp/kepler-churn-node-cpu.json
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kepler"}[1m])) / sum(machine_cpu_cores) * 100' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
+            | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
+            | tee -a /tmp/kepler-stress-test-churn-metrics.txt
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kube-system", pod=~"kube-apiserver-.*"}[1m])) / sum(machine_cpu_cores) * 100' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
+            | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
+            | tee -a /tmp/kepler-stress-test-kube-apiserver-churn-metrics.txt
 
       - name: git add the /tmp/kepler-stress-test-metrics.txt
         run: |
