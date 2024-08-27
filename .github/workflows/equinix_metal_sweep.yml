@@ -1,0 +1,17 @@
+name: Equinix Metal Sweep
+
+on:
+  schedule:
+    - cron: '0 15 * * *' # before validation action
+  workflow_dispatch: 
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Equinix Metal Sweeper
+      uses: equinix-labs/metal-sweeper-action@v0.6.1
+      with:
+        authToken: ${{ secrets.EQUINIX_API_TOKEN }}
+        projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
+        keepProject: true
