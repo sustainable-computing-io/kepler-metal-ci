@@ -1,0 +1,298 @@
+name: Equinix k8s Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      termination_time:
+        description: 'Cluster termination time in hours after now'
+        required: true
+        default: '1'
+      control_plan:
+        description: 'control plane machine type'
+        required: false
+        default: 'c3.small.x86'
+      node_plan:
+        description: 'node machine type'
+        required: false
+        default: 'c3.small.x86'
+      metro:
+        description: 'metro location'
+        required: false
+        default: 'da'
+  schedule:
+    - cron: '0 18 * * *'
+
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write
+  packages: write
+
+
+jobs:
+  Create-k8s-cluster:
+    name: "Create Cluster"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate termination time
+        run: |
+          if [ ${{ github.event.inputs.termination_time || '1' }} -gt 48 ]; then
+            echo "Error: Termination time cannot be more than 48 hours."
+            exit 1
+          fi
+
+      - name: Install ansible, git and jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install ansible jq git -y
+
+      - name: Clone repo
+        run: |
+          cd ~
+          git clone https://github.com/sustainable-computing-io/kepler-metal-ci
+
+      - name: Save ssh key from env to file
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.EQUINIX_SSH_KEY }}" > ~/.ssh/kepler_ci
+          chmod 600 ~/.ssh/kepler_ci
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+      - name: Create metal config
+        run: |
+          cat <<EOF > /tmp/metal.yaml
+          token: "${{ secrets.METAL_AUTH_TOKEN }}"
+          project-id: ${{ secrets.EQUINIX_PROJECT_ID }}
+          EOF
+
+      - name: Play k8s_kubeadm.yml
+        env:
+          metro: "da"
+          plan: "c3.small.x86"
+          os: "rhel_9"
+        run: |
+          mkdir -p ~/.ansible
+          echo '[defaults]' > ~/.ansible/ansible.cfg
+          echo 'callback_plugins = ~/.github/callback_plugins' >> ~/.ansible/ansible.cfg
+          echo 'callback_whitelist = mask_ip_callback' >> ~/.ansible/ansible.cfg
+          mkdir -p ~/.github/callback_plugins
+          cd ~/kepler-metal-ci
+          cp ansible/mask_ip_callback.py ~/.github/callback_plugins/mask_ip_callback.py
+          # save input var into extra-vars.yaml
+          echo "termination_time: ${{ github.event.inputs.termination_time || '1' }}" > /tmp/extra-vars.yaml
+          echo "control_plan: ${{ github.event.inputs.control_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
+          echo "node_plan: ${{ github.event.inputs.node_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
+          echo "metro: ${{ github.event.inputs.metro || 'da' }}" >> /tmp/extra-vars.yaml
+          ansible-playbook ansible/k8s_kubeadm.yml \
+            --extra-vars "@/tmp/extra-vars.yaml" 2>&1 >> k8s_kubeadm.log
+          sudo cat /tmp/kubeconfig |jq -r '.stdout' > /tmp/k8sconfig
+          sudo mv /tmp/k8sconfig /tmp/kubeconfig
+
+      - name: Upload kubeconfig
+        uses: actions/upload-artifact@v2
+        with:
+          name: kubeconfig-${{ github.run_id }}
+          path: /tmp/kubeconfig
+          retention-days: 1
+
+  Test-K8s:
+    name: "Test K8s"
+    needs: create-k8s-cluster
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: mkdir ~/.kube
+        run: |
+          mkdir -p ~/.kube
+
+      - name: Download kubeconfig
+        uses: actions/download-artifact@v2
+        with:
+          name: kubeconfig-${{ github.run_id }}
+          path: ~/.kube/
+
+      - name: Test k8s
+        run: |
+          ls -la ~/.kube/*
+          mv ~/.kube/kubeconfig ~/.kube/config
+          kubectl get nodes
+          kubectl get pods --all-namespaces
+
+      - name: Label workers
+        run: |
+          kubectl label node $(kubectl get nodes --selector=node-role.kubernetes.io/control-plane!= --no-headers -o custom-columns=":metadata.name") node-role.kubernetes.io/worker=
+
+      - name: Install ansible, git and jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq -y
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Install Prometheus
+        run: |
+          git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
+          kubectl apply --server-side --validate=false -f manifests/setup
+          kubectl apply --validate=false -f manifests/
+          until kubectl -n monitoring get statefulset prometheus-k8s; do kubectl get all -n monitoring; echo "StatefulSet not created yet, waiting..."; sleep 5; done
+          kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
+          kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
+
+      - name: Pull kube-burner
+        run: |
+          git clone https://github.com/kube-burner/kube-burner
+          curl -sS -L "https://github.com/kube-burner/kube-burner/releases/download/v1.9.5/kube-burner-V1.9.5-linux-x86_64.tar.gz" | tar -xzC kube-burner/ kube-burner
+
+      - name: Port forward prom
+        run: |
+          kubectl port-forward -n monitoring svc/prometheus-k8s 9090:9090 &
+      
+      - name: Run node-density w/ churn w/o kepler
+        run: |
+          cp kube-burner/examples/metrics-profiles/metrics.yaml kube-burner/examples/workloads/kubelet-density/metrics.yaml
+          cd kube-burner/examples/workloads/kubelet-density
+          cp kubelet-density.yml kubelet-density-churn.yml
+          sed -i 's/qps: 2/qps: 20/g' kubelet-density-churn.yml
+          sed -i 's/burst: 2/burst: 20/g' kubelet-density-churn.yml
+          sed -i 's/jobIterations: 25/jobIterations: 80/g' kubelet-density-churn.yml
+          echo "indexers:" >> kubelet-density-churn.yml
+          echo " - type: local" >> kubelet-density-churn.yml
+          echo "   metricsDirectory: collected-metrics" >> kubelet-density-churn.yml
+          sed -i 's/namespacedIterations: false/namespacedIterations: true/g' \
+          sed -i '/namespacedIterations: true/a\
+              iterationsPerNamespace: 1\
+              churn: true\
+              churnCycles: 0\
+              churnDuration: 1h0m0s\
+              churnPercent: 10\
+              churnDelay: 2m0s\
+              churnDeletionStrategy: default\
+          ' kubelet-density-churn.yml
+          export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          ../../../kube-burner init -ckubelet-density-churn.yml -u http://localhost:9090 --metrics-profile metrics.yaml
+          # sleep a min after test
+          sleep 60
+          export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          touch /tmp/nokepler-churn-node-cpu.json
+          # Retrieve metrics related to Kepler cpu and memory utilization over time
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=(100 * avg by (instance,mode) (rate(node_cpu_seconds_total{mode!="idle"}[1m])))' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" | tee /tmp/nokepler-chrun-node-cpu.json
+
+      - name: Install Kepler helm chart
+        run: |
+          # Install helm binary first
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+          export PATH=$PATH:/usr/local/bin
+          helm repo add kepler https://sustainable-computing-io.github.io/kepler-helm-chart
+          helm repo update
+          helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest \
+            --set extraEnvVars.EXPOSE_COMPONENT_POWER="false" --set extraEnvVars.EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" --set extraEnvVars.EXPOSE_BPF_METRICS="false" \
+            --set extraEnvVars.EXPERIMENTAL_BPF_SAMPLE_RATE=1000
+
+      - name: Allow prometheus to scrape kepler metrics in kepler namespace
+        run: |
+          curl -O https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/manifests/k8s/config/rbac/prometheus_role.yaml
+          sed -i 's/namespace: system/namespace: kepler/' prometheus_role.yaml
+          kubectl apply -f prometheus_role.yaml
+          kubectl apply -f - <<EOF
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: RoleBinding
+          metadata:
+            labels:
+              app.kubernetes.io/component: prometheus
+              app.kubernetes.io/instance: k8s
+              app.kubernetes.io/name: prometheus
+              sustainable-computing.io/app: kepler
+            name: prometheus-k8s
+            namespace: kepler
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: Role
+            name: prometheus-k8s
+          subjects:
+          - kind: ServiceAccount
+            name: prometheus-k8s
+            namespace: monitoring
+          EOF
+
+      - name: Wait for Kepler metrics kepler_node_package_joules_total is not empty through Prometheus query
+        run: |
+          ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh
+
+      - name: Run kube-burner node-density
+        run: |
+          cp kube-burner/examples/metrics-profiles/metrics.yaml kube-burner/examples/workloads/kubelet-density/metrics.yaml
+          cd kube-burner/examples/workloads/kubelet-density
+          sed -i 's/qps: 2/qps: 20/g' kubelet-density.yml
+          sed -i 's/burst: 2/burst: 20/g' kubelet-density.yml
+          sed -i 's/jobIterations: 25/jobIterations: 80/g' kubelet-density.yml
+          echo "indexers:" >> kubelet-density.yml
+          echo " - type: local" >> kubelet-density.yml
+          echo "   metricsDirectory: collected-metrics" >> kubelet-density.yml
+          export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          ../../../kube-burner init -c kubelet-density.yml -u http://localhost:9090 --metrics-profile metrics.yaml
+          # sleep a min after test
+          sleep 60
+          export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          touch /tmp/kepler-stress-test-metrics.txt
+          # Retrieve metrics related to Kepler cpu and memory utilization over time
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kepler"}[1m])) / sum(machine_cpu_cores) * 100' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
+            | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
+            | tee /tmp/kepler-stress-test-metrics.txt
+          # Retrieve the kube-apiserver cpu and memory utilization over time
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kube-system", pod=~"kube-apiserver-.*"}[1m])) / sum(machine_cpu_cores) * 100' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
+            | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
+            | tee -a /tmp/kepler-stress-test-kube-apiserver-metrics.txt
+
+      - name: Run kube-burner node-density w/ churn w/ kepler
+        run: |
+          export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          ../../../kube-burner init -c kubelet-density-churn.yml -u http://localhost:9090 --metrics-profile metrics.yaml
+          # sleep a min after test
+          sleep 60
+          export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          touch /tmp/kepler-churn-node-cpu.json
+          # Retrieve metrics related to Kepler cpu and memory utilization over time
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=(100 * avg by (instance,mode) (rate(node_cpu_seconds_total{mode!="idle"}[1m])))' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" | tee /tmp/kepler-churn-node-cpu.json
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kepler"}[1m])) / sum(machine_cpu_cores) * 100' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
+            | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
+            | tee -a /tmp/kepler-stress-test-churn-metrics.txt
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kube-system", pod=~"kube-apiserver-.*"}[1m])) / sum(machine_cpu_cores) * 100' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
+            | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
+            | tee -a /tmp/kepler-stress-test-kube-apiserver-churn-metrics.txt
+
+      - name: git add the /tmp/kepler-stress-test-metrics.txt
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          git config --global user.email "dependabot[bot]@users.noreply.github.com" 
+          git config --global user.name "dependabot[bot]"          
+          END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); echo -n "| " $END_TIME >> docs/kepler-stress-test-metrics.md
+          MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
+          KUBE_APISERVER_MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-kube-apiserver-metrics.txt)
+          echo $MEAN_SD_OUTPUT "  " $KUBE_APISERVER_MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
+          git add docs/kepler-stress-test-metrics.md
+          git commit -m "kepler stress test metrics result at ${END_TIME}" -s
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
