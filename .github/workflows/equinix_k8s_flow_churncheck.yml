@@ -6,7 +6,7 @@ on:
       termination_time:
         description: 'Cluster termination time in hours after now'
         required: true
-        default: '1'
+        default: '3'
       control_plan:
         description: 'control plane machine type'
         required: false
@@ -191,7 +191,7 @@ jobs:
             --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kube-system", pod=~"kube-apiserver-.*"}[1m])) / sum(machine_cpu_cores) * 100' \
             --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
             | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
-            | tee -a /tmp/nokepler-stress-test-kube-apiserver-metrics.txt
+            | tee -a /tmp/nokepler-stress-test-kube-apiserver-churn-metrics.txt
 
       - name: Run kube-burner node-density w/o churn w/o kepler
         run: |
@@ -273,7 +273,7 @@ jobs:
           # Retrieve metrics related to node cpu utilization over time
           curl -G 'http://localhost:9090/api/v1/query_range' \
             --data-urlencode 'query=(100 * avg by (instance,mode) (rate(node_cpu_seconds_total{mode!="idle"}[1m])))' \
-            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" | tee /tmp/kepler-node-cpu.json
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" | tee -a /tmp/kepler-node-cpu.json
           # Retrieve the kube-apiserver cpu and memory utilization over time
           curl -G 'http://localhost:9090/api/v1/query_range' \
             --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kube-system", pod=~"kube-apiserver-.*"}[1m])) / sum(machine_cpu_cores) * 100' \
@@ -315,15 +315,26 @@ jobs:
 
       - name: git add the /tmp/kepler-stress-test-metrics.txt
         run: |
-          cd ${GITHUB_WORKSPACE}
-          git config --global user.email "dependabot[bot]@users.noreply.github.com" 
-          git config --global user.name "dependabot[bot]"          
-          END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); echo -n "| " $END_TIME >> docs/kepler-stress-test-metrics.md
-          MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
-          KUBE_APISERVER_MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-kube-apiserver-metrics.txt)
-          echo $MEAN_SD_OUTPUT "  " $KUBE_APISERVER_MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
-          git add docs/kepler-stress-test-metrics.md
-          git commit -m "kepler stress test metrics result at ${END_TIME}" -s
-          git push origin main
+          cat /tmp/nokepler-churn-node-cpu.json
+          cat /tmp/nokepler-stress-test-kube-apiserver-churn-metrics.txt
+          cat /tmp/nokepler-node-cpu.json
+          cat /tmp/nokepler-stress-test-kube-apiserver-metrics.txt
+          cat /tmp/kepler-node-cpu.json
+          cat /tmp/kepler-stress-test-kube-apiserver-metrics.txt
+          cat /tmp/kepler-stress-test-metrics.txt
+          cat /tmp/kepler-churn-node-cpu.json
+          cat /tmp/kepler-stress-test-kube-apiserver-churn-metrics.txt
+          cat /tmp/kepler-stress-test-churn-metrics.txt
+          # temporary printing to console will move to docs later
+          # cd ${GITHUB_WORKSPACE}
+          # git config --global user.email "dependabot[bot]@users.noreply.github.com" 
+          # git config --global user.name "dependabot[bot]"          
+          # END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); echo -n "| " $END_TIME >> docs/kepler-stress-test-metrics.md
+          # MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
+          # KUBE_APISERVER_MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-kube-apiserver-metrics.txt)
+          # echo $MEAN_SD_OUTPUT "  " $KUBE_APISERVER_MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
+          # git add docs/kepler-stress-test-metrics.md
+          # git commit -m "kepler stress test metrics result at ${END_TIME}" -s
+          # git push origin main
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
