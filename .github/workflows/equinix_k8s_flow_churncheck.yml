@@ -1,4 +1,4 @@
-name: Equinix k8s Action
+name: Equinix k8s Action churn check
 
 on:
   workflow_dispatch:
