@@ -1,0 +1,82 @@
+- name: Check if Model Server is being used
+  ansible.builtin.shell: |
+    for i in {1..10}; do
+      echo "Checking Model Server in use. Attempt $i"
+      if journalctl -u container-kepler.service | grep "Using the EstimatorSidecar"; then
+        echo "Model Server Estimator Active"
+        exit 0
+      fi
+      sleep 10
+    done
+    echo "Model Server Estimator Inactive"
+    exit 1
+  register: model_server_start
+  failed_when: model_server_start.rc != 0
+
+- name: Check if Set Models are being used
+  ansible.builtin.shell: |
+    if [ "{{ node_total_estimator }}" = "true" ]; then
+      found=false
+      for i in {1..10}; do
+        echo "Checking: {{ node_total_init_url }}"
+        if journalctl -u container-kepler.service | grep "{{ node_total_init_url }}"; then
+          found=true
+          break
+        fi
+        sleep 10
+      done
+      if [ "$found" = "false" ]; then
+        echo "Failed to Find Node Total Estimator"
+        exit 1
+      fi
+    fi
+
+    if [ "{{ node_components_estimator }}" = "true" ]; then
+      found=false
+      for i in {1..10}; do
+        echo "Checking {{ node_components_init_url }}"
+        if journalctl -u container-kepler.service | grep "{{ node_components_init_url }}"; then
+          found=true
+          break
+        fi
+        sleep 10
+      done 
+      if [ "$found" = "false" ]; then
+        echo "Failed to Find Node Components Estimator"
+        exit 1
+      fi
+    fi
+    echo "All Models are being used as expected"
+    exit 0
+  register: model_use
+  failed_when: model_use.rc != 0    
+
+- name: Wait for Kepler to start (retry logic)
+  ansible.builtin.shell: |
+    for i in {1..5}; do
+      echo "Attempt $i"
+      ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
+      if [ ${ret} -eq 200 ]; then
+        exit 0
+      fi
+      sleep 5
+    done
+    echo "Kepler did not start in time"
+    exit 1
+  register: kepler_start
+  failed_when: kepler_start.rc != 0
+
+- name: Validate Raw Kepler Metric
+  ansible.builtin.shell: |
+    for i in {1..10}; do
+      echo "Check kepler_node_package_joules_total active"
+      if curl http://localhost:8888/metrics | grep "kepler_node_package_joules_total"; then
+        echo "Metric Validated"
+        exit 0
+      fi
+      sleep 10
+    done
+    echo "Metric not Validated"
+    exit 1
+  register: kepler_metric
+  failed_when: kepler_metric.rc != 0

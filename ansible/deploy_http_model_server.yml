@@ -1,0 +1,86 @@
+- name: Deploy HTTP Model Server
+  hosts: http_server
+  become: yes
+  tasks:
+    - name: Copying models from local to vm
+      copy:
+        src: " {{ local_model_directory }} "
+        dest: "{{ vm_model_directory }}"
+
+    - name: yum install python
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python3.11
+        - python3.11-pip
+        
+    - name: Create HTTP server script
+      copy:
+        dest: /tmp/convert_models_to_http_routes.py
+        content: |
+          import http.server
+          import socketserver
+          import argparse
+          
+          parser = argparse.ArgumentParser(description="basic file serve")
+          parser.add_argument(
+              "--directory", 
+              type=str, 
+              default="/tmp/models/trained-equinix-models", 
+              help="directory to serve files"
+          )
+          parser.add_argument(
+              "--port", 
+              type=int, 
+              default=8080, 
+              help="port number"
+          )
+          
+          args = parser.parse_args()
+          
+          DIRECTORY = args.directory
+          PORT = args.port
+          
+          class ModelRequestHandler(http.server.SimpleHTTPRequestHandler):
+              def __init__(self, *args, **kwargs):
+                  super().__init__(*args, directory=DIRECTORY, **kwargs)
+          
+          handler_object = ModelRequestHandler
+          
+          with socketserver.TCPServer(("0.0.0.0", PORT), handler_object) as httpd:
+              print(f"Serving HTTP on 0.0.0.0 port {PORT} (http://0.0.0.0:{PORT}/)...")
+              httpd.serve_forever()
+        
+    - name: Create systemd service file for Python HTTP server
+      copy:
+        content: |
+          [Unit]
+          Description=Python HTTP Server
+    
+          [Service]
+          ExecStart=/usr/bin/python3 /tmp/convert_models_to_http_routes.py --directory {{ vm_model_directory }} --port {{ http_port }}
+          WorkingDirectory=/tmp
+          Restart=always
+          User=root
+    
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/python-http-server.service
+    
+    - name: Reload systemd to recognize the new service
+      command: systemctl daemon-reload
+    
+    - name: Start the Python HTTP server service
+      command: systemctl start python-http-server
+    
+    - name: Enable the service to start on boot
+      command: systemctl enable python-http-server
+    
+    - name: Wait for the server to be ready
+      pause:
+        seconds: 30
+    
+    - name: Verify HTTP server is running
+      ansible.builtin.shell: |
+        curl -o /dev/null -s -w "%{http_code}\n" "http://localhost:{{ http_port }}"

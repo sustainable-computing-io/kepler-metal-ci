@@ -1,0 +1,20 @@
+name: 'Train Action'
+description: 'Composite Action to Trains Models'
+inputs:
+  model_export_path:
+    description: 'Location to output models'
+    required: true
+    default: '/tmp/trained-equinix-models'
+runs:
+  using: 'composite'
+  steps:
+    - name: Train models
+      shell: bash
+      run: |
+        cd ${GITHUB_WORKSPACE}/ansible
+        echo "Install Prometheus Baremetal"
+        ansible-playbook -i inventory.yml -vvv metal_prometheus.yml
+        echo "Install Kepler Metal"
+        ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
+        echo "Deploy Trainer"
+        ansible-playbook -i inventory.yml -vvv model_trainer_playbook.yml -e "model_export_path=${{ inputs.model_export_path }}"

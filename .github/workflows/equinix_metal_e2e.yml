@@ -2,6 +2,11 @@ name: Equinix Metal e2e
 
 on:
   workflow_dispatch:
+    inputs:
+      target_models:
+        description: 'Comma Separated List of Models to Train. Format: model_type/feature_type/trainer_name'
+        required: false
+        default: 'AbsPower/BPFOnly/SGDRegressorTrainer,AbsPower/BPFOnly/LinearRegressionTrainer,DynPower/BPFOnly/LogarithmicRegressionTrainer'
 
 permissions:
   pull-requests: write
@@ -9,14 +14,9 @@ permissions:
   repository-projects: write
   packages: write
 
-jobs:
-
-  Train-models:
-    uses: ./.github/workflows/equinix_metal_trainer.yml
-    
+jobs:    
   Create-runner:
     name: "Create Runner"
-    needs: Train-models
     runs-on: ubuntu-latest
 
     steps:
@@ -30,8 +30,8 @@ jobs:
           plan: "c3.small.x86"
           os: "rhel_9"
 
-  Install:
-    name: "Install"
+  Validate:
+    name: "Validate"
     needs: Create-runner
     runs-on: self-hosted
     continue-on-error: true
@@ -39,45 +39,24 @@ jobs:
       runner-name: ${{ runner.name }}
 
     steps:
-      - name: Setup runner
-        run: |
-          echo "This is runner: ${{ runner.name }}"
-          echo "Running on ${{ runner.arch }} ${{ runner.os }}"
-          # config ssh
-          sudo ssh-keygen -t rsa -b 4096 -f /root/.ssh/ansible_rsa -N ''
-          sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
-          sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
-          # install ansible
-          sudo dnf -y install ansible-core python3-pip
-          sudo dnf install -y rhel-system-roles
-          sudo ansible-galaxy collection install prometheus.prometheus
-          sudo ansible-galaxy collection install community.crypto
-          sudo ansible-galaxy collection install community.libvirt
-          sudo ansible-config init --disabled | sed "s/;host_key_checking=True/host_key_checking=False/g" | sed "s/;private_key_file=/private_key_file=~\/.ssh\/ansible_rsa/g" | sed 's|;roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles" }}|roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles;/root/.ansible/collections/ansible_collections/community/libvirt/roles" }}|' > /etc/ansible/ansible.cfg
-
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Download Models
-        uses: actions/download-artifact@v3
+      
+      - name: Run Setup Runner Action
+        uses: ./.github/actions/setup-action
+      
+      - name: Run Trainer Action
+        uses: ./.github/actions/train-action
         with:
-          name: trained-equinix-models
-        
-      - name: unzip models
-        run: unzip trained-equinix-models.zip -d trained-equinix-models
-        
-      - name: mv models to root
-        run: sudo mv ./trained-equinix-models /
-
-      - name: start http server for models
+          model_export_path: /tmp/trained-equinix-models
+      
+      - name: check trained equinix paths
         run: |
-          python3 ${GITHUB_WORKSPACE}/util/convert_models_to_http_routes.py \
-            --directory /trained-equinix-models --port 8080 &
-          sleep 30
-        
-      - name: Run playbook
+          ls -l /tmp/trained-equinix-models/AbsPower
+          ls -l /tmp/trained-equinix-models/DynPower
+      
+      - name: Run Validation Playbooks
         run: |
-          ls -l /trained-equinix-models
           cd ${GITHUB_WORKSPACE}/ansible
           cp roles/kvm_vm/files/meta-data /tmp/meta-data
           cp cloud-init-script.sh /tmp/cloud-init-script.sh
@@ -89,46 +68,35 @@ jobs:
           ansible-playbook -i inventory.yml metrics_playbook.yml
           echo "Install Kepler"
           ansible-playbook -i inventory.yml -vvv kepler_playbook.yml -e "target_host=localhost"
-
-          echo "Install Model Server"
-          ansible-playbook -i inventory.yml -vvv model_server_playbook.yml \
-            -e "node_components_init_url=http://localhost:8080/AbsPower/BPFOnly/SVRRegressorTrainer_-1.zip"
-          
           echo "Create ssh tunnel"
           ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
-          
-          # perform validation
-          sleep 30
-          
-          ansible-playbook -i inventory.yml -vvv model_server_restart.yml \
-            -e "node_components_init_url=http://localhost:8080/AbsPower/BPFOnly/SGDRegressorTrainer_-1.zip"
-            
-          # perform validation
-          sleep 30
 
-        #   echo "Run validation test"
-        #   ansible-playbook -vvv kepler_validator.yml
-        #   echo "Checkout the report"
-        #   ls /tmp
-        #   cat /tmp/report-*.md || true
-        #   # create a directory to store the artifacts, the directory is the current date 
-        #   set -x
-        #   export DATE_STR=$(date +%Y-%m-%d)
-        #   cd ${GITHUB_WORKSPACE}
-        #   mkdir -p docs/validation/${DATE_STR}
-        #   export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
-        #   # copy the report to the directory
-        #   VAL_REPORT_NAME=report-${KEPLER_TAG}-model-server.md
-        #   VAL_DIRNAME=validator-${KEPLER_TAG}-model-server
-        #   mv /tmp/validator-${KEPLER_TAG}/report-${KEPLER_TAG}.md docs/validation/${DATE_STR}/$VAL_REPORT_NAME
-        #   cp -r /tmp/validator-${KEPLER_TAG} docs/validation/${DATE_STR}/$VAL_DIRNAME
-        #   echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-model-server " | [Report](validation/${DATE_STR}/$VAL_REPORT_NAME) | [Artifacts](validation/${DATE_STR}/$VAL_DIRNAME) |" \
-        #     >> docs/kepler-model-validation.md
+          echo "Install Model Server"
+          ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
+          
+          echo "Pass Trained Models to VM"
+          ansible-playbook -i inventory.yml -v deploy_http_model_server.yml
+          
+          target_models_list="${{ github.event.inputs.target_models }}"
+          IFS=',' read -r -a models <<< "$target_models_list"
+          for model in "${models[@]}"
+          do
+            echo "Running Model Server Playbook: $model"
+            model_url="http://localhost:8080/${model}_-1.zip"
+            ansible-playbook -i inventory.yml -vvv model_server_restart.yml \
+              -e "node_components_init_url=$model_url"
+            echo "Run validation test"
+            ansible-playbook -vvv kepler_validator.yml
+            echo "Validation Finished"
+          done
+          
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   Cleanup:
     name: "Cleanup"
     runs-on: ubuntu-latest
-    needs: [Install]
+    needs: [Validate]
 
     steps:
       - name: delete runner
@@ -136,4 +104,4 @@ jobs:
         with:
           authToken: ${{ secrets.EQUINIX_API_TOKEN }}
           projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
-          runnerName: ${{ needs.Install.outputs.runner-name }}
+          runnerName: ${{ needs.Validate.outputs.runner-name }}

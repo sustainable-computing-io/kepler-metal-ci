@@ -29,7 +29,7 @@
 
     - name: Install Model Server Dependencies
       ansible.builtin.shell:
-        cmd: python3.11 -m pip3.11 install -e "{{ model_server_path }}"
+        cmd: PYTHONPATH=${PYTHONPATH}:./ python3.11 -m pip install -e "{{ model_server_path }}"
 
     - name: Train Models
       ansible.builtin.shell: |
@@ -45,10 +45,11 @@
 
         chmod +x {{ stress_test_script_path }}
         export START_TIME=$(date +%s)
-        for i in {1..{{ stress_iterations }}}; do
-          echo "Iteration: $i"
-          {{ stress_test_script_path }}
-        done 
+        # for i in {1..{{ stress_iterations }}}; do
+        #   echo "Iteration: $i"
+        #   {{ stress_test_script_path }}
+        # done 
+        sleep 60
         export END_TIME=$(date +%s)
         export INTERVAL=$((END_TIME - START_TIME))
         echo $INTERVAL
