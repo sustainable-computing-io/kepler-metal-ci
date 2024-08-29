@@ -1,5 +1,5 @@
-vcpu_count: 16
-memory_size: 32768
+vcpu_count: 10
+memory_size: 16384
 cpu_pinning:
   - 0
   - 1
@@ -11,13 +11,7 @@ cpu_pinning:
   - 7
   - 8
   - 9
-  - 10
-  - 11
-  - 12
-  - 13
-  - 14
-  - 15
-isolated_cores: 0-15
+isolated_cores: 0-9
 vm_name: my-vm
 vm_disk_path: /var/lib/libvirt/images/my-vm.qcow2
 backup_vm_disk_path: /var/lib/libvirt/images/my-vm-bak.qcow2
