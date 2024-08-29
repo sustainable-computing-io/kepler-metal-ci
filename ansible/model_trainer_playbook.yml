@@ -33,7 +33,6 @@
 
     - name: Train Models
       ansible.builtin.shell: |
-        
         echo $DATAPATH
         mkdir -p "$DATAPATH"
         echo $MODEL_PATH
