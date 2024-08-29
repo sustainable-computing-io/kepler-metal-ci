@@ -16,80 +16,80 @@
       "threads": "2",
       "sockets": "1",
       "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp vnmi md_clear flush_l1d arch_capabilities",
-      "dram": "32762368 kB"
+      "dram": "32762396 kB"
     },
     {
       "type": "vm",
       "model": "Intel(R) Xeon(R) E-2278G CPU @ 3.40GHz",
-      "cores": "16",
+      "cores": "10",
       "threads": "1",
-      "sockets": "16",
+      "sockets": "10",
       "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves arat vnmi umip md_clear flush_l1d arch_capabilities",
-      "dram": "32601164 kB"
+      "dram": "16112272 kB"
     }
   ],
   "result": [
     {
       "metric-name": "platform_dynamic",
       "value": {
-        "mse": 3380.8015235223525,
-        "mape": 98.80200019377983,
+        "mse": 624.9961295707443,
+        "mape": 119.48780324825212,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "package_dynamic",
       "value": {
-        "mse": 990.407341266975,
-        "mape": 58.146856040532015,
+        "mse": 1062.6149718619133,
+        "mape": 89.92175595041552,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "core_dynamic",
       "value": {
-        "mse": 987.8990573269152,
-        "mape": 58.11905557282473,
+        "mse": 1059.730361505459,
+        "mape": 89.89659546422862,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "dram_dynamic",
       "value": {
-        "mse": 0.517170479966703,
-        "mape": Infinity,
+        "mse": 0.21994025715007987,
+        "mape": 8633.9286082309,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "platform_idle",
       "value": {
-        "mse": 3924.3185002064483,
-        "mape": 5770.314801269815,
+        "mse": 3916.2051471471395,
+        "mape": 5437.569392246323,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "package_idle",
       "value": {
-        "mse": 20639.040082210868,
-        "mape": 98364.4669191379,
+        "mse": 20636.530340381785,
+        "mape": 92251.9626152608,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "core_idle",
       "value": {
-        "mse": 20644.97779258985,
-        "mape": 114753.76318627171,
+        "mse": 20643.087004187986,
+        "mape": 108239.5942172104,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "dram_idle",
       "value": {
-        "mse": 344.33783627188063,
-        "mape": 31151.372056685595,
+        "mse": 344.0695298969112,
+        "mape": 27794.70159944006,
         "status": "mape passed: True, mse passed: True"
       }
     }
