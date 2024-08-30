@@ -2,8 +2,8 @@
 
 ## Build Info
 
-   - `kepler_exporter_build_info{arch="amd64", branch="main", instance="localhost:8888", job="metal", os="linux", revision="9425830c7f23245a163f4e6760e77e319e00a07f", version="v0.7.11-172-g9425830c-dirty"}`
-   - `kepler_exporter_build_info{arch="amd64", branch="main", instance="localhost:9999", job="vm", os="linux", revision="9425830c7f23245a163f4e6760e77e319e00a07f", version="v0.7.11-172-g9425830c-dirty"}`
+   - `kepler_exporter_build_info{arch="amd64", branch="main", instance="localhost:8888", job="metal", os="linux", revision="0433ade825139250eb1179d780ae7253208f9089", version="v0.7.11-173-g0433ade8-dirty"}`
+   - `kepler_exporter_build_info{arch="amd64", branch="main", instance="localhost:9999", job="vm", os="linux", revision="0433ade825139250eb1179d780ae7253208f9089", version="v0.7.11-173-g0433ade8-dirty"}`
 ## Node Info
 
    - `kepler_node_info{components_power_source="rapl-sysfs", cpu_architecture="Coffee Lake", instance="localhost:8888", job="metal", platform_power_source="acpi", source="os"}`
@@ -22,23 +22,23 @@
 | Intel(R) Xeon(R) E-2278G CPU @ 3.40GHz | 10 | 10 | 1 | `fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves arat vnmi umip md_clear flush_l1d arch_capabilities` |
 ## Validation Results
 
-   - Started At: `2024-08-30 02:42:15.548314`
-   - Ended   At: `2024-08-30 02:58:58.333470`
-   - Duration  : `0:16:42.785156`
+   - Started At: `2024-08-30 12:17:26.457535`
+   - Ended   At: `2024-08-30 12:34:09.868736`
+   - Duration  : `0:16:43.411201`
 ## Validations
 
 ### Summary
 
 | Name | MSE | MAPE | Pass / Fail |
 | --- | --- | --- | --- |
-| platform - dynamic | 6864.72 | inf | PASS |
-| package - dynamic | 954.81 | 190.65 | PASS |
-| core - dynamic | 963.35 | 187.73 | PASS |
+| platform - dynamic | 6886.75 | inf | PASS |
+| package - dynamic | 933.32 | 121.62 | PASS |
+| core - dynamic | 941.43 | 121.00 | PASS |
 | dram - dynamic | 0.23 | inf | PASS |
-| platform - idle | 9911622698.03 | 99.94 | PASS |
-| package - idle | 20628.94 | 79663.53 | PASS |
-| core - idle | 20638.20 | 97250.85 | PASS |
-| dram - idle | 344.72 | 37751.58 | PASS |
+| platform - idle | 8665619267.20 | 99.93 | PASS |
+| package - idle | 20633.53 | 86842.86 | PASS |
+| core - idle | 20642.24 | 106558.22 | PASS |
+| dram - idle | 344.69 | 37035.61 | PASS |
 ### Details
 
 #### platform - dynamic
@@ -49,7 +49,7 @@
    - Expected: `rate( kepler_node_platform_joules_total{ job="vm", mode="dynamic", }[20s] ) `
 
 **Results**:
-   - MSE  : `6864.72`
+   - MSE  : `6886.75`
    - MAPE : `inf %`
 #### package - dynamic
 
@@ -59,8 +59,8 @@
    - Expected: `rate( kepler_node_package_joules_total{ job="vm", mode="dynamic", }[20s] ) `
 
 **Results**:
-   - MSE  : `954.81`
-   - MAPE : `190.65 %`
+   - MSE  : `933.32`
+   - MAPE : `121.62 %`
 #### core - dynamic
 
 
@@ -69,8 +69,8 @@
    - Expected: `rate( kepler_node_core_joules_total{ job="vm", mode="dynamic", }[20s] ) `
 
 **Results**:
-   - MSE  : `963.35`
-   - MAPE : `187.73 %`
+   - MSE  : `941.43`
+   - MAPE : `121.00 %`
 #### dram - dynamic
 
 
@@ -89,8 +89,8 @@
    - Expected: `rate( kepler_node_platform_joules_total{ job="vm", mode="idle", }[20s] ) `
 
 **Results**:
-   - MSE  : `9911622698.03`
-   - MAPE : `99.94 %`
+   - MSE  : `8665619267.20`
+   - MAPE : `99.93 %`
 #### package - idle
 
 
@@ -99,8 +99,8 @@
    - Expected: `rate( kepler_node_package_joules_total{ job="vm", mode="idle", }[20s] ) `
 
 **Results**:
-   - MSE  : `20628.94`
-   - MAPE : `79663.53 %`
+   - MSE  : `20633.53`
+   - MAPE : `86842.86 %`
 #### core - idle
 
 
@@ -109,8 +109,8 @@
    - Expected: `rate( kepler_node_core_joules_total{ job="vm", mode="idle", }[20s] ) `
 
 **Results**:
-   - MSE  : `20638.20`
-   - MAPE : `97250.85 %`
+   - MSE  : `20642.24`
+   - MAPE : `106558.22 %`
 #### dram - idle
 
 
@@ -119,5 +119,5 @@
    - Expected: `rate( kepler_node_dram_joules_total{ job="vm", mode="idle", }[20s] ) `
 
 **Results**:
-   - MSE  : `344.72`
-   - MAPE : `37751.58 %`
+   - MSE  : `344.69`
+   - MAPE : `37035.61 %`
