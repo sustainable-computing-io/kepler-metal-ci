@@ -4,7 +4,7 @@
   tasks:
     - name: Copying models from local to vm
       copy:
-        src: " {{ local_model_directory }} "
+        src: "{{ local_model_directory }}"
         dest: "{{ vm_model_directory }}"
 
     - name: yum install python
