@@ -29,11 +29,10 @@
 
     - name: Install Model Server Dependencies
       ansible.builtin.shell:
-        cmd: python3.11 -m pip3.11 install -e "{{ model_server_path }}"
+        cmd: PYTHONPATH=${PYTHONPATH}:./ python3.11 -m pip install -e "{{ model_server_path }}"
 
     - name: Train Models
       ansible.builtin.shell: |
-        
         echo $DATAPATH
         mkdir -p "$DATAPATH"
         echo $MODEL_PATH

@@ -1,0 +1,32 @@
+- name: Deploy Model Server
+  hosts: model_server
+  become: yes
+  vars:
+    model_config: |
+      NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
+      NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
+      NODE_TOTAL_INIT_URL={{ node_total_init_url }}
+      NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}
+  tasks:
+    - name: Update MODEL_CONFIG
+      ansible.builtin.copy:
+        dest: /mnt/kepler-config/kepler.config/MODEL_CONFIG
+        content: "{{ model_config }}"
+
+    - name: Restart Estimator service
+      ansible.builtin.systemd:
+        name: container-estimator
+        state: restarted
+
+    - name: Restart Model Server service
+      ansible.builtin.systemd:
+        name: container-model-server
+        state: restarted
+
+    - name: Restart Kepler service
+      ansible.builtin.systemd:
+        name: container-kepler
+        state: restarted
+    
+    - name: Include Validation for Kepler and Model Server
+      include_tasks: tasks/validate_model_server.yml
