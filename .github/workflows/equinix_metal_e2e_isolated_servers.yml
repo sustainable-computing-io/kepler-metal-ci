@@ -21,6 +21,7 @@ jobs:
     
   Create-runner:
     name: "Create Runner"
+    needs: Train-models
     uses: ./.github/workflows/create_equinix_runner.yml
     secrets: inherit
 
