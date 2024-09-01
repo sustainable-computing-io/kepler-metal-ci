@@ -1,0 +1,21 @@
+name: Cleanup
+
+on:
+  workflow_call:
+    inputs:
+      runner_name:
+        required: true
+        type: string
+
+jobs:
+  Cleanup:
+    name: "Cleanup"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: delete runner
+        uses: rootfs/metal-delete-action@main
+        with:
+          authToken: ${{ secrets.EQUINIX_API_TOKEN }}
+          projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
+          runnerName: ${{ inputs.runner_name }}

@@ -1,0 +1,20 @@
+name: Create Runner
+
+on:
+  workflow_call:
+
+jobs:
+  Create-runner:
+    name: "Create Runner"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: metal-runner-action
+        uses: equinix-labs/metal-runner-action@v0.3.0
+        with:
+          github_token: ${{ secrets.GH_SELF_HOSTED_RUNNER_TOKEN }}
+          metal_auth_token: ${{ secrets.EQUINIX_API_TOKEN }}
+          metal_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
+          metro: "da"
+          plan: "c3.small.x86"
+          os: "rhel_9"
