@@ -83,8 +83,8 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   Cleanup:
-    needs: [Install]
     name: "Cleanup"
+    needs: [Install]
     uses: ./.github/workflows/clean_equinix_runner.yml
     secrets: inherit
     with:
