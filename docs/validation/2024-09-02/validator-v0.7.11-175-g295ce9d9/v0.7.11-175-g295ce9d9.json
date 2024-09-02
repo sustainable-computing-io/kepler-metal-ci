@@ -1,8 +1,8 @@
 {
   "file_path": "/tmp/validator-v0.7.11-175-g295ce9d9/v0.7.11-175-g295ce9d9.json",
   "build_info": [
-    "{\"arch\": \"amd64\", \"branch\": \"main\", \"instance\": \"localhost:8888\", \"job\": \"metal\", \"os\": \"linux\", \"revision\": \"0433ade825139250eb1179d780ae7253208f9089\", \"version\": \"v0.7.11-173-g0433ade8-dirty\"}",
-    "{\"arch\": \"amd64\", \"branch\": \"main\", \"instance\": \"localhost:9999\", \"job\": \"vm\", \"os\": \"linux\", \"revision\": \"0433ade825139250eb1179d780ae7253208f9089\", \"version\": \"v0.7.11-173-g0433ade8-dirty\"}"
+    "{\"arch\": \"amd64\", \"branch\": \"main\", \"instance\": \"localhost:8888\", \"job\": \"metal\", \"os\": \"linux\", \"revision\": \"295ce9d9436794572a31cf60a6478a6445d36603\", \"version\": \"v0.7.11-175-g295ce9d9-dirty\"}",
+    "{\"arch\": \"amd64\", \"branch\": \"main\", \"instance\": \"localhost:9999\", \"job\": \"vm\", \"os\": \"linux\", \"revision\": \"295ce9d9436794572a31cf60a6478a6445d36603\", \"version\": \"v0.7.11-175-g295ce9d9-dirty\"}"
   ],
   "node_info": [
     "{\"components_power_source\": \"rapl-sysfs\", \"cpu_architecture\": \"Coffee Lake\", \"instance\": \"localhost:8888\", \"job\": \"metal\", \"platform_power_source\": \"acpi\", \"source\": \"os\"}",
@@ -16,7 +16,7 @@
       "threads": "2",
       "sockets": "1",
       "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp vnmi md_clear flush_l1d arch_capabilities",
-      "dram": "32594124 kB"
+      "dram": "32594112 kB"
     },
     {
       "type": "vm",
@@ -25,38 +25,38 @@
       "threads": "1",
       "sockets": "10",
       "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves arat vnmi umip md_clear flush_l1d arch_capabilities",
-      "dram": "16112276 kB"
+      "dram": "16112272 kB"
     }
   ],
   "result": [
     {
       "metric-name": "platform_absolute",
       "value": {
-        "mse": 32384915911.514843,
-        "mape": 99.92447223333146,
+        "mse": 29324884298.253506,
+        "mape": 99.92005062413457,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "package_absolute",
       "value": {
-        "mse": 14211.665674797307,
-        "mape": 887.886082777117,
+        "mse": 14280.109366910023,
+        "mape": 909.7261359166882,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "core_absolute",
       "value": {
-        "mse": 14196.500900898085,
-        "mape": 899.200947533034,
+        "mse": 14266.14095431718,
+        "mape": 921.2450322052366,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "platform_dynamic",
       "value": {
-        "mse": 6805.494394457039,
+        "mse": 6945.981922504561,
         "mape": Infinity,
         "status": "mape passed: True, mse passed: True"
       }
@@ -64,23 +64,23 @@
     {
       "metric-name": "package_dynamic",
       "value": {
-        "mse": 929.1692189858345,
-        "mape": 110.0030366053832,
+        "mse": 904.6195974633904,
+        "mape": 132.37275027490904,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "core_dynamic",
       "value": {
-        "mse": 937.4908216094101,
-        "mape": 109.88481557992684,
+        "mse": 912.3553077916791,
+        "mape": 132.14851238960742,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "dram_dynamic",
       "value": {
-        "mse": 0.22235662163222927,
+        "mse": 0.23191366312484024,
         "mape": Infinity,
         "status": "mape passed: True, mse passed: True"
       }
@@ -88,32 +88,32 @@
     {
       "metric-name": "platform_idle",
       "value": {
-        "mse": 32411107222.262722,
-        "mape": 99.96453557425279,
+        "mse": 29349976055.877495,
+        "mape": 99.96271487010077,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "package_idle",
       "value": {
-        "mse": 20587.533744723878,
-        "mape": 44404.04055749244,
+        "mse": 20592.32551186499,
+        "mape": 46848.99771339642,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "core_idle",
       "value": {
-        "mse": 20604.608971644393,
-        "mape": 54564.47816074124,
+        "mse": 20608.17770643235,
+        "mape": 57318.13894000653,
         "status": "mape passed: True, mse passed: True"
       }
     },
     {
       "metric-name": "dram_idle",
       "value": {
-        "mse": 343.34014934732585,
-        "mape": 21437.451352168948,
+        "mse": 342.69502755172135,
+        "mape": 17837.73323915986,
         "status": "mape passed: True, mse passed: True"
       }
     }
