@@ -1,0 +1,6 @@
+---
+---
+- hosts: node_exporter_servers
+  become: yes
+  roles:
+    - node-exporter
