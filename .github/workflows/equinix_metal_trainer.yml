@@ -1,0 +1,56 @@
+name: Equinix Metal Trainer
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write
+  packages: write
+
+jobs:
+  Create-runner:
+    name: "Create Runner"
+    uses: ./.github/workflows/create_equinix_runner.yml
+    secrets: inherit
+
+  Train-models:
+    name: "Train Models"
+    needs: Create-runner
+    runs-on: self-hosted
+    continue-on-error: true
+    outputs:
+      runner-name: ${{ runner.name }}
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Setup Runner Action
+        uses: ./.github/actions/setup-action
+
+      - name: Run Trainer Action
+        uses: ./.github/actions/train-action
+        with:
+          model_export_path: /tmp/trained-equinix-models
+
+      # - name: Archive Models
+      #   run: tar -czf trained-equinix-models.tar.gz /refined-models/
+
+      - name: Upload models as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: trained-equinix-models
+          path: /tmp/trained-equinix-models
+          retention-days: 2
+
+  Cleanup:
+    name: "Cleanup"
+    needs: [Train-models]
+    uses: ./.github/workflows/clean_equinix_runner.yml
+    secrets: inherit
+    with:
+      runner_name: ${{ needs.Train-models.outputs.runner-name }}

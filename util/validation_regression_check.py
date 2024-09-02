@@ -10,10 +10,18 @@ repo_name = "sustainable-computing-io/kepler-metal-ci"
 # Directory containing the validation reports
 validation_dir = "docs/validation"
 
+
 def list_latest_folders(directory, n=5):
-    folders = [f for f in os.listdir(directory) if os.path.isdir(os.path.join(directory, f))]
-    sorted_folders = sorted(folders, key=lambda date: datetime.strptime(date, '%Y-%m-%d'), reverse=True)
+    folders = [
+        f for f in os.listdir(directory)
+        if os.path.isdir(os.path.join(directory, f))
+    ]
+    sorted_folders = sorted(
+        folders,
+        key=lambda date: datetime.strptime(date, '%Y-%m-%d'),
+        reverse=True)
     return sorted_folders[:n]
+
 
 def read_report(folder_path):
     for file_name in os.listdir(folder_path):
@@ -22,6 +30,7 @@ def read_report(folder_path):
             with open(os.path.join(folder_path, file_name), 'r') as file:
                 return file.read()
     return None
+
 
 def check_regression(report_content):
     prompt = f"""
@@ -35,26 +44,24 @@ def check_regression(report_content):
     In order to help parsing the analysis, please output the summary first. 
     The summary should be in this format: 
     if there is any significant regression, the summary is exactly "Significant Regression Detected" and then followed by those with only the significant increase and conclusion. 
-    Otherwise, the summary should be exactly "No Significant Regression" and then stop generating any content, just stop there.
+    Otherwise, the summary should be exactly "No Issue" and then stop generating any content, just stop there.
     """
-    client = OpenAI(
-        api_key=os.environ.get("OPENAI_API_KEY"),
-    )
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), )
     completion = client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
+        messages=[{
+            "role": "user",
+            "content": prompt,
+        }],
         model="gpt-4-turbo",
         temperature=0,
     )
     print(completion.choices[0].message.content)
     return completion.choices[0].message.content
 
+
 def create_github_issue(repo, title, body):
     repo.create_issue(title=title, body=body)
+
 
 def main():
     latest_folders = list_latest_folders(validation_dir, 5)
@@ -73,7 +80,8 @@ def main():
     # Analyze the result for regression
     print("Analyzing the result...")
     regression_detected = False
-    if "Significant Regression Detected".lower() in regression_check_result.lower():
+    if "Significant Regression Detected".lower(
+    ) in regression_check_result.lower():
         regression_detected = True
 
     # Create GitHub issue if regression detected
@@ -84,6 +92,7 @@ def main():
         title = "Regression Detected in Model Validation Performance"
         body = regression_check_result
         create_github_issue(repo, title, body)
+
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,5 @@
-- name: Setup Kepler and OpenMetrics
-  hosts: all
+- name: Setup Kepler
+  hosts: "{{ target_host | default('all') }}"
   become: yes
   tasks:
     - name: Install podman
@@ -61,73 +61,6 @@
 
     - name: Dump Kepler metrics
       ansible.builtin.shell: curl -s http://localhost:8888/metrics | grep ^kepler_
-
-    - name: Install OpenMetrics
-      ansible.builtin.yum:
-        name: pcp-pmda-openmetrics
-        state: present
-
-    - name: Configure OpenMetrics for Kepler
-      ansible.builtin.shell: |
-        cd /var/lib/pcp/pmdas/openmetrics/
-        echo "http://localhost:8888/metrics" > config.d/kepler.url
-        ./Install
-
-    - name: Validate Kepler metrics
-      ansible.builtin.shell: |
-        pminfo openmetrics | grep kepler
-        pmrep -s 10 openmetrics.kepler.kepler_node_package_joules_total
-
-    - name: Create Kepler pmlogger config directory
-      ansible.builtin.file:
-        path: /etc/pcp/pmlogconf/kepler
-        state: directory
-
-    - name: Create Kepler pmlogger config
-      ansible.builtin.copy:
-        dest: /etc/pcp/pmlogconf/kepler/kepler
-        content: |
-          #pmlogconf-setup 2.0
-          ident  metrics used by the kepler node
-          probe  openmetrics.kepler.kepler_node_package_joules_total
-            openmetrics.kepler.kepler_node_package_joules_total
-            openmetrics.kepler.kepler_node_dram_joules_total
-            openmetrics.kepler.kepler_node_core_joules_total
-
-    - name: Configure pmlogger with Kepler
-      ansible.builtin.command: pmlogconf -r -g kepler /etc/pcp/pmlogconf/kepler/kepler
-
-    - name: Restart pmlogger
-      ansible.builtin.systemd:
-        name: pmlogger
-        state: restarted
-
-    - name: Restart pmproxy
-      ansible.builtin.systemd:
-        name: pmproxy
-        state: restarted
-
-    - name: Wait for pmseries
-      ansible.builtin.pause:
-        seconds: 10
-
-    - name: Check pmseries for Kepler metrics
-      ansible.builtin.shell: pmseries openmetrics.kepler.kepler_node_package_joules_total
-      register: pmseries_output
-
-    - name: Debug pmseries output
-      ansible.builtin.debug:
-        var: pmseries_output.stdout
-
-    - name: Check pmproxy metrics query
-      ansible.builtin.uri:
-        url: "http://localhost:44322/metrics?names=openmetrics.kepler.kepler_node_package_joules_total"
-        method: GET
-      register: pmproxy_output
-
-    - name: Debug pmproxy output
-      ansible.builtin.debug:
-        var: pmproxy_output
 
     - name: Install stress-ng
       ansible.builtin.dnf:

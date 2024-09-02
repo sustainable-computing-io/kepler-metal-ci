@@ -14,18 +14,8 @@ permissions:
 jobs:
   Create-runner:
     name: "Create Runner"
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: metal-runner-action
-        uses: rootfs/metal-runner-action@main
-        with:
-          github_token: ${{ secrets.GH_SELF_HOSTED_RUNNER_TOKEN }}
-          metal_auth_token: ${{ secrets.EQUINIX_API_TOKEN }}
-          metal_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
-          metro: "da"
-          plan: "c3.small.x86"
-          os: "rhel_9"
+    uses: ./.github/workflows/create_equinix_runner.yml
+    secrets: inherit
 
   Install:
     name: "Install"
@@ -51,6 +41,16 @@ jobs:
           sudo ansible-galaxy collection install community.crypto
           sudo ansible-galaxy collection install community.libvirt
           sudo ansible-config init --disabled | sed "s/;host_key_checking=True/host_key_checking=False/g" | sed "s/;private_key_file=/private_key_file=~\/.ssh\/ansible_rsa/g" | sed 's|;roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles" }}|roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles;/root/.ansible/collections/ansible_collections/community/libvirt/roles" }}|' > /etc/ansible/ansible.cfg
+
+      - name: List available RAPL domains
+        run: |
+          for file in $(sudo find -L /sys/class/powercap/intel-rapl -name name  2>/dev/null); do cat $file;  done  | sort -n| uniq | tee -a /tmp/rapl-domain-availability.txt
+          # expected typical output if all domains are supported
+          # - core
+          # - dram
+          # - package-0
+          # - psys # relatively new power management domain, only available after Skylake
+          # - uncore
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -83,6 +83,7 @@ jobs:
           export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
           # copy the report to the directory
           mv /tmp/validator-${KEPLER_TAG}/report-${KEPLER_TAG}.md docs/validation/${DATE_STR}/
+          mv /tmp/rapl-domain-availability.txt docs/validation/${DATE_STR}/
           cp -r /tmp/validator-${KEPLER_TAG} docs/validation/${DATE_STR}/
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](validation/${DATE_STR}/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}) |" \
             >> docs/kepler-model-validation.md
@@ -94,16 +95,29 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      - name: Update model validation chart
+        run: |
+          export DATE_STR=$(date +%Y-%m-%d)
+          cd ${GITHUB_WORKSPACE}
+          cd docs/analytics
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python ./kepler_analytics.py
+          # update git
+          git config user.email "dependabot[bot]@users.noreply.github.com"
+          git config user.name "dependabot[bot]"
+          cd ${GITHUB_WORKSPACE}
+          git add docs/analytics/*
+          git add docs/kepler-model-validation-chart.md
+          git commit -m "Add validation chart for ${DATE_STR}" -s
+          git push
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   Cleanup:
     name: "Cleanup"
-    runs-on: ubuntu-latest
     needs: [Install]
-
-    steps:
-      - name: delete runner
-        uses: rootfs/metal-delete-action@main
-        with:
-          authToken: ${{ secrets.EQUINIX_API_TOKEN }}
-          projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
-          runnerName: ${{ needs.Install.outputs.runner-name }}
+    uses: ./.github/workflows/clean_equinix_runner.yml
+    secrets: inherit
+    with:
+      runner_name: ${{ needs.Install.outputs.runner-name }}

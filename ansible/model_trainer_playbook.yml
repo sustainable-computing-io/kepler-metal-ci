@@ -1,0 +1,81 @@
+- name: Run Model Trainer
+  hosts: model_trainer
+  become: yes
+
+  tasks:
+    - name: yum install stress-ng, git and python3.11
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - python3.11
+        - python3.11-pip
+        - stress-ng
+
+    - name: Clone Model Server
+      ansible.builtin.git:
+        repo: "{{ model_server_repo }}"
+        dest: "{{ model_server_path }}"
+        version: main
+        force: yes
+
+    - name: Clone Kepler
+      ansible.builtin.git:
+        repo: "{{ kepler_repo }}"
+        dest: "{{ kepler_path }}"
+        version: main
+        force: yes
+
+    - name: Install Model Server Dependencies
+      ansible.builtin.shell:
+        cmd: PYTHONPATH=${PYTHONPATH}:./ python3.11 -m pip install -e "{{ model_server_path }}"
+
+    - name: Train Models
+      ansible.builtin.shell: |
+        echo $DATAPATH
+        mkdir -p "$DATAPATH"
+        echo $MODEL_PATH
+        mkdir -p "$MODEL_PATH"
+        echo {{ model_export_path }}
+        mkdir -p {{ model_export_path }}
+
+        # Stress
+
+        chmod +x {{ stress_test_script_path }}
+        export START_TIME=$(date +%s)
+        for i in {1..{{ stress_iterations }}}; do
+          echo "Iteration: $i"
+          {{ stress_test_script_path }}
+        done 
+        export END_TIME=$(date +%s)
+        export INTERVAL=$((END_TIME - START_TIME))
+        echo $INTERVAL
+
+        # Collect
+
+        python3.11 {{ model_train_path }} query \
+          --benchmark $BENCHMARK \
+          --server $PROM_URL \
+          --output kepler_query \
+          --interval $INTERVAL \
+          --id $COLLECT_ID
+
+        # Train
+
+        python3.11 {{ model_train_path }} train \
+          --pipeline-name $PIPELINE_NAME \
+          --input kepler_query --id $COLLECT_ID
+
+        
+        # Move to Models Directory
+
+        mv $MODEL_PATH/$PIPELINE_NAME/rapl-sysfs/* {{ model_export_path }}
+      
+      environment:
+        BENCHMARK: "{{ benchmark }}"
+        PROM_URL: "{{ prom_url }}"
+        COLLECT_ID: "{{ collect_id }}"
+        DATAPATH: "{{ data_path }}"
+        MODEL_PATH: "{{ model_path }}"
+        PIPELINE_NAME: "{{ pipeline_name }}"

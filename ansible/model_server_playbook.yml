@@ -1,0 +1,152 @@
+- name: Deploy Model Server
+  hosts: model_server
+  become: yes
+  vars:
+    model_config: |
+      NODE_TOTAL_ESTIMATOR={{ node_total_estimator }}
+      NODE_COMPONENTS_ESTIMATOR={{ node_components_estimator }}
+      NODE_TOTAL_INIT_URL={{ node_total_init_url }}
+      NODE_COMPONENTS_INIT_URL={{ node_components_init_url }}
+  tasks:
+    - name: Install podman
+      ansible.builtin.dnf:
+        name: podman
+        state: present
+
+    - name: Create kepler.config
+      ansible.builtin.file:
+        path: /mnt/kepler-config/kepler.config
+        state: directory
+
+    - name: Create MODEL_CONFIG
+      ansible.builtin.copy:
+        dest: /mnt/kepler-config/kepler.config/MODEL_CONFIG
+        content: "{{ model_config }}"
+
+    - name: Create Kepler systemd unit file
+      copy:
+        content: |
+          [Unit]
+          Description=Podman container-kepler.service
+          Documentation=man:podman-generate-systemd(1)
+          Wants=network-online.target
+          After=network-online.target
+          RequiresMountsFor=%t/containers
+    
+          [Service]
+          Environment=PODMAN_SYSTEMD_UNIT=%n
+          Restart=always
+          TimeoutStopSec=70
+          ExecStartPre=/bin/rm -f %t/%n.ctr-id
+          ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="{{ model_server_enable }}" -e MODEL_SERVER_URL="{{ model_server_url }}" \
+              -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc -v /tmp:/tmp -v /mnt/kepler-config:/etc/kepler \
+              --entrypoint /usr/bin/bash quay.io/sustainable_computing_io/kepler:latest \
+              -c 'echo "Waiting for estimator socket"; \
+              until [[ -e /tmp/estimator.sock ]]; do \
+              echo " ... waiting for socket"; \
+              sleep 1; \
+              done; \
+              echo "starting kepler"; \
+              set -x; \
+              /usr/bin/kepler -address="0.0.0.0:8888" -v="8"'
+          ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+          ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+          Type=notify
+          NotifyAccess=all
+    
+          [Install]
+          WantedBy=multi-user.target default.target
+        dest: /etc/systemd/system/container-kepler.service
+
+    - name: Create Estimator systemd unit file
+      copy:
+        content: |
+          [Unit]
+          Description=Podman container-estimator.service
+          Documentation=man:podman-generate-systemd(1)
+          Wants=network-online.target
+          After=network-online.target
+          RequiresMountsFor=%t/containers
+    
+          [Service]
+          Environment=PODMAN_SYSTEMD_UNIT=%n
+          Restart=always
+          TimeoutStopSec=70
+          ExecStartPre=/bin/rm -f %t/%n.ctr-id
+          ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name estimator \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="{{ model_server_enable }}" -e MODEL_SERVER_URL="{{ model_server_url }}" \
+              -v /mnt:/mnt -v /tmp:/tmp -v /mnt/kepler-config:/etc/kepler \
+              --entrypoint {{ model_server_entrypoint }} \
+              -u src/kepler_model/estimate/estimator.py
+          ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+          ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+          Type=notify
+          NotifyAccess=all
+    
+          [Install]
+          WantedBy=multi-user.target default.target
+        dest: /etc/systemd/system/container-estimator.service
+
+    - name: Create Model Server systemd unit file
+      copy:
+        content: |
+          [Unit]
+          Description=Podman container-model-server.service
+          Documentation=man:podman-generate-systemd(1)
+          Wants=network-online.target
+          After=network-online.target
+          RequiresMountsFor=%t/containers
+    
+          [Service]
+          Environment=PODMAN_SYSTEMD_UNIT=%n
+          Restart=always
+          TimeoutStopSec=70
+          ExecStartPre=/bin/rm -f %t/%n.ctr-id
+          ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name model-server \
+              --privileged --network=host --pid=host -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -e MODEL_SERVER_ENABLE="{{ model_server_enable }}" -e MODEL_SERVER_URL="{{ model_server_url }}" \
+              -v /mnt:/mnt -v /mnt/kepler-config:/etc/kepler \
+              -p 8100:8100 \
+              --entrypoint {{ model_server_entrypoint }} \
+              -u src/kepler_model/server/model_server.py
+          ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
+          ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
+          Type=notify
+          NotifyAccess=all
+    
+          [Install]
+          WantedBy=multi-user.target default.target
+        dest: /etc/systemd/system/container-model-server.service
+    
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Enable and start Estimator service
+      ansible.builtin.systemd:
+        name: container-estimator
+        enabled: yes
+        state: started
+
+    - name: Enable and start Model Server service
+      ansible.builtin.systemd:
+        name: container-model-server
+        enabled: yes
+        state: started
+
+    - name: Enable and start Kepler service
+      ansible.builtin.systemd:
+        name: container-kepler
+        enabled: yes
+        state: started
+
+    - name: Include Validation for Kepler and Model Server
+      include_tasks: tasks/validate_model_server.yml
+    
+    - name: Dump Kepler metrics
+      ansible.builtin.shell: curl -s http://localhost:8888/metrics | grep ^kepler_
+
+    - name: Install stress-ng
+      ansible.builtin.dnf:
+        name: stress-ng
+        state: present

@@ -1,0 +1,21 @@
+name: 'Setup Runner Action'
+description: 'Composite Action to Setup Metal Runner'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup runner
+      shell: bash
+      run: |
+        echo "This is runner: ${{ runner.name }}"
+        echo "Running on ${{ runner.arch }} ${{ runner.os }}"
+        # config ssh
+        sudo ssh-keygen -t rsa -b 4096 -f /root/.ssh/ansible_rsa -N ''
+        sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
+        sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        # install ansible
+        sudo dnf -y install ansible-core python3-pip
+        sudo dnf install -y rhel-system-roles
+        sudo ansible-galaxy collection install prometheus.prometheus
+        sudo ansible-galaxy collection install community.crypto
+        sudo ansible-galaxy collection install community.libvirt
+        sudo ansible-config init --disabled | sed "s/;host_key_checking=True/host_key_checking=False/g" | sed "s/;private_key_file=/private_key_file=~\/.ssh\/ansible_rsa/g" | sed 's|;roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles" }}|roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles;/root/.ansible/collections/ansible_collections/community/libvirt/roles" }}|' > /etc/ansible/ansible.cfg
