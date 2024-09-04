@@ -195,6 +195,8 @@ jobs:
 
       - name: Run kube-burner node-density w/o churn w/o kepler
         run: |
+          cp kube-burner/examples/metrics-profiles/metrics.yaml kube-burner/examples/workloads/kubelet-density/metrics.yaml
+          cd kube-burner/examples/workloads/kubelet-density
           sed -i 's/qps: 2/qps: 20/g' kubelet-density.yml
           sed -i 's/burst: 2/burst: 20/g' kubelet-density.yml
           sed -i 's/jobIterations: 25/jobIterations: 80/g' kubelet-density.yml
@@ -264,6 +266,8 @@ jobs:
 
       - name: Run kube-burner node-density w/o churn w/kepler
         run: |
+          cp kube-burner/examples/metrics-profiles/metrics.yaml kube-burner/examples/workloads/kubelet-density/metrics.yaml
+          cd kube-burner/examples/workloads/kubelet-density
           export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           ../../../kube-burner init -c kubelet-density.yml -u http://localhost:9090 --metrics-profile metrics.yaml
           # sleep a min after test
@@ -289,6 +293,8 @@ jobs:
 
       - name: Run kube-burner node-density w/ churn w/ kepler
         run: |
+          cp kube-burner/examples/metrics-profiles/metrics.yaml kube-burner/examples/workloads/kubelet-density/metrics.yaml
+          cd kube-burner/examples/workloads/kubelet-density
           export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           ../../../kube-burner init -c kubelet-density-churn.yml -u http://localhost:9090 --metrics-profile metrics.yaml
           # sleep a min after test
