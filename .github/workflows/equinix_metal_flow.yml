@@ -72,6 +72,8 @@ jobs:
           ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
           echo "Run validation test"
           ansible-playbook -vvv kepler_validator.yml
+          echo "Fetch Kepler VM logs"
+          ansible-playbook -i inventory.yml kepler_vm_logs.yml
           echo "Checkout the report"
           ls /tmp
           cat /tmp/report-*.md || true
@@ -84,6 +86,10 @@ jobs:
           # copy the report to the directory
           mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/
           mv /tmp/rapl-domain-availability.txt docs/validation/${DATE_STR}/validator-${KEPLER_TAG}/
+          # copy kepler logs
+          mkdir -p docs/validation/${DATE_STR}/validator-${KEPLER_TAG}/logs
+          mv /tmp/kepler.log docs/validation/${DATE_STR}/validator-${KEPLER_TAG}/logs/kepler-bm.log
+          mv /tmp/kepler-vm.log docs/validation/${DATE_STR}/validator-${KEPLER_TAG}/logs/kepler-vm.log
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG} " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}/artifacts) |" \
             >> docs/kepler-model-validation.md
           git config user.email "dependabot[bot]@users.noreply.github.com"

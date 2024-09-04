@@ -23,8 +23,10 @@
           TimeoutStopSec=70
           ExecStartPre=/bin/rm -f %t/%n.ctr-id
           ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
-              --privileged --network=host --pid=host --rm -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" -e ENABLE_PROCESS_METRICS="true" -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc \
-              quay.io/sustainable_computing_io/kepler:latest
+              --privileged --network=host --pid=host --rm -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" \
+              -e ENABLE_PROCESS_METRICS="true" -v /lib/modules:/lib/modules -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc \
+              --log-driver=k8s-file --log-opt path=/tmp/kepler.log \
+              quay.io/sustainable_computing_io/kepler:latest -v=1
           ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
           ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
           Type=notify
@@ -33,6 +35,16 @@
           [Install]
           WantedBy=multi-user.target default.target
         dest: /etc/systemd/system/container-kepler.service
+
+    - name: Create /tmp/kepler.log
+      ansible.builtin.file:
+        path: /tmp/kepler.log
+        state: touch
+
+    - name: Change permissions of /tmp/kepler.log
+      ansible.builtin.file:
+        path: /tmp/kepler.log
+        mode: 0755
 
     - name: Reload systemd daemon
       ansible.builtin.systemd:
@@ -61,6 +73,10 @@
 
     - name: Dump Kepler metrics
       ansible.builtin.shell: curl -s http://localhost:8888/metrics | grep ^kepler_
+      register: kepler_metrics
+
+    - ansible.builtin.debug:
+        var: kepler_metrics.stdout_lines
 
     - name: Install stress-ng
       ansible.builtin.dnf:

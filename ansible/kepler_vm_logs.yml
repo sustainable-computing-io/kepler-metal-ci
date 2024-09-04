@@ -1,0 +1,10 @@
+---
+- name: Fetch Kepler VM logs
+  hosts: kvm_hosts
+  become: yes
+
+  tasks:
+    - name: Copy the VM logs to the local
+      copy:
+        src: "/tmp/kepler.log"
+        dest: "/tmp/kepler-vm.log"
