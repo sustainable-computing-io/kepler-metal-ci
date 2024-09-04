@@ -1,4 +1,4 @@
-name: Equinix Metal Action
+name: Validation with Standalone Kepler
 
 on:
   workflow_dispatch:

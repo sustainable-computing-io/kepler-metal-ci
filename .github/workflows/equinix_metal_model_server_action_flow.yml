@@ -1,4 +1,4 @@
-name: Equinix Metal with Model Server Action
+name: Validation with Model Server
 
 on:
   workflow_dispatch:
