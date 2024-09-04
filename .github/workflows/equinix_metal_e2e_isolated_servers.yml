@@ -6,7 +6,7 @@ on:
       target_models:
         description: 'Comma Separated List of Models to Train. Format: model_type/feature_type/trainer_name'
         required: false
-        default: 'AbsPower/BPFOnly/SGDRegressorTrainer,AbsPower/BPFOnly/LinearRegressionTrainer,DynPower/BPFOnly/LogarithmicRegressionTrainer'
+        default: 'AbsPower/BPFOnly/SGDRegressorTrainer,AbsPower/BPFOnly/ExponentialRegressionTrainer,AbsPower/BPFOnly/LogarithmicRegressionTrainer,AbsPower/BPFOnly/LogisticRegressionTrainer'
 permissions:
   pull-requests: write
   contents: write
