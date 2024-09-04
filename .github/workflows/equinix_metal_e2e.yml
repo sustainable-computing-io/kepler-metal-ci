@@ -52,6 +52,9 @@ jobs:
           ls -l /tmp/trained-equinix-models/AbsPower
           ls -l /tmp/trained-equinix-models/DynPower
       
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
       - name: Run Validation Playbooks
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
@@ -85,7 +88,21 @@ jobs:
             echo "Run validation test"
             ansible-playbook -vvv kepler_validator.yml
             echo "Validation Finished"
+            FILE="/tmp/validator-*/report-*.md"
+            mkdir -p /tmp/reports/${model}
+            mv $FILE /tmp/reports/${model}
           done
+
+          export DATE_STR=$(date +%Y-%m-%d_%H-%M-%S)
+          cd ${GITHUB_WORKSPACE}
+          mkdir -p docs/train-validate-e2e/${DATE_STR}
+          mv /tmp/reports/* docs/train-validate-e2e/${DATE_STR}
+
+          git config user.email "dependabot[bot]@users.noreply.github.com"
+          git config user.name "dependabot[bot]"
+          git add docs/*
+          git commit -m "Add train-validate-e2e single server for ${DATE_STR}" -s
+          git push
           
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
