@@ -70,6 +70,8 @@ jobs:
           ansible-playbook -i inventory.yml kepler_playbook.yml
           echo "Create ssh tunnel"
           ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
+          echo "Sleeping for 1 minute to allow Kepler to be ready before running the validation test"
+          sleep 60
           echo "Run validation test"
           ansible-playbook -vvv kepler_validator.yml
           echo "Checkout the report"
