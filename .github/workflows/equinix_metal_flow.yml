@@ -66,6 +66,12 @@ jobs:
           ansible-playbook ssh_tunnel_playbook.yml
           echo "Install Prometheus"
           ansible-playbook -i inventory.yml metrics_playbook.yml
+          echo "Install Node Exporter"
+          ansible-playbook -i inventory.yml node_exporter_playbook.yml -vvv
+          echo "Verify node-exporter"
+          sudo systemctl status node_exporter || true
+          sudo ss -tuln | grep 9100 || true
+          curl -s http://localhost:9100/metrics | grep rapl || true
           echo "Install Kepler"
           ansible-playbook -i inventory.yml kepler_playbook.yml
           echo "Create ssh tunnel"
