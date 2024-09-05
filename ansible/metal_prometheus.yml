@@ -9,6 +9,9 @@
       - job_name: "metal"
         static_configs:
           - targets: ["localhost:8888"]
+      - job_name: "node-exporter"
+        static_configs:
+          - targets: ["localhost:9100"]
   roles:
     - role: prometheus.prometheus.prometheus
       vars:
