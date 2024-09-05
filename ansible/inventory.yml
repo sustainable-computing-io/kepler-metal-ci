@@ -35,7 +35,7 @@ all:
           ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
         my-vm:
           ansible_ssh_private_key_file: /tmp/vm_ssh_key
-    node_exporter_server:
+    node_exporter_servers:
       hosts:
         localhost:
           ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
