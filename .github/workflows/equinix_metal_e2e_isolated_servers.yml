@@ -90,7 +90,7 @@ jobs:
             ansible-playbook -vvv kepler_validator.yml
             echo "Validation Finished"
 
-            FILE="/tmp/validator-*/report-*.md"
+            FILE="/tmp/validator-*/*"
             mkdir -p /tmp/reports/${model}
             mv $FILE /tmp/reports/${model}
           done
