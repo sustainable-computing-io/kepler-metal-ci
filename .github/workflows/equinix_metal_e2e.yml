@@ -1,4 +1,4 @@
-name: Equinix Metal e2e
+name: Training and Validation e2e with Single Server
 
 on:
   workflow_dispatch:

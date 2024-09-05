@@ -1,4 +1,4 @@
-name: Equinix Metal e2e Isolated Servers
+name: Training and Validation e2e with Isolated Servers
 
 on:
   workflow_dispatch:

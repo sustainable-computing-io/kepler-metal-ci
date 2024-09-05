@@ -10,3 +10,10 @@ Running Kepler on Equinix and AWS Metal instances with GitHub Actions
 - Create a project with the [Equinix Metal Project Action](https://github.com/equinix-labs/metal-runner-action) to create the self hosted runner
 - Run some workload
 - Delete the runner with the [Equinix Metal Delete Action](https://github.com/rootfs/metal-delete-action). Note, this action only deletes the server that serves the self hosted runner. It doesn't sweep other servers as the Equinix Metal Sweeper does.
+
+## Workflows
+
+- Validation with Standalone Kepler: Deploys Kepler on baremetal and virtual machine on Equinix. Validates the energy prediction of Kepler on virtual machine.
+- Validation with Model Server: Deploys Kepler on baremetal and Kepler with Kepler Model Server on virtual machine on Equinix. Validates the energy prediction of Kepler with Model Server on Virtual Machine.
+- Training and Validation e2e with Single Server: Provisions Equinix Server, Trains Models locally on server, Validates trained models with Model Server on Virtual Machine.
+- Training and Validation e2e with Isolated Servers: Provisions Equinix Server, Trains Models locally on Server, Provisions a separate Equinix Server, Validates trained models with Model Server on Virtual Machine on new Server
