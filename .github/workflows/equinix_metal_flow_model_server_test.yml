@@ -63,7 +63,7 @@ jobs:
           ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
           sleep 10
           ansible-playbook -i inventory.yml -vvv kepler_restart.yml -e "target_host=localhost"
-          sleep 10
+          sleep 60
           echo "Run validation test"
           ansible-playbook -vvv kepler_validator.yml
           echo "Checkout the report"
