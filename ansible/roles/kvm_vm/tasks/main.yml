@@ -2,14 +2,14 @@
 - name: Install KVM and create VM
   block:
     - name: Install libvirt packages
-      yum:
+      apt:
         name:
-          - libvirt
+          - libvirt-daemon-system
           - qemu-kvm
-          - virt-install
-          - qemu-img
+          - virtinst
+          - qemu-utils
           - cloud-init
-          - guestfs-tools
+          - libguestfs-tools
           - python3-libvirt
           - tuned
         state: present
@@ -53,8 +53,8 @@
       file:
         path: /var/lib/libvirt/images
         state: directory
-        owner: qemu
-        group: qemu
+        owner: root
+        group: root
         mode: '0755'
 
     - name: Check if CentOS Stream 9 image exists
@@ -132,6 +132,9 @@
     - name: Display the VM IP address
       debug:
         msg: "The IP address of the VM is {{ vm_ip }}"
+
+    - name: Export the VM IP address as environment variable
+      shell: export VM_IP={{ vm_ip }}
 
     - name: Wait for VM to be reachable
       ansible.builtin.wait_for:

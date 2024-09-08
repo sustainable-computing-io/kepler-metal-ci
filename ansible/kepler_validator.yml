@@ -4,22 +4,10 @@
   become: yes
   vars:
     validator_repo: "https://github.com/sustainable-computing-io/kepler.git"
-    validator_dir: "/opt/kepler/e2e/tools/validator/src"
-    validator_yaml_path: "/opt/kepler/e2e/tools/validator/src/validator.yaml"
-    stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stressor.sh"
-    query_json_path: "/opt/kepler/e2e/tools/validator/query.json"
+    validator_dir: "/opt/kepler/e2e/tools/validator"
+    validator_yaml_path: "/opt/kepler/e2e/tools/validator/validator.yaml"
 
   tasks:
-    - name: yum install stress-ng, git and python3.11
-      yum:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - git
-        - python3.11
-        - python3.11-pip
-        - stress-ng
-
     - name: Clone the Kepler repository
       git:
         repo: "{{ validator_repo }}"
@@ -46,16 +34,9 @@
             url: http://localhost:9090
             rate_interval: 20s
             steps: 5s
-          validations_file: ../validations.yaml
-
-    - name: Install the validator
-      shell: |
-        cd {{ validator_dir }}
-        pip3.11 install ..
+          validations_file: ./validations.yaml
 
     - name: Run the validator
       shell: |
         cd {{ validator_dir }}
-        PYTHONPATH=${PYTHONPATH}:./ python3.11 validator/__main__.py stress -s {{ stress_test_script_path }}
-      args:
-        chdir: "{{ validator_dir }}"
+        hatch run validator stress

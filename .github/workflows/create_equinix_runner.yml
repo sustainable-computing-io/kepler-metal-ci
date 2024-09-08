@@ -17,4 +17,4 @@ jobs:
           metal_project_id: ${{ secrets.EQUINIX_PROJECT_ID }}
           metro: "da"
           plan: "c3.small.x86"
-          os: "rhel_9"
+          os: "ubuntu_20_04"

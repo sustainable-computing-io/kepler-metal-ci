@@ -1,0 +1,87 @@
+name: Validation with Standalone Kepler using Compose
+
+on:
+  push:
+    branches:
+      - add-compose
+
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write
+  packages: write
+
+jobs:
+  Create-runner:
+    name: "Create Runner"
+    uses: ./.github/workflows/create_equinix_runner.yml
+    secrets: inherit
+
+  Install:
+    name: "Install"
+    needs: Create-runner
+    runs-on: self-hosted
+    continue-on-error: true
+    outputs:
+      runner-name: ${{ runner.name }}
+
+    steps:
+      - name: Setup runner
+        run: |
+          echo "This is runner: ${{ runner.name }}"
+          echo "Running on ${{ runner.arch }} ${{ runner.os }}"
+          # config ssh
+          sudo ssh-keygen -t rsa -b 4096 -f /root/.ssh/ansible_rsa -N ''
+          sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
+          sudo echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCrMUcsN9rhYacFimRyOrqPUdYH4SZASH6wqK/cRsKccNcj/nP4TtxaacB5J3/Rmy61f6IzZWIqoU+KyKLCJk+2/JAMRSbjAhnIiKgbWfhL9Fsqs4XosSAGC8+F3hdPZ1SD3rdu66dbk0odKX3bhzAtyOguMvp65eJc19x/5XLrmmucZI6WLg5SvHlIVCG3qunvTkO+OoJwPKEg9AD6Tazca2qGKJtONNy370SfXyIjs6EeNvZlszXd0AS5oH/xg0Ok5Ru2I0G3gR0GESo3wg75RMLWC9bA3LI7ymaO3oMcOYvxldZln/ngSsQ6k0P+Rq3fPdPMPqtb5T8gQVYdDLGxZvk1VIRh4R69zDUbOyeWQU/49K+7pDi/GOfjjRpzskE6nluCAY58iUz1CNgTg8bVrMn8pId8sf//7J/kNIs+5zt1uicjDObSuYZpbq5qR0+4stSi3NZWYBbvll8Es8wa+lDqdH0dR/00ELqjTbmuxf1p1rJhsnrvV6acW/+7jEc= vibhuprashar@vprashar-mac" >> ~/.ssh/authorized_keys
+          sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
+          # install ansible
+          echo "Installing Ansible and Docker module"
+          sudo apt update -y
+          sudo apt install software-properties-common -y
+          sudo add-apt-repository --yes --update ppa:ansible/ansible
+          sudo apt install -y ansible python3-pip
+          sudo ansible-galaxy collection install community.docker
+          sudo ansible-galaxy collection install community.crypto
+          sudo ansible-galaxy collection install community.libvirt
+          sudo ansible-config init --disabled | sed "s/;host_key_checking=True/host_key_checking=False/g" | sed "s/;private_key_file=/private_key_file=~\/.ssh\/ansible_rsa/g" | sed 's|;roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles" }}|roles_path={{ ANSIBLE_HOME ~ "/roles:/usr/share/ansible/roles:/etc/ansible/roles;/root/.ansible/collections/ansible_collections/community/libvirt/roles" }}|' > /etc/ansible/ansible.cfg
+
+      - name: List available RAPL domains
+        run: |
+          for file in $(sudo find -L /sys/class/powercap/intel-rapl -name name  2>/dev/null); do cat $file;  done  | sort -n| uniq | tee -a /tmp/rapl-domain-availability.txt
+          # expected typical output if all domains are supported
+          # - core
+          # - dram
+          # - package-0
+          # - psys # relatively new power management domain, only available after Skylake
+          # - uncore
+          cat /tmp/rapl-domain-availability.txt
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run playbook
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible
+          cp roles/kvm_vm/files/meta-data /tmp/meta-data
+          cp cloud-init-script.sh /tmp/cloud-init-script.sh
+          echo "Create VM"
+          ansible-playbook -i inventory.yml kvm_playbook.yml
+          echo "Install SSH tunnel"
+          ansible-playbook ssh_tunnel_playbook.yml
+          echo "Install Docker"
+          ansible-playbook -i inventory.yml docker_setup.yml
+          echo "Install Kepler"
+          ansible-playbook -i inventory.yml kepler_compose.yml
+          echo "Create ssh tunnel"
+          ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
+          echo "Run validation test"
+          ansible-playbook -vvv kepler_validator.yml
+
+  Cleanup:
+    name: "Cleanup"
+    needs: [Install]
+    uses: ./.github/workflows/clean_equinix_runner.yml
+    secrets: inherit
+    with:
+      runner_name: ${{ needs.Install.outputs.runner-name }}

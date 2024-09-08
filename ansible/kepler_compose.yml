@@ -1,0 +1,56 @@
+---
+- name: Deploy and run the Kepler compose
+  hosts: "{{ target_host | default('all') }}"
+  become: yes
+  vars:
+    kepler_repo: https://github.com/sustainable-computing-io/kepler.git
+    kepler_dir: /opt/kepler
+    compose_dir: /opt/kepler/manifests/compose
+  tasks:
+    - name: Clone kepler repo
+      git:
+        repo: "{{ kepler_repo }}"
+        dest: "{{ kepler_dir }}"
+        version: main
+
+    - name: Get latest commit details
+      shell: |
+        cd {{ kepler_dir }}
+        git log -n 1
+
+    - name: Get the VM IP address
+      shell: |
+        grep -i my-vm /etc/hosts | awk '{print $1}'
+      register: vm_ip
+
+    - name: Start Docker compose services on BM
+      shell: |
+        cd "{{ compose_dir }}/validation/metal"
+        docker network create --driver=macvlan --subnet=192.168.122.0/24 -o parent=virbr0 virt-net
+        docker compose up -d
+      environment:
+        VM_IP: "{{ vm_ip.stdout }}"
+      when: ansible_hostname != "my-vm"
+
+    - name: Start Docker compose services on VM
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}/validation/vm"
+        build: always
+        files: compose.yaml
+        state: present
+      when: ansible_hostname == "my-vm"
+
+    - name: Wait for Prometheus metrics to become available
+      pause:
+        seconds: 180
+
+    - name: Check Prometheus metrics
+      shell: |
+        curl http://localhost:9090/api/v1/query -G -d query='kepler_exporter_build_info' | jq
+        curl http://localhost:9090/api/v1/query -G -d query='kepler_node_info' | jq
+      register: prometheus_metrics
+      failed_when: |
+        ('status' not in prometheus_metrics.stdout) or
+        ('success' not in prometheus_metrics.stdout) or
+        ('"result": []' in prometheus_metrics.stdout)
+      when: ansible_hostname != "my-vm"
