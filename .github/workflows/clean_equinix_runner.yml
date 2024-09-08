@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: delete runner
-        uses: rootfs/metal-delete-action@main
+        uses: sustainable-computing-io/metal-sweeper-action@main
         with:
           authToken: ${{ secrets.EQUINIX_API_TOKEN }}
           projectID: ${{ secrets.EQUINIX_PROJECT_ID }}
