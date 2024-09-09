@@ -76,8 +76,6 @@ jobs:
           mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-model-server " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/artifacts) |" \
             >> docs/kepler-model-validation.md
-          ls /tmp
-          ls /tmp/validator-*
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
