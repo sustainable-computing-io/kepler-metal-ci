@@ -71,7 +71,7 @@ jobs:
           echo "Verify node-exporter"
           sudo systemctl status node_exporter || true
           sudo ss -tuln | grep 9100 || true
-          curl -s http://localhost:9100/metrics | grep rapl || true
+          curl -s localhost:9100/metrics | grep collector || true
           echo "Install Kepler"
           ansible-playbook -i inventory.yml kepler_playbook.yml
           echo "Create ssh tunnel"
