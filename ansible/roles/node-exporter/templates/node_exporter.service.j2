@@ -5,7 +5,7 @@ After=network-online.target
 
 [Service]
 User={{ node_exporter_user }}
-ExecStart={{ node_exporter_bin_dir }}/node_exporter --collector.rapl
+ExecStart={{ node_exporter_bin_dir }}/node_exporter --collector.disable-defaults --collector.cpu --collector.cpufreq --collector.perf --collector.meminfo --collector.rapl
 Restart=on-failure
 
 [Install]
