@@ -79,6 +79,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      - name: Update daily validation chart
+        run: |
+          python -m pip install --upgrade pip
+          pip install tabulate
+          python util/generate_daily_validations.py \
+            --report-md-filepath docs/daily-validations/daily-validations-model-server/daily-report.md \
+            --report-json-filepath docs/daily-validations/daily-validations-model-server/daily-report.json
+          # update git
+          git config user.email "dependabot[bot]@users.noreply.github.com"
+          git config user.name "dependabot[bot]"
+          git add docs/daily-validations/*
+          git commit -m "Add Daily Validations for Model Server Workflow" -s
+          git push
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
   Cleanup:
     name: "Cleanup"
     needs: [Install]

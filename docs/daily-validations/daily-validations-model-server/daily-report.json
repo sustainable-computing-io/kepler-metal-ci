@@ -1,0 +1,6 @@
+{
+    "title": "Daily Report for Kepler with Model Server",
+    "description": "Daily Report for Validation with Model Server Workflow. The purpose of these reports is to record the error metrics for each daily run in a single table. Note only edit title and description.",
+    "headers": [],
+    "rows": []
+}
