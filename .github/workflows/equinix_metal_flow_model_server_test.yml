@@ -46,49 +46,55 @@ jobs:
 
       - name: Run playbook
         run: |
-          cd ${GITHUB_WORKSPACE}/ansible
-          cp roles/kvm_vm/files/meta-data /tmp/meta-data
-          cp cloud-init-script.sh /tmp/cloud-init-script.sh
-          echo "Create VM"
-          ansible-playbook -i inventory.yml kvm_playbook.yml
-          echo "Install SSH tunnel"
-          ansible-playbook ssh_tunnel_playbook.yml
-          echo "Install Prometheus"
-          ansible-playbook -i inventory.yml metrics_playbook.yml
-          echo "Install Kepler"
-          ansible-playbook -i inventory.yml -vvv kepler_playbook.yml -e "target_host=localhost"
-          echo "Install Model Server"
-          ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
-          echo "Create ssh tunnel"
-          ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
-          echo "Run validation test"
-          ansible-playbook -vvv kepler_validator.yml
-          echo "Checkout the report"
-          ls /tmp
-          cat /tmp/report-*.md || true
-          # create a directory to store the artifacts, the directory is the current date 
-          set -x
-          export DATE_STR=$(date +%Y-%m-%d)
+          # cd ${GITHUB_WORKSPACE}/ansible
+          # cp roles/kvm_vm/files/meta-data /tmp/meta-data
+          # cp cloud-init-script.sh /tmp/cloud-init-script.sh
+          # echo "Create VM"
+          # ansible-playbook -i inventory.yml kvm_playbook.yml
+          # echo "Install SSH tunnel"
+          # ansible-playbook ssh_tunnel_playbook.yml
+          # echo "Install Prometheus"
+          # ansible-playbook -i inventory.yml metrics_playbook.yml
+          # echo "Install Kepler"
+          # ansible-playbook -i inventory.yml -vvv kepler_playbook.yml -e "target_host=localhost"
+          # echo "Install Model Server"
+          # ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
+          # echo "Create ssh tunnel"
+          # ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
+          # echo "Run validation test"
+          # ansible-playbook -vvv kepler_validator.yml
+          # echo "Checkout the report"
+          # ls /tmp
+          # cat /tmp/report-*.md || true
+          # # create a directory to store the artifacts, the directory is the current date 
+          # set -x
+          # export DATE_STR=$(date +%Y-%m-%d)
+          # cd ${GITHUB_WORKSPACE}
+          # mkdir -p docs/validation/${DATE_STR}
+          # export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
+          # # copy the report to the directory
+          # mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server
+          # echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-model-server " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/artifacts) |" \
+          #   >> docs/kepler-model-validation.md
           cd ${GITHUB_WORKSPACE}
-          mkdir -p docs/validation/${DATE_STR}
-          export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
-          # copy the report to the directory
-          mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server
-          echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-model-server " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/artifacts) |" \
-            >> docs/kepler-model-validation.md
-          cd ${GITHUB_WORKSPACE}
+          mkdir -p /tmp/validator-test374
+          touch /tmp/validator-test374/test374.json
           python -m pip install --upgrade pip
           pip install tabulate
           python util/generate_daily_validations.py \
             --report-md-filepath docs/daily-validations/daily-validations-model-server/daily-report.md \
             --report-json-filepath docs/daily-validations/daily-validations-model-server/daily-report.json \
-            --new-val-filepath /tmp/validator-*/*.json
+            --new-val-filepath /tmp/validator-test374/test374.json
+          python util/generate_daily_validations.py \
+            --report-md-filepath docs/daily-validations/daily-validations-model-server/daily-report.md \
+            --report-json-filepath docs/daily-validations/daily-validations-model-server/daily-report.json \
+            --new-val-filepath "/tmp/validator-*/\*.json"
           # update git
-          git config user.email "dependabot[bot]@users.noreply.github.com"
-          git config user.name "dependabot[bot]"
-          git add docs/daily-validations/*
-          git commit -m "Add Daily Validations for Model Server Workflow" -s
-          git push
+          # git config user.email "dependabot[bot]@users.noreply.github.com"
+          # git config user.name "dependabot[bot]"
+          # git add docs/daily-validations/*
+          # git commit -m "Add Daily Validations for Model Server Workflow" -s
+          # git push
 
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
