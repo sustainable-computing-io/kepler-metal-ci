@@ -1,7 +1,7 @@
 import tabulate
 import json
 import argparse
-import glob
+import os
 from typing import NamedTuple, List, Tuple
 from datetime import datetime
 
@@ -112,9 +112,14 @@ def retrieve_metrics_from_new_report(error_metrics_filepath: str) -> List[ErrorM
     -------
         ErrorMetric list
     """
-    found_file = glob.glob(error_metrics_filepath)[0]
+    # found_file = glob.glob(error_metrics_filepath)[0]
+    if not os.path.exists(error_metrics_filepath):
+        raise FileNotFoundError(
+            f"The file at {error_metrics_filepath} was not found."
+        )
+    print(error_metrics_filepath)
     error_metrics = []
-    with open(found_file, 'r') as json_file:
+    with open(error_metrics_filepath, 'r') as json_file:
         new_metrics = json.load(json_file)
         for row in new_metrics['result']:
             error_metrics.append(ErrorMetric(
