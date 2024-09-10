@@ -76,22 +76,21 @@ jobs:
           mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-model-server " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/artifacts) |" \
             >> docs/kepler-model-validation.md
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Update daily validation chart
-        run: |
+          
+          cd ${GITHUB_WORKSPACE}
           python -m pip install --upgrade pip
           pip install tabulate
           python util/generate_daily_validations.py \
             --report-md-filepath docs/daily-validations/daily-validations-model-server/daily-report.md \
-            --report-json-filepath docs/daily-validations/daily-validations-model-server/daily-report.json
+            --report-json-filepath docs/daily-validations/daily-validations-model-server/daily-report.json \
+            --new-val-filepath /tmp/validator-*/*.json
           # update git
           git config user.email "dependabot[bot]@users.noreply.github.com"
           git config user.name "dependabot[bot]"
           git add docs/daily-validations/*
           git commit -m "Add Daily Validations for Model Server Workflow" -s
           git push
+
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 

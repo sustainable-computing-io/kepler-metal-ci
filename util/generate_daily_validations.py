@@ -216,7 +216,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a Markdown table.")
     parser.add_argument('--report-md-filepath', required=True, help='filepath to md report object')
     parser.add_argument('--report-json-filepath', required=True, help='filepath to json report object')
-    parser.add_argument('--new-val-filepath', required=False, help='filepath to newly generated json report object', default='/tmp/validator-*/*.json')
+    parser.add_argument('--new-val-filepath', required=True, help='filepath to newly generated json report object')
 
     args = parser.parse_args()
 
