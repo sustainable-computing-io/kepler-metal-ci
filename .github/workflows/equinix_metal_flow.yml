@@ -79,6 +79,20 @@ jobs:
           echo "Run validation test"
           ansible-playbook -vvv kepler_validator.yml
           echo "Checkout the report"
+          cd ${GITHUB_WORKSPACE}
+          python -m pip install --upgrade pip
+          pip install tabulate
+          python util/generate_daily_validations.py \
+            --report-md-filepath docs/daily-validations/daily-validations-kepler-standalone/daily-report.md \
+            --report-json-filepath docs/daily-validations/daily-validations-kepler-standalone/daily-report.json \
+            --new-val-filepath /tmp/validator-*/*.json
+          # # update git
+          # git config user.email "dependabot[bot]@users.noreply.github.com"
+          # git config user.name "dependabot[bot]"
+          # git add docs/daily-validations/*
+          # git commit -m "Add Daily Validations for Kepler Standalone Workflow" -s
+          # git push
+
           ls /tmp
           cat /tmp/report-*.md || true
           # create a directory to store the artifacts, the directory is the current date 
@@ -99,7 +113,7 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
+      
       - name: Update model validation chart
         run: |
           export DATE_STR=$(date +%Y-%m-%d)
