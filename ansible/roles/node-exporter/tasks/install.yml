@@ -1,9 +1,4 @@
 ---
-- name: Create node_exporter user
-  ansible.builtin.user:
-    name: "{{ node_exporter_user }}"
-    shell: /sbin/nologin
-
 - name: Download node_exporter binary
   ansible.builtin.get_url:
     url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
@@ -20,8 +15,8 @@
     src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
     dest: "{{ node_exporter_bin_dir }}/node_exporter"
     mode: '0755'
-    owner: "{{ node_exporter_user }}"
-    group: "{{ node_exporter_user }}"
+    owner: "root"
+    group: "root"
 
 - name: Cleanup
   ansible.builtin.file:
