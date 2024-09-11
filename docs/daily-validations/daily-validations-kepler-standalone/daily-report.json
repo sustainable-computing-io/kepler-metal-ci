@@ -1,6 +1,35 @@
 {
     "title": "Daily Report for Kepler Standalone",
     "description": "Daily Report for Validation with Kepler Standalone Workflow. The purpose of these reports is to record the error metrics for each daily run in a single table. Note only edit title and description.",
-    "headers": [],
-    "rows": []
+    "headers": [
+        "node-rapl_kepler-package",
+        "platform_absolute",
+        "package_absolute",
+        "core_absolute",
+        "platform_dynamic",
+        "package_dynamic",
+        "core_dynamic",
+        "dram_dynamic",
+        "platform_idle",
+        "package_idle",
+        "core_idle",
+        "dram_idle"
+    ],
+    "rows": [
+        [
+            "2024-09-11-12:34:17",
+            "MSE=5.159879953083814\nMAPE=3.768715831386063",
+            "MSE=7985.8846980902335\nMAPE=347.1032004826418",
+            "MSE=14588.69546039203\nMAPE=966.77888848175",
+            "MSE=14606.107754120583\nMAPE=981.0599583615079",
+            "MSE=941.0543141414697\nMAPE=672.1946205514441",
+            "MSE=819.3169992632772\nMAPE=363.94554107285035",
+            "MSE=817.3980342689595\nMAPE=364.5876115286454",
+            "MSE=0.21348833311242993\nMAPE=5555.403901781998",
+            "MSE=3741.2287079729635\nMAPE=2390.8266663438835",
+            "MSE=20513.137405960762\nMAPE=24623.381946600057",
+            "MSE=20525.19656073689\nMAPE=26557.431443434296",
+            "MSE=341.9794446175404\nMAPE=15029.380012969063"
+        ]
+    ]
 }
