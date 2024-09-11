@@ -1,0 +1,4 @@
+---
+- import_tasks: metal.yml
+- import_tasks: vm.yml
+- import_tasks: post_install.yml

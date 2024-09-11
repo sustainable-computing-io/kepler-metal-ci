@@ -1,0 +1,4 @@
+---
+# This file contains variables that are less likely to be overridden
+validator_dir: "/opt/kepler/e2e/tools/validator"
+validator_yaml_path: "/opt/kepler/e2e/tools/validator/validator.yaml"

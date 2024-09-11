@@ -47,8 +47,6 @@ jobs:
       - name: Run playbook
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
-          cp roles/kvm_vm/files/meta-data /tmp/meta-data
-          cp cloud-init-script.sh /tmp/cloud-init-script.sh
           echo "Create VM"
           ansible-playbook -i inventory.yml kvm_playbook.yml
           echo "Install SSH tunnel"

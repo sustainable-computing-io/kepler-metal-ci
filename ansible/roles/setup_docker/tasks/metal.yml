@@ -1,0 +1,41 @@
+- name: Ensure necessary packages are installed on BM
+  package:
+    name: "{{ bm_necessary_packages }}"
+    state: present
+    update_cache: true
+  when: ansible_hostname == "localhost"
+
+- name: Install hatch via pip
+  pip:
+    name: hatch
+    state: latest
+  when: ansible_hostname != "my-vm"
+
+- name: Add Docker official GPG key
+  apt_key:
+    url: "{{ metal_docker_gpg_key_url }}"
+    state: present
+  when: ansible_hostname != "my-vm"
+
+- name: Set up Docker stable repository
+  apt_repository:
+    repo: "{{ metal_docker_repo_url }}"
+    state: present
+  when: ansible_hostname != "my-vm"
+
+- name: Update the apt package index
+  apt:
+    update_cache: true
+  when: ansible_hostname != "my-vm"
+
+- name: Install Docker Engine and related packages
+  apt:
+    name: "{{ docker_necessary_packages }}"
+    state: latest
+  register: docker_install
+  when: ansible_hostname != "my-vm"
+
+- name: Show Output
+  ansible.builtin.debug:
+    var: docker_install
+  when: ansible_hostname != "my-vm"
