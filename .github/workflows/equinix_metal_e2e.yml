@@ -40,7 +40,7 @@ jobs:
           model_export_path: /tmp/trained-equinix-models
       
       - name: Upload models as artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: trained-equinix-models
           path: /tmp/trained-equinix-models
