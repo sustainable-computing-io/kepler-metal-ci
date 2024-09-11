@@ -1,18 +1,17 @@
 ---
 - name: Install KVM and create VM
   block:
-    - name: Install libvirt packages
-      yum:
-        name:
-          - libvirt
-          - qemu-kvm
-          - virt-install
-          - qemu-img
-          - cloud-init
-          - guestfs-tools
-          - python3-libvirt
-          - tuned
+    - name: Install libvirt packages (For Ubuntu)
+      package:
+        name: "{{ common_packages + ubuntu_packages }}"
         state: present
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Install libvirt packages (For RHEL)
+      dnf:
+        name: "{{ common_packages + rhel_packages }}"
+        state: present
+      when: ansible_distribution == 'RedHat'
 
     - name: pip install lxml
       pip:
@@ -33,28 +32,24 @@
 
     - name: Generate SSH key pair
       community.crypto.openssh_keypair:
-        path: /tmp/vm_ssh_key_pair
+        path: "{{ ssh_key_path }}"
         type: rsa
         size: 4096
         force: true
         state: present
       register: ssh_key
 
-
     - name: Save the public key into a file
       copy:
         content: "{{ ssh_key.public_key }}"
-        dest: "{{ ssh_key_path }}"
-
-    - name: mv ssh key to /tmp
-      command: mv /tmp/vm_ssh_key_pair /tmp/vm_ssh_key
+        dest: "{{ ssh_pub_key_path }}"
 
     - name: Create storage directory
       file:
         path: /var/lib/libvirt/images
         state: directory
-        owner: qemu
-        group: qemu
+        owner: root
+        group: root
         mode: '0755'
 
     - name: Check if CentOS Stream 9 image exists
@@ -81,10 +76,20 @@
       vars:
         vm_ssh_public_key: "{{ ssh_key.public_key }}"
 
+    - name: Copy the meta-data
+      copy:
+        src: meta-data
+        dest: /tmp/meta-data
+
+    - name: Copy the cloud-init script
+      copy:
+        src: cloud-init-script.sh
+        dest: /tmp/cloud-init-script.sh
+
     - name: Use virt-customize to inject ssh key
       command: >
-        virt-customize -a "{{ vm_disk_path }}" --hostname {{ vm_name }} --selinux-relabel 
-        --root-password password:{{ vm_password }} --ssh-inject 'root:file:{{ ssh_key_path }}'
+        virt-customize -a "{{ vm_disk_path }}" --hostname {{ vm_name }} --selinux-relabel
+        --root-password password:{{ vm_password }} --ssh-inject 'root:file:{{ ssh_pub_key_path }}'
         --upload "{{ cloud_init_config_path }}":/tmp/user-data --upload /tmp/meta-data:/tmp/meta-data --run /tmp/cloud-init-script.sh
 
     - name: Use virt-customize to fdisk to resize disk
@@ -129,8 +134,20 @@
       set_fact:
         vm_ip: "{{ domifaddr_output.stdout }}"
 
+    - name: Set the VM name
+      set_fact:
+        vm_name: "{{ vm_name }}"
+
+    - name: Set the VM user
+      set_fact:
+        vm_user: "{{ vm_user }}"
+
+    - name: Set the VM ssh key path
+      set_fact:
+        ssh_key_path: "{{ ssh_key_path }}"
+
     - name: Display the VM IP address
-      debug:
+      ansible.builtin.debug:
         msg: "The IP address of the VM is {{ vm_ip }}"
 
     - name: Wait for VM to be reachable
@@ -152,7 +169,7 @@
           register: host_output
 
         - name: Display the output of the command
-          debug:
+          ansible.builtin.debug:
             msg: "The output of the command is {{ host_output.stdout }}"
 
     - name: Add or replace VM name into /etc/hosts
@@ -173,13 +190,7 @@
     - name: Destroy the VM
       community.libvirt.virt:
         name: "{{ vm_name }}"
-        state: destroy
-        uri: qemu:///system
-
-    - name: Undefine the VM
-      community.libvirt.virt:
-        name: "{{ vm_name }}"
-        state: absent
+        state: destroyed
         uri: qemu:///system
 
     - name: Fail the playbook

@@ -1,0 +1,32 @@
+---
+- name: Clone Kepler and Install Kepler using VM Compose
+  block:
+    - name: Clone kepler repo
+      git:
+        repo: "{{ kepler_repo }}"
+        dest: "{{ kepler_dir }}"
+        version: main
+      when: ansible_hostname == "my-vm"
+
+    - name: Get latest commit details
+      shell: |
+        cd {{ kepler_dir }}
+        git log -n 1
+      when: ansible_hostname == "my-vm"
+
+    - name: Start Docker compose services on VM
+      community.docker.docker_compose_v2:
+        project_src: "{{ vm_compose_dir }}"
+        build: always
+        files: compose.yaml
+        state: present
+      when: ansible_hostname == "my-vm"
+  rescue:
+    - name: Log the error
+      ansible.builtin.debug:
+        msg: "{{ ansible_failed_result }}"
+      when: ansible_hostname == "my-vm"
+    - name: Fail the role if the Kepler installation fails
+      ansible.builtin.fail:
+        msg: "The Kepler installation failed on VM. Please check the output above for more information."
+      when: ansible_hostname == "my-vm"

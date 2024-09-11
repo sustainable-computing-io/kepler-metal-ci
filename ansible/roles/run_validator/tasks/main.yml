@@ -1,0 +1,42 @@
+---
+- name: Create validator.yaml
+  copy:
+    dest: "{{ validator_yaml_path }}"
+    content: |
+      log_level: {{ log_level }}
+      remote:
+        host: {{ vm_name }}
+        username: {{ vm_user }}
+        pkey: {{ ssh_key_path }}
+      metal:
+        vm:
+          name: {{ vm_name }}
+      prometheus:
+        job:
+          metal: metal
+          vm: vm
+        url: {{ prometheus_url }}
+        rate_interval: {{ rate_interval }}
+        steps: {{ steps }}
+      validations_file: ./validations.yaml
+
+- name: Run validator and handle potiental errors
+  block:
+    - name: Run the validator
+      shell: |
+        cd {{ validator_dir }}
+        hatch run validator stress
+      register: validator_output
+
+    - name: Show validator output
+      ansible.builtin.debug:
+        msg: "{{ validator_output.stdout.splitlines() }}"
+
+  rescue:
+    - name: Show validator errors
+      ansible.builtin.debug:
+        msg: "{{ validator_output.stderr.splitlines() }}"
+
+    - name: Fail the role if the validator fails
+      ansible.builtin.fail:
+        msg: "The validator test failed. Please check the output above for more information."

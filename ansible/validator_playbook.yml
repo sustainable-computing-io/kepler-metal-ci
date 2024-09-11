@@ -1,0 +1,29 @@
+---
+- name: Create VM
+  hosts: "localhost"
+  become: yes
+  roles:
+    - kvm_vm
+  any_errors_fatal: true
+
+- name: Setup Environment
+  hosts: "{{ target_host | default('all') }}"
+  become: yes
+  vars:
+    vm_ip: "{{ hostvars['localhost']['vm_ip'] }}"
+    ansible_user: root
+  roles:
+    - setup_docker
+    - install_kepler
+  any_errors_fatal: true
+
+- name: Run validator
+  hosts: "localhost"
+  become: yes
+  vars:
+    vm_name: "{{ hostvars['localhost']['vm_name'] }}"
+    vm_user: "{{ hostvars['localhost']['vm_user'] }}"
+    ssh_key_path: "{{ hostvars['localhost']['ssh_key_path'] }}"
+  roles:
+    - run_validator
+  any_errors_fatal: true
