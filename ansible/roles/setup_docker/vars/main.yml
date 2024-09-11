@@ -1,0 +1,23 @@
+---
+# This file contains variables that are less likely to be overridden
+bm_necessary_packages:
+  - git
+  - curl
+  - ca-certificates
+  - jq
+
+vm_necessary_packages:
+  - curl
+  - dnf-plugins-core
+  - stress-ng
+  - jq
+
+ubuntu_docker_gpg_key_url: https://download.docker.com/linux/ubuntu/gpg
+ubuntu_docker_repo_url: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+fedora_docker_repo_url: https://download.docker.com/linux/centos/docker-ce.repo
+docker_necessary_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-compose-plugin
+  - docker-buildx-plugin

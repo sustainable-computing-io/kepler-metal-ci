@@ -2,17 +2,28 @@
 - name: Install KVM and create VM
   block:
     - name: Install libvirt packages
-      apt:
+      package:
         name:
           - libvirt-daemon-system
           - qemu-kvm
           - virtinst
           - qemu-utils
           - cloud-init
-          - libguestfs-tools
           - python3-libvirt
           - tuned
         state: present
+
+    - name: Install libguestfs-tools (For Ubuntu)
+      package:
+        name: libguestfs-tools
+        state: present
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Install guestfs-tools (For RHEL)
+      package:
+        name: guestfs-tools
+        state: present
+      when: ansible_distribution == 'RedHat'
 
     - name: pip install lxml
       pip:
@@ -33,21 +44,17 @@
 
     - name: Generate SSH key pair
       community.crypto.openssh_keypair:
-        path: /tmp/vm_ssh_key_pair
+        path: "{{ ssh_key_path }}"
         type: rsa
         size: 4096
         force: true
         state: present
       register: ssh_key
 
-
     - name: Save the public key into a file
       copy:
         content: "{{ ssh_key.public_key }}"
-        dest: "{{ ssh_key_path }}"
-
-    - name: mv ssh key to /tmp
-      command: mv /tmp/vm_ssh_key_pair /tmp/vm_ssh_key
+        dest: "{{ ssh_pub_key_path }}"
 
     - name: Create storage directory
       file:
@@ -81,10 +88,20 @@
       vars:
         vm_ssh_public_key: "{{ ssh_key.public_key }}"
 
+    - name: Copy the meta-data
+      copy:
+        src: meta-data
+        dest: /tmp/meta-data
+
+    - name: Copy the cloud-init script
+      copy:
+        src: cloud-init-script.sh
+        dest: /tmp/cloud-init-script.sh
+
     - name: Use virt-customize to inject ssh key
       command: >
         virt-customize -a "{{ vm_disk_path }}" --hostname {{ vm_name }} --selinux-relabel 
-        --root-password password:{{ vm_password }} --ssh-inject 'root:file:{{ ssh_key_path }}'
+        --root-password password:{{ vm_password }} --ssh-inject 'root:file:{{ ssh_pub_key_path }}'
         --upload "{{ cloud_init_config_path }}":/tmp/user-data --upload /tmp/meta-data:/tmp/meta-data --run /tmp/cloud-init-script.sh
 
     - name: Use virt-customize to fdisk to resize disk
@@ -129,12 +146,21 @@
       set_fact:
         vm_ip: "{{ domifaddr_output.stdout }}"
 
+    - name: Set the VM name
+      set_fact:
+        vm_name: "{{ vm_name }}"
+
+    - name: Set the VM user
+      set_fact:
+        vm_user: "{{ vm_user }}"
+
+    - name: Set the VM ssh key path
+      set_fact:
+        ssh_key_path: "{{ ssh_key_path }}"
+
     - name: Display the VM IP address
       debug:
         msg: "The IP address of the VM is {{ vm_ip }}"
-
-    - name: Export the VM IP address as environment variable
-      shell: export VM_IP={{ vm_ip }}
 
     - name: Wait for VM to be reachable
       ansible.builtin.wait_for:
@@ -176,13 +202,7 @@
     - name: Destroy the VM
       community.libvirt.virt:
         name: "{{ vm_name }}"
-        state: destroy
-        uri: qemu:///system
-
-    - name: Undefine the VM
-      community.libvirt.virt:
-        name: "{{ vm_name }}"
-        state: absent
+        state: destroyed
         uri: qemu:///system
 
     - name: Fail the playbook

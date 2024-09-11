@@ -1,0 +1,26 @@
+---
+- name: Create validator.yaml
+  copy:
+    dest: "{{ validator_yaml_path }}"
+    content: |
+      log_level: {{ log_level }}
+      remote:
+        host: {{ vm_name }}
+        username: {{ vm_user }}
+        pkey: {{ ssh_key_path }}
+      metal:
+        vm:
+          name: {{ vm_name }}
+      prometheus:
+        job:
+          metal: metal
+          vm: vm
+        url: {{ prometheus_url }}
+        rate_interval: {{ rate_interval }}
+        steps: {{ steps }}
+      validations_file: ./validations.yaml
+
+- name: Run the validator
+  shell: |
+    cd {{ validator_dir }}
+    hatch run validator stress

@@ -1,0 +1,15 @@
+- name: Ensure necessary packages are installed on VM
+  package:
+    name: "{{ vm_necessary_packages }}"
+    state: present
+  when: ansible_hostname == "my-vm"
+
+- name: Add Docker repository on VM
+  command: dnf config-manager --add-repo {{ fedora_docker_repo_url }}
+  when: ansible_hostname == "my-vm"
+
+- name: Install Docker on VM
+  package:
+    name: "{{ docker_necessary_packages }}"
+    state: latest
+  when: ansible_hostname == "my-vm"

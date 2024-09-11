@@ -1,0 +1,7 @@
+---
+# This file contains the default values for variables used in the role
+log_level: info
+prometheus_url: http://localhost:9090
+rate_interval: 20s
+steps: 5s
+

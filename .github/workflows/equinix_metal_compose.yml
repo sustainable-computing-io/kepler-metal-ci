@@ -15,6 +15,8 @@ jobs:
   Create-runner:
     name: "Create Runner"
     uses: ./.github/workflows/create_equinix_runner.yml
+    with:
+      os_name: "ubuntu_22_04"
     secrets: inherit
 
   Install:
@@ -62,21 +64,27 @@ jobs:
 
       - name: Run playbook
         run: |
+          # until [[ -f /tmp/unsleep ]]; do
+          #   echo "Sleeping for 10s"
+          #   sleep 1
+          # done
           cd ${GITHUB_WORKSPACE}/ansible
-          cp roles/kvm_vm/files/meta-data /tmp/meta-data
-          cp cloud-init-script.sh /tmp/cloud-init-script.sh
-          echo "Create VM"
-          ansible-playbook -i inventory.yml kvm_playbook.yml
-          echo "Install SSH tunnel"
-          ansible-playbook ssh_tunnel_playbook.yml
-          echo "Install Docker"
-          ansible-playbook -i inventory.yml docker_setup.yml
-          echo "Install Kepler"
-          ansible-playbook -i inventory.yml kepler_compose.yml
-          echo "Create ssh tunnel"
-          ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
-          echo "Run validation test"
-          ansible-playbook -vvv kepler_validator.yml
+          # cp roles/kvm_vm/files/meta-data /tmp/meta-data
+          # cp cloud-init-script.sh /tmp/cloud-init-script.sh
+          echo "Setup Environment and Run Validator"
+          ansible-playbook -vvv -i inventory.yml validator.yml
+          # echo "Create VM"
+          # ansible-playbook -i inventory.yml kvm_playbook.yml
+          # echo "Install SSH tunnel"
+          # ansible-playbook ssh_tunnel_playbook.yml
+          # echo "Install Docker"
+          # ansible-playbook -i inventory.yml docker_setup.yml
+          # echo "Install Kepler"
+          # ansible-playbook -i inventory.yml kepler_compose.yml
+          # echo "Create ssh tunnel"
+          # ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
+          # echo "Run validation test"
+          # ansible-playbook -vvv kepler_validator.yml
 
   Cleanup:
     name: "Cleanup"

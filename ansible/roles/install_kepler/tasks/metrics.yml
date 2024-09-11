@@ -1,0 +1,16 @@
+---
+- name: Wait for Prometheus metrics to become available
+  pause:
+    seconds: 120
+  when: ansible_hostname != "my-vm"
+
+- name: Check Prometheus metrics
+  shell: |
+    curl http://localhost:9090/api/v1/query -G -d query='kepler_exporter_build_info' | jq
+    curl http://localhost:9090/api/v1/query -G -d query='kepler_node_info' | jq
+  register: prometheus_metrics
+  failed_when: |
+    ('status' not in prometheus_metrics.stdout) or
+    ('success' not in prometheus_metrics.stdout) or
+    ('"result": []' in prometheus_metrics.stdout)
+  when: ansible_hostname != "my-vm"
