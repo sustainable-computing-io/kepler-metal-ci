@@ -55,6 +55,12 @@ jobs:
           ansible-playbook ssh_tunnel_playbook.yml
           echo "Install Prometheus"
           ansible-playbook -i inventory.yml metrics_playbook.yml
+          echo "Install Node Exporter"
+          ansible-playbook -i inventory.yml node_exporter_playbook.yml -vvv
+          echo "Verify node-exporter"
+          sudo systemctl status node_exporter || true
+          sudo ss -tuln | grep 9100 || true
+          curl -s localhost:9100/metrics | grep collector || true
           echo "Install Kepler"
           ansible-playbook -i inventory.yml -vvv kepler_playbook.yml -e "target_host=localhost"
           echo "Install Model Server"
@@ -72,16 +78,16 @@ jobs:
           cd ${GITHUB_WORKSPACE}
           mkdir -p docs/validation/${DATE_STR}
           export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
-          # copy the report to the directory
-          mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server
-          echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-model-server " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/artifacts) |" \
-            >> docs/kepler-model-validation.md
           python -m pip install --upgrade pip
           pip install tabulate
           python util/generate_daily_validations.py \
             --report-md-filepath docs/daily-validations/daily-validations-model-server/daily-report.md \
             --report-json-filepath docs/daily-validations/daily-validations-model-server/daily-report.json \
-            --new-val-filepath /tmp/validator-test374/test374.json
+            --new-val-filepath /tmp/validator-${KEPLER_TAG}/${KEPLER_TAG}.json
+          # copy the report to the directory
+          mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server
+          echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-model-server " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/artifacts) |" \
+            >> docs/kepler-model-validation.md
           # update git
           # git config user.email "dependabot[bot]@users.noreply.github.com"
           # git config user.name "dependabot[bot]"
