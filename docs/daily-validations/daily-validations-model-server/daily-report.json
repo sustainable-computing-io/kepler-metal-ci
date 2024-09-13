@@ -2,34 +2,23 @@
     "title": "Daily Report for Kepler with Model Server",
     "description": "Daily Report for Validation with Model Server Workflow. The purpose of these reports is to record the error metrics for each daily run in a single table. Note only edit title and description.",
     "headers": [
-        "node-rapl_kepler-package",
+        "Date",
         "platform_absolute",
         "package_absolute",
-        "core_absolute",
         "platform_dynamic",
         "package_dynamic",
-        "core_dynamic",
-        "dram_dynamic",
         "platform_idle",
-        "package_idle",
-        "core_idle",
-        "dram_idle"
+        "package_idle"
     ],
     "rows": [
         [
             "2024-09-10-20:49:21",
-            "MSE=3.8913829331826455\nMAPE=3.408588738281862",
             "MSE=8465.404992193027\nMAPE=380.02763981055665",
             "MSE=14784.9165034561\nMAPE=1069.7943272181637",
-            "MSE=14800.201829996971\nMAPE=1088.7893019285389",
             "MSE=1135.9611974458724\nMAPE=161.65900956234262",
             "MSE=759.984459496776\nMAPE=68.56744107754041",
-            "MSE=758.7607354542495\nMAPE=68.50234250130127",
-            "MSE=0.23871395144510585\nMAPE=inf",
             "MSE=3770.7642842420646\nMAPE=2289.5605950371105",
-            "MSE=20509.923064200724\nMAPE=23927.234503335596",
-            "MSE=20522.53394185218\nMAPE=25832.926423904115",
-            "MSE=341.7457587285052\nMAPE=14289.148324352927"
+            "MSE=20509.923064200724\nMAPE=23927.234503335596"
         ]
     ]
 }
