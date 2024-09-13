@@ -12,6 +12,17 @@
         - python3.11
         - python3.11-pip
         - stress-ng
+    
+    - name: Install Hatch
+      ansible.builtin.shell: |
+        export PATH=$PATH:/usr/local/bin
+        pip3.11 install hatch
+
+    - name: Verify Hatch Installation
+      ansible.builtin.shell: |
+        export PATH=$PATH:/usr/local/bin
+        echo $PATH
+        hatch --version
 
     - name: Clone Model Server
       ansible.builtin.git:
@@ -27,12 +38,10 @@
         version: main
         force: yes
 
-    - name: Install Model Server Dependencies
-      ansible.builtin.shell:
-        cmd: PYTHONPATH=${PYTHONPATH}:./ python3.11 -m pip install -e "{{ model_server_path }}"
-
     - name: Train Models
       ansible.builtin.shell: |
+        export PATH=$PATH:/usr/local/bin
+        echo $PATH
         echo $DATAPATH
         mkdir -p "$DATAPATH"
         echo $MODEL_PATH
@@ -52,9 +61,11 @@
         export INTERVAL=$((END_TIME - START_TIME))
         echo $INTERVAL
 
+        cd {{ model_server_path }}
+
         # Collect
 
-        python3.11 {{ model_train_path }} query \
+        hatch run python cmd/main.py query \
           --benchmark $BENCHMARK \
           --server $PROM_URL \
           --output kepler_query \
@@ -63,7 +74,7 @@
 
         # Train
 
-        python3.11 {{ model_train_path }} train \
+        hatch run python cmd/main.py train \
           --pipeline-name $PIPELINE_NAME \
           --input kepler_query --id $COLLECT_ID
 

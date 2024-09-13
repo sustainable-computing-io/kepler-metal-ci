@@ -89,4 +89,3 @@ all:
         prom_url: "http://localhost:9090"
         pipeline_name: "Equinix_Pipeline"
         stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stressor.sh"
-        model_train_path: "/opt/kepler-model-server/cmd/main.py"
