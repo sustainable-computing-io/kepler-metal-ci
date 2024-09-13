@@ -6,20 +6,14 @@ from typing import NamedTuple, List, Tuple
 from datetime import datetime
 
 
-# Global Variable which stores the ordering of the error metrics
+# Global Variable which stores the ordering and desired error metrics
 ERROR_METRIC_LIST = [
-    "node-rapl_kepler-package",
     "platform_absolute",
     "package_absolute",
-    "core_absolute",
     "platform_dynamic",
     "package_dynamic",
-    "core_dynamic",
-    "dram_dynamic",
     "platform_idle",
     "package_idle",
-    "core_idle",
-    "dram_idle"
 ]
 
 
@@ -43,6 +37,14 @@ class ErrorMetric(NamedTuple):
     mse: str
     mape: str
 
+    def __eq__(self, other) -> bool:
+        if isinstance(other, ErrorMetric):
+            return self.name == other.name
+        return NotImplemented
+
+    def __hash__(self) -> int:
+        return hash((self.name, self.mse, self.mape))
+
     def __str__(self) -> str:
         return f'MSE={self.mse}\nMAPE={self.mape}'
 
@@ -61,10 +63,10 @@ class SortErrorMetrics:
     error_metric_list : List[ErrorMetric]
         ErrorMetrics list
 
-    Methods
+    Property
     -------
-    sort_error_metrics():
-        sorts the error_metric_list based on name
+    sorted_error_metric_list:
+        the sorted the error_metric_list based on name
         ordering in error_metric_name_order
     """
     def __init__(self, error_metric_name_order: List[str], 
@@ -83,9 +85,30 @@ class SortErrorMetrics:
         """
         self.error_metric_name_order = error_metric_name_order
         self.error_metric_list = error_metric_list
-        self.sorted_error_metric_list = self.sort_error_metrics()
+        self._sorted_error_metric_list = self._sort_error_metrics()
+    
+    def sorted_error_metric_list(self) -> List[ErrorMetric]:
+        return self._sorted_error_metric_list
 
-    def sort_error_metrics(self) -> List[ErrorMetric]:
+    def _prune_error_metrics(self) -> List[ErrorMetric]:
+        """
+        removes error metrics not included in error_metric_name_order
+
+        Returns
+        -------
+        List[ErrorMetric]
+        """
+        cleaned_error_metric_list = [error_metric for error_metric in self.error_metric_list
+                        if error_metric.name in self.error_metric_name_order]
+        
+        for metric_name in self.error_metric_name_order:
+            if not any(metric_name == error_metric.name 
+                       for error_metric in cleaned_error_metric_list):
+                raise ValueError(f"{metric_name} does not exist in validator")
+
+        return cleaned_error_metric_list
+
+    def _sort_error_metrics(self) -> List[ErrorMetric]:
         """
         sorts the error_metric_list based on name
         ordering in error_metric_name_order
@@ -94,7 +117,8 @@ class SortErrorMetrics:
         -------
         List[ErrorMetric]
         """
-        sorted_list = sorted(self.error_metric_list, 
+        pruned_list = self._prune_error_metrics()
+        sorted_list = sorted(pruned_list, 
                              key=lambda metric: 
                              self.error_metric_name_order.index(metric.name))
         return sorted_list
@@ -135,8 +159,7 @@ def retrieve_metrics_from_new_report(error_metrics_filepath: str) -> List[ErrorM
     )
     current_date = datetime.now()
     date_str = current_date.strftime("%Y-%m-%d-%H:%M:%S")
-
-    return [date_str] + sort_error_metrics.sorted_error_metric_list
+    return [date_str] + sort_error_metrics.sorted_error_metric_list()
 
 
 def retrieve_json_table_report(filepath) -> Tuple[str, str, List[str], List[List[str]]]:
@@ -233,7 +256,7 @@ if __name__ == "__main__":
     new_error_metrics_list = retrieve_metrics_from_new_report(new_val_filepath)
     
     title, desc, headers, rows = retrieve_json_table_report(report_json_filepath)
-    headers = ERROR_METRIC_LIST
+    headers =  ["Date"] + ERROR_METRIC_LIST
     new_row = [str(metric) for metric in new_error_metrics_list]
     rows.append(new_row)
     new_json_report = {
