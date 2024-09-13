@@ -1,16 +1,26 @@
 name: Equinix Metal Sweep
-
 on:
   schedule:
     - cron: '0 15 * * *' # before validation action
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   cleanup:
-    if: ${{ secrets.ALLOW_SWEEP == 'true' }} # Only run the job if ALLOW_SWEEP is 'true'
     runs-on: ubuntu-latest
+    env:
+      ALLOW_SWEEP: ${{ secrets.ALLOW_SWEEP }}
     steps:
+    - name: Check if sweep is allowed
+      id: check_sweep
+      run: |
+        if [ "$ALLOW_SWEEP" == "true" ]; then
+          echo "run_sweep=true" >> $GITHUB_OUTPUT
+        else
+          echo "run_sweep=false" >> $GITHUB_OUTPUT
+        fi
+
     - name: Equinix Metal Sweeper
+      if: steps.check_sweep.outputs.run_sweep == 'true'
       uses: equinix-labs/metal-sweeper-action@v0.6.1
       with:
         authToken: ${{ secrets.EQUINIX_API_TOKEN }}
