@@ -3,89 +3,30 @@ all:
     servers:
       hosts:
         localhost:
-          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
         my-vm:
-          ansible_ssh_private_key_file: /tmp/vm_ssh_key
-      vars:
-        firewall:
-          - service: pmcd
-            state: enabled
-        metrics_retention_days: 7
     kvm_hosts:
       hosts:
         localhost:
-          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
     metrics_monitor:
       hosts:
         localhost:
-          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
         my-vm:
-          ansible_ssh_private_key_file: /tmp/vm_ssh_key
-      vars:
-        firewall:
-          - service: grafana
-            state: enabled
-        metrics_graph_service: yes
-        metrics_query_service: yes
-        metrics_retention_days: 7
-        metrics_monitored_hosts: "{{ groups['servers'] }}"
     prometheus_server:
       hosts:
         localhost:
-          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
         my-vm:
-          ansible_ssh_private_key_file: /tmp/vm_ssh_key
     node_exporter_servers:
       hosts:
         localhost:
-          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
     ssh_tunnel_server:
       hosts:
         localhost:
-          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
-      vars:
-        ssh_tunnel_service_name: "ssh-tunnel-kepler-exporter"
-        ssh_tunnel_user: "root"
-        ssh_tunnel_vm: "my-vm"
-        local_port: 9999
-        remote_port: 8888
-        ssh_key_path: "/tmp/vm_ssh_key"
-        systemd_service_path: "/etc/systemd/system/{{ ssh_tunnel_service_name }}.service"
     model_server:
       hosts:
         my-vm:
-          ansible_ssh_private_key_file: /tmp/vm_ssh_key
-      vars:
-        node_total_estimator: "true"
-        node_components_estimator: "true"
-        model_server_enable: "false"
-        model_server_url: "http://model-server:8100"
-        node_total_init_url: "https://raw.githubusercontent.com/sustainable-computing-io/kepler-model-db/main/models/v0.7/specpower-0.7.11/acpi/AbsPower/BPFOnly/SGDRegressorTrainer_0.zip"
-        node_components_init_url: "https://raw.githubusercontent.com/sustainable-computing-io/kepler-model-db/main/models/v0.7/ec2-0.7.11/rapl-sysfs/AbsPower/BPFOnly/SGDRegressorTrainer_0.zip"
-        model_server_entrypoint: "python3.10 quay.io/sustainable_computing_io/kepler_model_server:v0.7.11-2"
     http_server:
       hosts:
         my-vm:
-          ansible_ssh_private_key_file: /tmp/vm_ssh_key
-      vars:
-        local_model_directory: "/tmp/trained-equinix-models/"
-        vm_model_directory: "/tmp/models/trained-equinix-models"
-        http_port: 8080
     model_trainer:
       hosts:
         localhost:
-          ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
-      vars:
-        stress_iterations: 1
-        model_server_repo: "https://github.com/sustainable-computing-io/kepler-model-server.git"
-        kepler_repo: "https://github.com/sustainable-computing-io/kepler.git"
-        model_server_path: "/opt/kepler-model-server"
-        kepler_path: "/opt/kepler"
-        data_path: "/opt/data"
-        model_path: "{{ data_path }}/models"
-        model_export_path: "/refined-models"
-        benchmark: "Equinix_Models"
-        collect_id: "workflow_run" 
-        prom_url: "http://localhost:9090"
-        pipeline_name: "Equinix_Pipeline"
-        stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stressor.sh"
