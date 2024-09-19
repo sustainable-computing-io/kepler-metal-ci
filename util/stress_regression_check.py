@@ -1,6 +1,7 @@
 import os
 import requests
 import datetime
+import re
 from openai import OpenAI
 from github import Github
 
@@ -8,6 +9,7 @@ github_token = os.getenv("GITHUB_TOKEN")
 repo_name = "sustainable-computing-io/kepler-metal-ci"
 
 today = datetime.datetime.now().strftime('%Y-%m-%d')
+lastIssueDate = "2024-07-31"
 
 # URLs of the reports
 url = "https://sustainable-computing-io.github.io/kepler-metal-ci/kepler-stress-test-metrics.html"
@@ -65,7 +67,13 @@ def main():
     print("Analyzing the result...")
     regression_detected = False
     if "Significant Regression Detected".lower() in result.lower():
-        regression_detected = True
+        match = re.search(r"\d{4}-\d{2}-\d{2}", result.lower())
+        if match:
+            print("find date:", match.group())
+            if lastIssueDate == match.group():
+                print("lastIssueDate is match date in report skip.")
+            else:
+                regression_detected = True
 
     # Create GitHub issue if regression detected
     if regression_detected:
