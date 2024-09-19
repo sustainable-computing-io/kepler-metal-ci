@@ -29,6 +29,11 @@
       - job_name: "node-exporter"
         static_configs:
           - targets: ["localhost:9100"]
+
+    prometheus_config_flags_extra:
+        web.enable-admin-api:
+        web.enable-lifecycle:
+
   roles:
     - role: prometheus.prometheus.prometheus
       vars:
