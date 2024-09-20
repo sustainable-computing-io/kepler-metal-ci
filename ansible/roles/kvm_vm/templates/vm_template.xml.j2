@@ -2,7 +2,6 @@
   <name>{{ vm_name }}</name>
   <memory unit='MiB'>{{ memory_size }}</memory>
   <vcpu>{{ vcpu_count }}</vcpu>
-  <cpu mode='host-passthrough'>
   </cpu>
   <cputune>
     {% for i in range(vcpu_count) %}
