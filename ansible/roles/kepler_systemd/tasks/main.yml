@@ -1,0 +1,11 @@
+---
+- name: Install Kepler on Metal
+  ansible.builtin.include_tasks: metal.yml
+  when: inventory_hostname == 'localhost'
+
+- name: Install Kepler on VM
+  ansible.builtin.include_tasks: vm.yml
+  when: inventory_hostname == 'my-vm'
+
+- name: Check if Kepler is running
+  ansible.builtin.include_tasks: validate.yml

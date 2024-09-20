@@ -1,0 +1,3 @@
+---
+# This contains the variables that are less likely to be overridden
+kepler_image: quay.io/sustainable_computing_io/kepler:latest
