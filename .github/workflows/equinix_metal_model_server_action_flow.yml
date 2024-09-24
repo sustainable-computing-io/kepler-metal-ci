@@ -83,10 +83,19 @@ jobs:
             --report-md-filepath docs/daily-validations/daily-validations-model-server/daily-report.md \
             --report-json-filepath docs/daily-validations/daily-validations-model-server/daily-report.json \
             --new-val-filepath /tmp/validator-${KEPLER_TAG}/${KEPLER_TAG}.json
+
           # copy the report to the directory
           mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-model-server " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/artifacts) |" \
             >> docs/kepler-model-validation.md
+
+          # Capture Prometheus TSDB Snapshot
+          mkdir -p docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/prometheus-snapshot
+          snap_name=$(curl -XPOST http://localhost:9090/api/v1/admin/tsdb/snapshot | jq -r '.data.name')
+          tar -cvzf docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-model-server/prometheus-snapshot/snapshot.tar.gz -C \
+            /var/lib/prometheus/snapshots ${snap_name}
+
+          # Push to the repo
           git config user.email "dependabot[bot]@users.noreply.github.com"
           git config user.name "dependabot[bot]"
           git add docs/*
