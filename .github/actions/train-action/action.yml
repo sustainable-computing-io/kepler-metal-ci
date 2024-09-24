@@ -12,9 +12,9 @@ runs:
       shell: bash
       run: |
         cd ${GITHUB_WORKSPACE}/ansible
-        echo "Install Prometheus Baremetal"
-        ansible-playbook -i inventory.yml -vvv metal_prometheus.yml
-        echo "Install Kepler Metal"
-        ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
+        # echo "Install Prometheus Baremetal"
+        # ansible-playbook -i inventory.yml -vvv metal_prometheus.yml
+        # echo "Install Kepler Metal"
+        # ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
         echo "Deploy Trainer"
         ansible-playbook -i inventory.yml -vvv model_trainer_playbook.yml -e "model_export_path=${{ inputs.model_export_path }}"
