@@ -28,7 +28,7 @@
       ansible.builtin.git:
         repo: "{{ model_server_repo }}"
         dest: "{{ model_server_path }}"
-        version: main
+        version: vm-metrics-trainer
         force: yes
 
     - name: Clone Kepler
@@ -75,12 +75,13 @@
         # Train
 
         hatch run python cmd/main.py train \
+          --vm-train \
           --pipeline-name $PIPELINE_NAME \
           --input kepler_query --id $COLLECT_ID
 
         
         # Move to Models Directory
-
+        ls -lR $MODEL_PATH/$PIPELINE_NAME/acpi
         mv $MODEL_PATH/$PIPELINE_NAME/rapl-sysfs/* {{ model_export_path }}
       
       environment:
