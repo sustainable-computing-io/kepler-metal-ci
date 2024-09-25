@@ -79,6 +79,7 @@ jobs:
       
       - name: Run Validation Playbooks
         run: |
+          cd ${GITHUB_WORKSPACE}/ansible
           echo "Pass Trained Models to VM"
           ansible-playbook -i inventory.yml -v deploy_http_model_server.yml
           
@@ -87,7 +88,7 @@ jobs:
           for model in "${models[@]}"
           do
             echo "Running Model Server Playbook: $model"
-            model_url="http://localhost:8080/${model}_-1.zip"
+            model_url="http://localhost:8080/${model}_0.zip"
             echo "Model exists with sufficient accuracy: $model_url"
             ansible-playbook -i inventory.yml -vvv model_server_restart.yml \
               -e "node_components_init_url=$model_url"
