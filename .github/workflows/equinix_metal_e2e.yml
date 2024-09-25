@@ -33,6 +33,29 @@ jobs:
       
       - name: Run Setup Runner Action
         uses: ./.github/actions/setup-action
+
+      - name: Run Setup Playbooks
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible
+          echo "Create VM"
+          ansible-playbook -i inventory.yml kvm_playbook.yml
+          echo "Install SSH tunnel"
+          ansible-playbook ssh_tunnel_playbook.yml
+          echo "Install Prometheus"
+          ansible-playbook -i inventory.yml metrics_playbook.yml
+          echo "Install Node Exporter"
+          ansible-playbook -i inventory.yml node_exporter_playbook.yml -vvv
+          echo "Verify node-exporter"
+          sudo systemctl status node_exporter || true
+          sudo ss -tuln | grep 9100 || true
+          curl -s localhost:9100/metrics | grep collector || true
+          echo "Install Kepler"
+          ansible-playbook -i inventory.yml -vvv kepler_playbook.yml -e "target_host=localhost"
+          echo "Create ssh tunnel"
+          ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
+
+          echo "Install Model Server"
+          ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
       
       - name: Run Trainer Action
         uses: ./.github/actions/train-action
@@ -56,27 +79,6 @@ jobs:
       
       - name: Run Validation Playbooks
         run: |
-          cd ${GITHUB_WORKSPACE}/ansible
-          echo "Create VM"
-          ansible-playbook -i inventory.yml kvm_playbook.yml
-          echo "Install SSH tunnel"
-          ansible-playbook ssh_tunnel_playbook.yml
-          echo "Install Prometheus"
-          ansible-playbook -i inventory.yml metrics_playbook.yml
-          echo "Install Node Exporter"
-          ansible-playbook -i inventory.yml node_exporter_playbook.yml -vvv
-          echo "Verify node-exporter"
-          sudo systemctl status node_exporter || true
-          sudo ss -tuln | grep 9100 || true
-          curl -s localhost:9100/metrics | grep collector || true
-          echo "Install Kepler"
-          ansible-playbook -i inventory.yml -vvv kepler_playbook.yml -e "target_host=localhost"
-          echo "Create ssh tunnel"
-          ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
-
-          echo "Install Model Server"
-          ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
-          
           echo "Pass Trained Models to VM"
           ansible-playbook -i inventory.yml -v deploy_http_model_server.yml
           
