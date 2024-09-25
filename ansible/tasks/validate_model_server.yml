@@ -1,3 +1,15 @@
+- name: Pause for 120 seconds
+  pause:
+    seconds: 120
+
+- name: Fetch logs from container-kepler.service
+  command: journalctl -u container-kepler.service
+  register: kepler_logs
+
+- name: Print logs
+  debug:
+    var: kepler_logs.stdout
+
 - name: Check if Model Server is being used
   ansible.builtin.shell: |
     for i in {1..10}; do
