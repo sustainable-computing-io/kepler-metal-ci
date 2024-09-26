@@ -1,0 +1,18 @@
+---
+- name: Wait for Kepler to start (retry logic)
+  ansible.builtin.shell: |
+    for i in {1..5}; do
+      echo "Attempt $i"
+      ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
+      if [ ${ret} -eq 200 ]; then
+        exit 0
+      fi
+      sleep 5
+    done
+    echo "Kepler did not start in time"
+    exit 1
+  register: kepler_start
+  failed_when: kepler_start.rc != 0
+
+- name: Dump Kepler metrics
+  ansible.builtin.shell: curl -s http://localhost:8888/metrics | grep ^kepler_
