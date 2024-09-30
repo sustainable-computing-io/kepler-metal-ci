@@ -32,6 +32,9 @@ jobs:
       - name: Run Setup Runner Action
         uses: ./.github/actions/setup-action
 
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Run playbook
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
