@@ -3,7 +3,7 @@
     seconds: 120
 
 - name: Fetch logs from container-kepler.service
-  command: journalctl -u container-kepler.service
+  command: journalctl -u container-kepler.service -n 1000
   register: kepler_logs
 
 - name: Print logs
