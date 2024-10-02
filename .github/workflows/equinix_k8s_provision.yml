@@ -82,7 +82,7 @@ jobs:
           sudo mv /tmp/k8sconfig /tmp/kubeconfig
 
       - name: Upload kubeconfig
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: kubeconfig-${{ github.run_id }}
           path: /tmp/kubeconfig
