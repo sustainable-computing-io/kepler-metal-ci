@@ -92,7 +92,7 @@ jobs:
           sudo mv /tmp/k8sconfig /tmp/kubeconfig
 
       - name: Upload kubeconfig
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: kubeconfig-${{ github.run_id }}
           path: /tmp/kubeconfig
@@ -118,7 +118,7 @@ jobs:
           mkdir -p ~/.kube
 
       - name: Download kubeconfig
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: kubeconfig-${{ github.run_id }}
           path: ~/.kube/
@@ -243,7 +243,7 @@ jobs:
           kubectl cp default/inspector-pod:/mnt/trained_models.tar.gz ./trained_models.tar.gz
       
       - name: Upload models as artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: trained_models-${{ github.run_id }}-$(date +%F)
           path: ./trained_models.tar.gz
