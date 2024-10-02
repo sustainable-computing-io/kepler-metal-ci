@@ -118,7 +118,7 @@ jobs:
           mkdir -p ~/.kube
 
       - name: Download kubeconfig
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: kubeconfig-${{ github.run_id }}
           path: ~/.kube/
