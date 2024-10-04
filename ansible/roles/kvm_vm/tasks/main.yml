@@ -1,10 +1,17 @@
 ---
 - name: Install KVM and create VM
   block:
-    - name: Install libvirt packages
+    - name: Install libvirt packages (For Ubuntu)
       ansible.builtin.package:
-        name: "{{ packages }}"
+        name: "{{ common_packages + ubuntu_packages }}"
         state: present
+      when: ansible_distribution == "Ubuntu"
+    
+    - name: Install libvirt packages (For RHEL)
+      ansible.builtin.package:
+        name: "{{ common_packages + rhel_packages }}"
+        state: present
+      when: ansible_distribution == "RedHat"
 
     - name: pip install lxml
       ansible.builtin.pip:
@@ -41,8 +48,8 @@
       ansible.builtin.file:
         path: /var/lib/libvirt/images
         state: directory
-        owner: qemu
-        group: qemu
+        owner: root
+        group: root
         mode: '0755'
 
     - name: Check if CentOS Stream 9 image exists
@@ -125,6 +132,18 @@
     - name: Parse the VM IP address
       ansible.builtin.set_fact:
         vm_ip: "{{ domifaddr_output.stdout }}"
+
+    - name: Set the VM name
+      ansible.builtin.set_fact:
+        vm_name: "{{ vm_name }}"
+
+    - name: Set the VM user
+      ansible.builtin.set_fact:
+        vm_user: "{{ vm_user }}"
+
+    - name: Set the VM ssh key path
+      ansible.builtin.set_fact:
+        ssh_key_path: "{{ ssh_key_path }}"
 
     - name: Display the VM IP address
       ansible.builtin.debug:
