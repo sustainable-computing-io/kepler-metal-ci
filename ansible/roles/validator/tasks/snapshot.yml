@@ -1,0 +1,18 @@
+---
+- name: Capture Prometheus TSDB Snapshot
+  ansible.builtin.uri:
+    url: http://localhost:9090/api/v1/admin/tsdb/snapshot
+    method: POST
+    return_content: yes
+  register: prometheus_snapshot
+
+- name: Extract the snapshot name from Prometheus API response
+  ansible.builtin.set_fact:
+    snap_name: "{{ prometheus_snapshot.json.data.name }}"
+
+- name: Copy Prometheus TSDB Snapshot
+  ansible.builtin.shell: |
+    cd {{ metal_compose_dir }}
+    docker compose cp prometheus:{{ snapshot_dir }}/{{ snap_name }} {{ tmp_dir }}
+  environment:
+    VM_IP: "{{ vm_ip }}"

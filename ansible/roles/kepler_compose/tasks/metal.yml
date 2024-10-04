@@ -1,0 +1,34 @@
+---
+- name: Clone Kepler and Install Kepler using Metal Compose
+  block:
+    - name: Clone kepler repo
+      ansible.builtin.git:
+        repo: "{{ kepler_repo }}"
+        dest: "{{ kepler_dir }}"
+        version: main
+
+    - name: Get latest commit details
+      ansible.builtin.shell: |
+        cd {{ kepler_dir }}
+        git log -n 1
+
+    - name: Create Docker network
+      ansible.builtin.shell: |
+        docker network create --driver=macvlan --subnet={{ subnet }} -o parent=virbr0 virt-net
+
+    - name: Start Docker compose services on BM
+      community.docker.docker_compose_v2:
+        project_src: "{{ metal_compose_dir }}"
+        build: always
+        files: compose.yaml
+        state: present
+      environment:
+        VM_IP: "{{ vm_ip }}"
+  rescue:
+    - name: Log the error
+      ansible.builtin.debug:
+        msg: "{{ ansible_failed_result }}"
+    - name: Fail the role if the Kepler installation fails
+      ansible.builtin.fail:
+        msg: "The Kepler installation failed on Metal. Please check the output above for more information."
+ 
