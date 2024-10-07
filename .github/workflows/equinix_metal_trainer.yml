@@ -40,12 +40,12 @@ jobs:
       # - name: Archive Models
       #   run: tar -czf trained-equinix-models.tar.gz /refined-models/
 
-      - name: Upload models as artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: trained-equinix-models
-          path: /tmp/trained-equinix-models
-          retention-days: 2
+      # - name: Upload models as artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: trained-equinix-models
+      #     path: /tmp/trained-equinix-models
+      #     retention-days: 2
 
   Cleanup:
     name: "Cleanup"
