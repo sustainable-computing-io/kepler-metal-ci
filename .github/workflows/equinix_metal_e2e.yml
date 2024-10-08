@@ -38,14 +38,7 @@ jobs:
         uses: ./.github/actions/train-action
         with:
           model_export_path: /tmp/trained-equinix-models
-      
-      # - name: Upload models as artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: trained-equinix-models
-      #     path: /tmp/trained-equinix-models
-      #     retention-days: 2
-      
+
       - name: check trained equinix paths
         run: |
           ls -l /tmp/trained-equinix-models/AbsPower
@@ -103,7 +96,6 @@ jobs:
           mkdir -p docs/train-validate-e2e/${DATE_STR}
           mv /tmp/reports/* docs/train-validate-e2e/${DATE_STR}
           mv /tmp/trained-equinix-models/train_logs.txt docs/train-validate-e2e/${DATE_STR}
-          ls -l docs/train-validate-e2e/${DATE_STR}
 
           git config user.email "dependabot[bot]@users.noreply.github.com"
           git config user.name "dependabot[bot]"
