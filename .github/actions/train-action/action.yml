@@ -20,8 +20,8 @@ runs:
         ansible-playbook -i inventory.yml -vvv model_trainer_playbook.yml -e "model_export_path=${{ inputs.model_export_path }}"
     
     - name: Upload models as artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: trained-equinix-models
-          path: ${{ inputs.model_export_path }}
-          retention-days: 8
+      uses: actions/upload-artifact@v4
+      with:
+        name: trained-equinix-models
+        path: ${{ inputs.model_export_path }}
+        retention-days: 8
