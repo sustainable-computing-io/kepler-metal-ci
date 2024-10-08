@@ -53,11 +53,10 @@
 
         chmod +x {{ stress_test_script_path }}
         export START_TIME=$(date +%s)
-        # for i in {1..{{ stress_iterations }}}; do
-        #   echo "Iteration: $i"
-        #   {{ stress_test_script_path }}
-        # done 
-        sleep 120
+        for i in {1..{{ stress_iterations }}}; do
+          echo "Iteration: $i"
+          {{ stress_test_script_path }}
+        done 
         export END_TIME=$(date +%s)
         export INTERVAL=$((END_TIME - START_TIME))
         echo $INTERVAL
