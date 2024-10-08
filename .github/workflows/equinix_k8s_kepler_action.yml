@@ -88,6 +88,11 @@ jobs:
           sudo cat /tmp/kubeconfig |jq -r '.stdout' > /tmp/k8sconfig
           sudo mv /tmp/k8sconfig /tmp/kubeconfig
 
+      - name: error_handle_for_cluster
+        if: ${{ failure() }}
+        run: |
+          cd ~/kepler-metal-ci && cat k8s_kubeadm.log
+
       - name: Upload kubeconfig
         uses: actions/upload-artifact@v4
         with:
