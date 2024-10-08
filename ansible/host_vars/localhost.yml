@@ -9,7 +9,7 @@ local_port: 9999
 remote_port: 8888
 ssh_key_path: "/tmp/vm_ssh_key"
 systemd_service_path: "/etc/systemd/system/{{ ssh_tunnel_service_name }}.service"
-stress_iterations: 4
+stress_iterations: 2
 model_server_repo: "https://github.com/KaiyiLiu1234/kepler-model-server-features.git"
 kepler_repo: "https://github.com/sustainable-computing-io/kepler.git"
 model_server_path: "/opt/kepler-model-server-features"

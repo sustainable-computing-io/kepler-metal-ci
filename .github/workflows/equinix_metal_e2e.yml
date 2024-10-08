@@ -61,6 +61,13 @@ jobs:
         uses: ./.github/actions/train-action
         with:
           model_export_path: /tmp/trained-equinix-models
+
+      # Capture Prometheus TSDB Snapshot
+      - name: Capture Training Metrics TSDB Snapshot
+        run: |
+          mkdir -p /tmp/prometheus-snapshot
+          snap_name=$(curl -XPOST http://localhost:9090/api/v1/admin/tsdb/snapshot | jq -r '.data.name')
+          tar -cvzf /tmp/prometheus-snapshot/snapshot.tar.gz -C /var/lib/prometheus/snapshots ${snap_name}
       
       - name: Upload models as artifacts
         uses: actions/upload-artifact@v4
@@ -106,6 +113,7 @@ jobs:
           mkdir -p docs/train-validate-e2e/${DATE_STR}
           mv /tmp/reports/* docs/train-validate-e2e/${DATE_STR}
 
+          mv /tmp/prometheus-snapshot docs/train-validate-e2e/${DATE_STR}/
           git config user.email "dependabot[bot]@users.noreply.github.com"
           git config user.name "dependabot[bot]"
           git add docs/*
