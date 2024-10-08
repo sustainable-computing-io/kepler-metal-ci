@@ -105,11 +105,11 @@ jobs:
           mv /tmp/trained-equinix-models/train_logs.txt docs/train-validate-e2e/${DATE_STR}
           ls -l docs/train-validate-e2e/${DATE_STR}
 
-          # git config user.email "dependabot[bot]@users.noreply.github.com"
-          # git config user.name "dependabot[bot]"
-          # git add docs/*
-          # git commit -m "Add train-validate-e2e single server for ${DATE_STR}" -s
-          # git push
+          git config user.email "dependabot[bot]@users.noreply.github.com"
+          git config user.name "dependabot[bot]"
+          git add docs/*
+          git commit -m "Add train-validate-e2e single server for ${DATE_STR}" -s
+          git push
           
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
