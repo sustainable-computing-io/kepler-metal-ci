@@ -6,7 +6,7 @@ on:
       termination_time:
         description: 'Cluster termination time in hours after now'
         required: true
-        default: '3'
+        default: '8'
       control_plan:
         description: 'control plane machine type'
         required: false
