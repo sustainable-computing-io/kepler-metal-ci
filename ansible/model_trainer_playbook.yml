@@ -48,9 +48,9 @@
         mkdir -p "$MODEL_PATH"
         echo {{ model_export_path }}
         mkdir -p {{ model_export_path }}
+        touch {{ model_export_path }}/train_logs.txt
 
         # Stress
-
         chmod +x {{ stress_test_script_path }}
         export START_TIME=$(date +%s)
         for i in {1..{{ stress_iterations }}}; do
@@ -58,25 +58,30 @@
           {{ stress_test_script_path }}
         done 
         export END_TIME=$(date +%s)
+
         export INTERVAL=$((END_TIME - START_TIME))
         echo $INTERVAL
 
+        echo "START TIME: ${START_TIME}" >> {{ model_export_path }}/train_logs.txt
+        echo "END_TIME: ${END_TIME}" >> {{ model_export_path }}/train_logs.txt
+        echo "LENGTH: ${INTERVAL}" >> {{ model_export_path }}/train_logs.txt
+        echo >> {{ model_export_path }}/train_logs.txt
         cd {{ model_server_path }}
 
         # Collect
-
+        echo -e "Query Prom Data\n" >> {{ model_export_path }}/train_logs.txt
         hatch run python cmd/main.py query \
           --benchmark $BENCHMARK \
           --server $PROM_URL \
           --output kepler_query \
           --interval $INTERVAL \
-          --id $COLLECT_ID
+          --id $COLLECT_ID >> {{ model_export_path }}/train_logs.txt 2>&1
 
         # Train
-
+        echo -e "Train Models\n" >> {{ model_export_path }}/train_logs.txt
         hatch run python cmd/main.py train \
           --pipeline-name $PIPELINE_NAME \
-          --input kepler_query --id $COLLECT_ID
+          --input kepler_query --id $COLLECT_ID >> {{ model_export_path }}/train_logs.txt 2>&1
 
         
         # Move to Models Directory
