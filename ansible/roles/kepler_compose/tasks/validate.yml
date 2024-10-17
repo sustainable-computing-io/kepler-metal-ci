@@ -1,0 +1,25 @@
+---
+- name: Check if Kepler metrics are available
+  block:
+    - name: Wait for Prometheus metrics to become available
+      ansible.builtin.pause:
+        seconds: 120
+
+    - name: Check Prometheus metrics
+      ansible.builtin.shell: |
+        curl http://localhost:9090/api/v1/query -G -d query='kepler_exporter_build_info' | jq
+        curl http://localhost:9090/api/v1/query -G -d query='kepler_node_info' | jq
+      register: prometheus_metrics
+      failed_when: |
+        ('status' not in prometheus_metrics.stdout) or
+        ('success' not in prometheus_metrics.stdout) or
+        ('"result": []' in prometheus_metrics.stdout)
+
+  rescue:
+    - name: Log the error
+      ansible.builtin.debug:
+        msg: "{{ prometheus_metrics.stderr }}"
+
+    - name: Fail the role if metrics are not available
+      ansible.builtin.fail:
+        msg: "Prometheus metrics are not available. Please check the output above for more information."
