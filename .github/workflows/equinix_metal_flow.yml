@@ -21,7 +21,6 @@ jobs:
     name: "Install"
     needs: Create-runner
     runs-on: self-hosted
-    continue-on-error: true
     outputs:
       runner-name: ${{ runner.name }}
 
@@ -127,6 +126,7 @@ jobs:
   Cleanup:
     name: "Cleanup"
     needs: [Install]
+    if: ${{ always() }}
     uses: ./.github/workflows/clean_equinix_runner.yml
     secrets: inherit
     with:
