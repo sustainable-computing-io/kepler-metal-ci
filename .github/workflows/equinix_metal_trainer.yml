@@ -32,6 +32,17 @@ jobs:
       - name: Run Setup Runner Action
         uses: ./.github/actions/setup-action
 
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Baremetal Setup
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible
+          echo "Install Prometheus Baremetal"
+          ansible-playbook -i inventory.yml -vvv metal_prometheus.yml
+          echo "Install Kepler Metal"
+          ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"      
+
       - name: Run Trainer Action
         uses: ./.github/actions/train-action
         with:
