@@ -26,11 +26,19 @@ vm_user: root
 vm_password: ansible_password
 ssh_pub_key_path: /tmp/vm_ssh_key.pub
 cloud_init_config_path: /var/lib/libvirt/images/cloud_init_config.yml
-packages:
+common_packages:
   - qemu-kvm
   - cloud-init
   - tuned
   - python3-libvirt
+
+ubuntu_packages:
+  - libvirt-daemon-system
+  - libguestfs-tools
+  - virtinst
+  - qemu-utils
+
+rhel_packages:
   - libvirt
   - virt-install
   - qemu-img

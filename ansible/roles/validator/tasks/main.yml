@@ -1,0 +1,6 @@
+---
+- name: Run validator
+  ansible.builtin.include_tasks: validate.yml
+
+- name: Capture Prometheus TSDB Snapshot
+  ansible.builtin.include_tasks: snapshot.yml

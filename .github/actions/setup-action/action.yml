@@ -13,8 +13,15 @@ runs:
         sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
         sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
         # install ansible
-        sudo dnf -y install ansible-core python3-pip
-        sudo dnf install -y rhel-system-roles
+        if grep -q 'Ubuntu' /etc/os-release ; then
+          sudo apt update -y
+          sudo apt install software-properties-common -y
+          sudo add-apt-repository --yes --update ppa:ansible/ansible
+          sudo apt install -y ansible python3-pip
+        else
+          sudo dnf -y install ansible-core python3-pip
+          sudo dnf install -y rhel-system-roles
+        fi
         sudo ansible-galaxy collection install prometheus.prometheus
         sudo ansible-galaxy collection install community.crypto
         sudo ansible-galaxy collection install community.libvirt

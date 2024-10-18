@@ -1,0 +1,7 @@
+---
+# defaults file for validator
+log_level: info
+prometheus_url: http://localhost:9090
+rate_interval: 20s
+steps: 5s
+
