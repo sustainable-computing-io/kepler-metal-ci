@@ -33,23 +33,10 @@ jobs:
       
       - name: Run Setup Runner Action
         uses: ./.github/actions/setup-action
-      
-      - name: Run Trainer Action
-        uses: ./.github/actions/train-action
-        with:
-          model_export_path: /tmp/trained-equinix-models
 
-      - name: check trained equinix paths
+      - name: Run Setup Playbooks
         run: |
-          ls -l /tmp/trained-equinix-models/AbsPower
-          ls -l /tmp/trained-equinix-models/DynPower
-      
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Run Validation Playbooks
-        run: |
-          cd ${GITHUB_WORKSPACE}/ansible
+          cd ${GITHUB_WORKSPACE}/ansible 
           echo "Create VM"
           ansible-playbook -i inventory.yml kvm_playbook.yml
           echo "Install SSH tunnel"
@@ -69,7 +56,18 @@ jobs:
 
           echo "Install Model Server"
           ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
-          
+
+      - name: Run Trainer Action
+        uses: ./.github/actions/train-action
+        with:
+          model_export_path: /tmp/trained-equinix-models
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Run Validation Playbooks
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible
           echo "Pass Trained Models to VM"
           ansible-playbook -i inventory.yml -v deploy_http_model_server.yml
           
@@ -78,7 +76,7 @@ jobs:
           for model in "${models[@]}"
           do
             echo "Running Model Server Playbook: $model"
-            model_url="http://localhost:8080/${model}_-1.zip"
+            model_url="http://localhost:8080/${model}_0.zip"
             echo "Model exists with sufficient accuracy: $model_url"
             ansible-playbook -i inventory.yml -vvv model_server_restart.yml \
               -e "node_components_init_url=$model_url"
@@ -97,11 +95,11 @@ jobs:
           mv /tmp/reports/* docs/train-validate-e2e/${DATE_STR}
           mv /tmp/trained-equinix-models/train_logs.txt docs/train-validate-e2e/${DATE_STR}
 
-          git config user.email "dependabot[bot]@users.noreply.github.com"
-          git config user.name "dependabot[bot]"
-          git add docs/*
-          git commit -m "Add train-validate-e2e single server for ${DATE_STR}" -s
-          git push
+          # git config user.email "dependabot[bot]@users.noreply.github.com"
+          # git config user.name "dependabot[bot]"
+          # git add docs/*
+          # git commit -m "Add train-validate-e2e single server for ${DATE_STR}" -s
+          # git push
           
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
