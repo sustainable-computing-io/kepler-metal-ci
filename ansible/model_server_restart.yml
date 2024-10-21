@@ -30,3 +30,12 @@
     
     - name: Include Validation for Kepler and Model Server
       include_tasks: tasks/validate_model_server.yml
+
+    - name: Retrieve full logs for checks
+      ansible.builtin.shell: |
+        journalctl -u container-kepler.service --no-pager
+      register: kepler_logs
+
+    - name: Output logs
+      debug:
+        msg: "{{ kepler_logs.stdout_lines }}"
