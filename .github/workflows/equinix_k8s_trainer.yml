@@ -140,7 +140,7 @@ jobs:
           sudo apt-get install jq -y
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: use Kepler action to deploy cluster
         uses: sustainable-computing-io/kepler-action@main
