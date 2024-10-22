@@ -28,7 +28,7 @@
       ansible.builtin.git:
         repo: "{{ model_server_repo }}"
         dest: "{{ model_server_path }}"
-        version: vm-train
+        version: main
         force: yes
 
     - name: Clone Kepler
