@@ -12,8 +12,6 @@ ERROR_METRIC_LIST = [
     "package_absolute",
     "platform_dynamic",
     "package_dynamic",
-    "platform_idle",
-    "package_idle",
 ]
 
 
