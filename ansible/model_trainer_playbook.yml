@@ -81,6 +81,7 @@
         echo -e "Train Models\n" >> {{ model_export_path }}/train_logs.txt
         hatch run python cmd/main.py train \
           --pipeline-name $PIPELINE_NAME \
+          --vm-train \
           --input kepler_query --id $COLLECT_ID >> {{ model_export_path }}/train_logs.txt 2>&1
 
         
