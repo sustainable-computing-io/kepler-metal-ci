@@ -1,0 +1,1226 @@
+START TIME: 1729776942
+END_TIME: 1729778959
+LENGTH: 2017
+
+Query Prom Data
+
+Creating environment: default
+Installing Python distribution: 3.10
+/usr/lib64/python3.11/tarfile.py:2282: RuntimeWarning: The default behavior of tarfile extraction has been changed to disallow common exploits (including CVE-2007-4559). By default, absolute/parent paths are disallowed and some mode bits are cleared. See https://access.redhat.com/articles/7004769 for more details.
+  warnings.warn(
+Installing project in development mode
+Checking dependencies
+Syncing dependencies
+Query last 2017 interval.
+Start 2024-10-24 09:36:19.000001 End 2024-10-24 10:09:56.000001
+Container Queries:  ['kepler_container_bpf_block_irq_total', 'kepler_container_bpf_cpu_time_ms_total', 'kepler_container_bpf_net_rx_irq_total', 'kepler_container_bpf_net_tx_irq_total', 'kepler_container_bpf_page_cache_hit_total', 'kepler_container_cache_miss_total', 'kepler_container_core_joules_total', 'kepler_container_cpu_cycles_total', 'kepler_container_cpu_instructions_total', 'kepler_container_cpu_ref_cycles_total', 'kepler_container_dram_joules_total', 'kepler_container_joules_total', 'kepler_container_other_joules_total', 'kepler_container_package_joules_total', 'kepler_container_platform_joules_total', 'kepler_container_uncore_joules_total']
+Energy Queries:  ['kepler_container_bpf_block_irq_total', 'kepler_container_bpf_cpu_time_ms_total', 'kepler_container_bpf_net_rx_irq_total', 'kepler_container_bpf_net_tx_irq_total', 'kepler_container_bpf_page_cache_hit_total', 'kepler_container_cache_miss_total', 'kepler_container_core_joules_total', 'kepler_container_cpu_cycles_total', 'kepler_container_cpu_instructions_total', 'kepler_container_cpu_ref_cycles_total', 'kepler_container_dram_joules_total', 'kepler_container_joules_total', 'kepler_container_other_joules_total', 'kepler_container_package_joules_total', 'kepler_container_platform_joules_total', 'kepler_container_uncore_joules_total']
+============================================
+ Present results from all pods: 
+
+
+                                                               count     >0
+scenarioID          query                                                  
+                    kepler_container_bpf_block_irq_total        2692   2692
+                    kepler_container_bpf_cpu_time_ms_total      2692   2692
+                    kepler_container_bpf_net_rx_irq_total       2692   2692
+                    kepler_container_bpf_net_tx_irq_total       2692   1346
+                    kepler_container_bpf_page_cache_hit_total   2692      0
+                    kepler_container_cache_miss_total           2692   2692
+                    kepler_container_core_joules_total          2692   2692
+                    kepler_container_cpu_cycles_total           2692   2692
+                    kepler_container_cpu_instructions_total     2692   2692
+                    kepler_container_cpu_ref_cycles_total       2692   2692
+                    kepler_container_dram_joules_total          2692   2692
+                    kepler_container_joules_total               5384   2692
+                    kepler_container_other_joules_total         2692   1346
+                    kepler_container_package_joules_total       2692   2692
+                    kepler_container_platform_joules_total      2692   2692
+                    kepler_container_uncore_joules_total        2692   1346
+                    kepler_exporter_build_info                  1346   1346
+                    kepler_node_info                            1346   1346
+                    kepler_process_bpf_block_irq_total         85620  14344
+                    kepler_process_bpf_cpu_time_ms_total       85620  53632
+                    kepler_process_bpf_net_rx_irq_total        85620  27778
+                    kepler_process_bpf_net_tx_irq_total        85620   2019
+                    kepler_process_bpf_page_cache_hit_total    85620      0
+                    kepler_process_cache_miss_total            85620  69965
+                    kepler_process_cpu_cycles_total            85620  69625
+                    kepler_process_cpu_instructions_total      85620  70120
+                    kepler_process_cpu_ref_cycles_total        85620  69625
+                    kepler_vm_bpf_block_irq_total                673    673
+                    kepler_vm_bpf_cpu_time_ms_total              673    673
+                    kepler_vm_bpf_net_rx_irq_total               673    673
+                    kepler_vm_bpf_net_tx_irq_total               673    673
+                    kepler_vm_bpf_page_cache_hit_total           673      0
+                    kepler_vm_cache_miss_total                   673    673
+                    kepler_vm_cpu_cycles_total                   673    673
+                    kepler_vm_cpu_instructions_total             673    673
+                    kepler_vm_cpu_ref_cycles_total               673    673
+acpi                kepler_node_platform_joules_total            673    673
+hmc                 kepler_node_platform_joules_total              0      0
+rapl-msr            kepler_node_core_joules_total                  0      0
+                    kepler_node_dram_joules_total                  0      0
+                    kepler_node_package_joules_total               0      0
+                    kepler_node_uncore_joules_total                0      0
+rapl-sysfs          kepler_node_core_joules_total                673    673
+                    kepler_node_dram_joules_total                673    673
+                    kepler_node_package_joules_total             673    673
+                    kepler_node_uncore_joules_total              673    673
+redfish             kepler_node_platform_joules_total              0      0
+trained_power_model kepler_node_core_joules_total                673    673
+                    kepler_node_dram_joules_total                673    673
+                    kepler_node_package_joules_total             673    673
+                    kepler_node_uncore_joules_total              673      0
+  usage_metric  availability  valid_datapoint
+0          hwc           1.0             2692
+1          bpf           1.0             2692
+==== cgroup ====
+0 pods: 	Valid
+
+Valid data points:
+Empty
+==== hwc ====
+1 pods: 	Valid
+
+Valid data points:
+              >0
+scenarioID      
+            2692
+==== bpf ====
+1 pods: 	Valid
+
+Valid data points:
+              >0
+scenarioID      
+            2692
+rapl-sysfs data: 	[673   0 673]
+acpi data: 	[673   0   0]
+Train Models
+
+failed to load json /opt/data/models/Equinix_Pipeline/node_type_index.json: [Errno 2] No such file or directory: '/opt/data/models/Equinix_Pipeline/node_type_index.json'
+valid feature group:  [<FeatureGroup.CounterOnly: 3>, <FeatureGroup.BPFOnly: 4>, <FeatureGroup.BPFIRQ: 8>, <FeatureGroup.CounterIRQCombined: 6>, <FeatureGroup.Basic: 7>]
+Equinix_Pipeline pipeline: CounterOnly extraction done.
+Equinix_Pipeline pipeline: CounterOnly isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (package)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/SVRRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/SVRRegressorTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): fit scaler to latest data CounterOnly for node_type=0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/SVRRegressorTrainer_0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/LinearRegressionTrainer_0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/PolynomialRegressionTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/SGDRegressorTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/LinearRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/KNeighborsRegressorTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/KNeighborsRegressorTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/SGDRegressorTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/SVRRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/PolynomialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/ExponentialRegressionTrainer_0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/GradientBoostingRegressorTrainer_0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/XgboostFitTrainer_0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly/LogarithmicRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/LogarithmicRegressionTrainer_0
+Traceback (most recent call last):
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 69, in train
+    model.fit(X_values, y_values)
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 38, in fit
+    self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+  File "/root/.local/share/hatch/env/virtual/kepler-model/8yCkl15W/kepler-model/lib/python3.10/site-packages/scipy/optimize/_minpack_py.py", line 1012, in curve_fit
+    raise RuntimeError("Optimal parameters not found: " + errmsg)
+RuntimeError: Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly/LogarithmicRegressionTrainer_0
+Train error Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/rapl-sysfs): failed to save model 0: Model must be fit first
+Traceback (most recent call last):
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 69, in train
+    model.fit(X_values, y_values)
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 38, in fit
+    self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+  File "/root/.local/share/hatch/env/virtual/kepler-model/8yCkl15W/kepler-model/lib/python3.10/site-packages/scipy/optimize/_minpack_py.py", line 1012, in curve_fit
+    raise RuntimeError("Optimal parameters not found: " + errmsg)
+RuntimeError: Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+Train error Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/rapl-sysfs): failed to save model 0: Model must be fit first
+Equinix_Pipeline pipeline: 20/100 trainers are trained from CounterOnly to rapl-sysfs
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling rapl-sysfs power by CounterOnly feature                                                                                                              #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterOnly                                                                                                                            #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 0.1                                                                                                                                                                              #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterOnly                                                                                                                            #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 0.1                                                                                                                                                                              #
+############################################################################################################################################################################################################
+Equinix_Pipeline pipeline: BPFOnly extraction done.
+Equinix_Pipeline pipeline: BPFOnly isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (package)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/LinearRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): fit scaler to latest data BPFOnly for node_type=0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/LinearRegressionTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/SGDRegressorTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/SGDRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/PolynomialRegressionTrainer_0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/PolynomialRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/KNeighborsRegressorTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/SVRRegressorTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/SGDRegressorTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/LinearRegressionTrainer_0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/SVRRegressorTrainer_0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/KNeighborsRegressorTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/KNeighborsRegressorTrainer_0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/LogisticRegressionTrainer_0.zip
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/LogisticRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/LogisticRegressionTrainer_0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/GradientBoostingRegressorTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/ExponentialRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/ExponentialRegressionTrainer_0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/XgboostFitTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/XgboostFitTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/LogarithmicRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly/LogarithmicRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/LogarithmicRegressionTrainer_0
+Traceback (most recent call last):
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 69, in train
+    model.fit(X_values, y_values)
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 38, in fit
+    self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+  File "/root/.local/share/hatch/env/virtual/kepler-model/8yCkl15W/kepler-model/lib/python3.10/site-packages/scipy/optimize/_minpack_py.py", line 1012, in curve_fit
+    raise RuntimeError("Optimal parameters not found: " + errmsg)
+RuntimeError: Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly/LogarithmicRegressionTrainer_0
+Train error Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/rapl-sysfs): failed to save model 0: Model must be fit first
+Equinix_Pipeline pipeline: 20/100 trainers are trained from BPFOnly to rapl-sysfs
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling rapl-sysfs power by BPFOnly feature                                                                                                                  #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFOnly                                                                                                                                #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 0.11                                                                                                                                                                             #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFOnly                                                                                                                                #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 0.12                                                                                                                                                                             #
+############################################################################################################################################################################################################
+Equinix_Pipeline pipeline: BPFIRQ extraction done.
+Equinix_Pipeline pipeline: BPFIRQ isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): fit scaler to latest data BPFIRQ for node_type=0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/PolynomialRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/PolynomialRegressionTrainer_0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/LinearRegressionTrainer_0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/SVRRegressorTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/SGDRegressorTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/SVRRegressorTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/KNeighborsRegressorTrainer_0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/KNeighborsRegressorTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/SGDRegressorTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/LinearRegressionTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/PolynomialRegressionTrainer_0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/GradientBoostingRegressorTrainer_0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/XgboostFitTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/XgboostFitTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/ExponentialRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/ExponentialRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/LogarithmicRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ/LogarithmicRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/LogarithmicRegressionTrainer_0
+Traceback (most recent call last):
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 69, in train
+    model.fit(X_values, y_values)
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 38, in fit
+    self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+  File "/root/.local/share/hatch/env/virtual/kepler-model/8yCkl15W/kepler-model/lib/python3.10/site-packages/scipy/optimize/_minpack_py.py", line 1012, in curve_fit
+    raise RuntimeError("Optimal parameters not found: " + errmsg)
+RuntimeError: Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ/LogarithmicRegressionTrainer_0
+Train error Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/rapl-sysfs): failed to save model 0: Model must be fit first
+Traceback (most recent call last):
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 69, in train
+    model.fit(X_values, y_values)
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 38, in fit
+    self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+  File "/root/.local/share/hatch/env/virtual/kepler-model/8yCkl15W/kepler-model/lib/python3.10/site-packages/scipy/optimize/_minpack_py.py", line 1012, in curve_fit
+    raise RuntimeError("Optimal parameters not found: " + errmsg)
+RuntimeError: Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+Train error Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/rapl-sysfs): failed to save model 0: Model must be fit first
+Equinix_Pipeline pipeline: 20/100 trainers are trained from BPFIRQ to rapl-sysfs
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling rapl-sysfs power by BPFIRQ feature                                                                                                                   #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/BPFIRQ                                                                                                                                 #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 0.1                                                                                                                                                                              #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/BPFIRQ                                                                                                                                 #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 0.1                                                                                                                                                                              #
+############################################################################################################################################################################################################
+Equinix_Pipeline pipeline: CounterIRQCombined extraction done.
+Equinix_Pipeline pipeline: CounterIRQCombined isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): fit scaler to latest data CounterIRQCombined for node_type=0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/LinearRegressionTrainer_0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/SVRRegressorTrainer_0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/KNeighborsRegressorTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/SGDRegressorTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/SVRRegressorTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/SGDRegressorTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/LinearRegressionTrainer_0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/PolynomialRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/KNeighborsRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/PolynomialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/ExponentialRegressionTrainer_0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/LogisticRegressionTrainer_0.zip
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/LogisticRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/LogisticRegressionTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/XgboostFitTrainer_0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/LogisticRegressionTrainer_0.zip
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/LogisticRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/LogisticRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined/LogarithmicRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined/LogarithmicRegressionTrainer_0
+Equinix_Pipeline pipeline: 20/100 trainers are trained from CounterIRQCombined to rapl-sysfs
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling rapl-sysfs power by CounterIRQCombined feature                                                                                                       #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/CounterIRQCombined                                                                                                                     #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 0.08                                                                                                                                                                             #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/CounterIRQCombined                                                                                                                     #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 0.08                                                                                                                                                                             #
+############################################################################################################################################################################################################
+Equinix_Pipeline pipeline: Basic extraction done.
+Equinix_Pipeline pipeline: Basic isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): fit scaler to latest data Basic for node_type=0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/SVRRegressorTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/SGDRegressorTrainer_0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/LinearRegressionTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/SVRRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/PolynomialRegressionTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/SGDRegressorTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/LinearRegressionTrainer_0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/PolynomialRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/KNeighborsRegressorTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/KNeighborsRegressorTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/ExponentialRegressionTrainer_0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/GradientBoostingRegressorTrainer_0
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/XgboostFitTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic/LogarithmicRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): archive model :  /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): save_path : /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/LogarithmicRegressionTrainer_0
+Traceback (most recent call last):
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 69, in train
+    model.fit(X_values, y_values)
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 38, in fit
+    self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+  File "/root/.local/share/hatch/env/virtual/kepler-model/8yCkl15W/kepler-model/lib/python3.10/site-packages/scipy/optimize/_minpack_py.py", line 1012, in curve_fit
+    raise RuntimeError("Optimal parameters not found: " + errmsg)
+RuntimeError: Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+save model to /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic/LogarithmicRegressionTrainer_0
+Train error Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/rapl-sysfs): failed to save model 0: Model must be fit first
+Traceback (most recent call last):
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 69, in train
+    model.fit(X_values, y_values)
+  File "/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py", line 38, in fit
+    self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+  File "/root/.local/share/hatch/env/virtual/kepler-model/8yCkl15W/kepler-model/lib/python3.10/site-packages/scipy/optimize/_minpack_py.py", line 1012, in curve_fit
+    raise RuntimeError("Optimal parameters not found: " + errmsg)
+RuntimeError: Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+Train error Optimal parameters not found: Number of calls to function has reached maxfev = 30000.
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/rapl-sysfs): failed to save model 0: Model must be fit first
+Equinix_Pipeline pipeline: 20/100 trainers are trained from Basic to rapl-sysfs
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling rapl-sysfs power by Basic feature                                                                                                                    #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/AbsPower/Basic                                                                                                                                  #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 0.08                                                                                                                                                                             #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 672                                                                                                                                                                                 #
+#     Model Trainers: {'LinearRegressionTrainer', 'KNeighborsRegressorTrainer', 'SVRRegressorTrainer', 'SGDRegressorTrainer', 'XgboostFitTrainer', 'LogisticRegressionTrainer', 'ExponentialRegressionTrai #
+# ner', 'GradientBoostingRegressorTrainer', 'LogarithmicRegressionTrainer', 'PolynomialRegressionTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/rapl-sysfs/DynPower/Basic                                                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 0.09                                                                                                                                                                             #
+############################################################################################################################################################################################################
+=========== Train rapl-sysfs Summary ============
+Train args: {'command': 'train', 'data_path': '/opt/data', 'input': 'kepler_query', 'output': 'output', 'server': 'http://localhost:9090', 'interval': 300, 'start_time': '', 'end_time': '', 'step': 3, 'metric_prefix': 'kepler_', 'thirdparty_metrics': '', 'to_csv': False, 'pipeline_name': 'Equinix_Pipeline', 'extractor': 'default', 'isolator': 'min', 'profile': None, 'target_hints': None, 'bg_hints': None, 'abs_pipeline_name': '', 'energy_source': 'rapl-sysfs', 'abs_trainers': 'PolynomialRegressionTrainer,GradientBoostingRegressorTrainer,KNeighborsRegressorTrainer,LinearRegressionTrainer,SVRRegressorTrainer,XgboostFitTrainer,SGDRegressorTrainer,LogarithmicRegressionTrainer,LogisticRegressionTrainer,ExponentialRegressionTrainer', 'dyn_trainers': 'PolynomialRegressionTrainer,GradientBoostingRegressorTrainer,KNeighborsRegressorTrainer,LinearRegressionTrainer,SVRRegressorTrainer,XgboostFitTrainer,SGDRegressorTrainer,LogarithmicRegressionTrainer,LogisticRegressionTrainer,ExponentialRegressionTrainer', 'trainers': 'XgboostFitTrainer', 'vm_train': True, 'benchmark': None, 'output_type': 'AbsPower', 'feature_group': '', 'model_name': None, 'target_data': None, 'scenario': None, 'publisher': None, 'include_raw': None, 'collect_date': None, 'zip': False, 'id': 'workflow_run'}
+Equinix_Pipeline pipeline: archive pipeline : /opt/data/models/Equinix_Pipeline.zip
+Equinix_Pipeline pipeline: save_path : /opt/data/models/Equinix_Pipeline
+/opt/kepler-model-server/src/kepler_model/util/loader.py:169: FutureWarning: errors='ignore' is deprecated and will raise in a future version. Use to_numeric without passing `errors` and catch exceptions explicitly instead
+  data = data.apply(pd.to_numeric, errors="ignore")
+/opt/kepler-model-server/src/kepler_model/util/loader.py:169: FutureWarning: errors='ignore' is deprecated and will raise in a future version. Use to_numeric without passing `errors` and catch exceptions explicitly instead
+  data = data.apply(pd.to_numeric, errors="ignore")
+AbsPower pipeline results:
+         feature_group                          model_name   mae     mape
+28  CounterIRQCombined        KNeighborsRegressorTrainer_0  0.08    70.73
+19               Basic        KNeighborsRegressorTrainer_0  0.08    60.87
+20               Basic                 XgboostFitTrainer_0  0.09    81.49
+29  CounterIRQCombined  GradientBoostingRegressorTrainer_0  0.09    57.77
+0               BPFIRQ  GradientBoostingRegressorTrainer_0  0.10    94.13
+1               BPFIRQ                 XgboostFitTrainer_0  0.10   110.42
+31  CounterIRQCombined         LogisticRegressionTrainer_0  0.10   108.21
+30  CounterIRQCombined                 XgboostFitTrainer_0  0.10    73.43
+39         CounterOnly  GradientBoostingRegressorTrainer_0  0.10    67.13
+40         CounterOnly        KNeighborsRegressorTrainer_0  0.10    62.82
+38         CounterOnly       PolynomialRegressionTrainer_0  0.10    89.71
+9              BPFOnly  GradientBoostingRegressorTrainer_0  0.11    79.86
+32  CounterIRQCombined      LogarithmicRegressionTrainer_0  0.12   112.26
+21               Basic      ExponentialRegressionTrainer_0  0.12    98.23
+22               Basic           LinearRegressionTrainer_0  0.12   104.20
+10             BPFOnly                 XgboostFitTrainer_0  0.12    85.56
+41         CounterOnly           LinearRegressionTrainer_0  0.12   112.91
+23               Basic       PolynomialRegressionTrainer_0  0.13    96.54
+42         CounterOnly      ExponentialRegressionTrainer_0  0.13   107.06
+33  CounterIRQCombined               SGDRegressorTrainer_0  0.13   135.16
+2               BPFIRQ           LinearRegressionTrainer_0  0.13   126.28
+11             BPFOnly        KNeighborsRegressorTrainer_0  0.13   104.98
+24               Basic  GradientBoostingRegressorTrainer_0  0.13    63.44
+25               Basic      LogarithmicRegressionTrainer_0  0.13   101.24
+43         CounterOnly               SVRRegressorTrainer_0  0.14  1877.21
+12             BPFOnly      ExponentialRegressionTrainer_0  0.14   153.28
+3               BPFIRQ       PolynomialRegressionTrainer_0  0.14   106.64
+26               Basic               SVRRegressorTrainer_0  0.14  1933.32
+13             BPFOnly           LinearRegressionTrainer_0  0.14   119.32
+44         CounterOnly               SGDRegressorTrainer_0  0.14   130.45
+34  CounterIRQCombined               SVRRegressorTrainer_0  0.15  1906.99
+4               BPFIRQ      ExponentialRegressionTrainer_0  0.15   127.22
+46         CounterOnly                 XgboostFitTrainer_0  0.16    69.05
+45         CounterOnly      LogarithmicRegressionTrainer_0  0.16   112.78
+5               BPFIRQ        KNeighborsRegressorTrainer_0  0.17   132.27
+6               BPFIRQ               SVRRegressorTrainer_0  0.17  1665.06
+35  CounterIRQCombined      ExponentialRegressionTrainer_0  0.17   101.94
+37  CounterIRQCombined           LinearRegressionTrainer_0  0.18   106.82
+36  CounterIRQCombined       PolynomialRegressionTrainer_0  0.18    91.93
+27               Basic               SGDRegressorTrainer_0  0.18   121.05
+7               BPFIRQ      LogarithmicRegressionTrainer_0  0.20   116.83
+14             BPFOnly               SVRRegressorTrainer_0  0.20  1816.01
+15             BPFOnly               SGDRegressorTrainer_0  0.20   123.86
+16             BPFOnly         LogisticRegressionTrainer_0  0.25   146.56
+17             BPFOnly       PolynomialRegressionTrainer_0  0.27   132.49
+8               BPFIRQ               SGDRegressorTrainer_0  0.28   135.34
+18             BPFOnly      LogarithmicRegressionTrainer_0  0.28   133.62
+DynPower pipeline results:
+         feature_group                          model_name   mae     mape
+27  CounterIRQCombined  GradientBoostingRegressorTrainer_0  0.08   165.61
+19               Basic        KNeighborsRegressorTrainer_0  0.09    82.73
+18               Basic  GradientBoostingRegressorTrainer_0  0.09   146.62
+0               BPFIRQ           LinearRegressionTrainer_0  0.10   239.63
+37         CounterOnly        KNeighborsRegressorTrainer_0  0.10   124.59
+28  CounterIRQCombined      ExponentialRegressionTrainer_0  0.11   188.64
+2               BPFIRQ                 XgboostFitTrainer_0  0.11   355.49
+1               BPFIRQ  GradientBoostingRegressorTrainer_0  0.11   258.21
+38         CounterOnly  GradientBoostingRegressorTrainer_0  0.11   102.19
+29  CounterIRQCombined         LogisticRegressionTrainer_0  0.11   256.00
+10             BPFOnly        KNeighborsRegressorTrainer_0  0.12   236.56
+20               Basic      LogarithmicRegressionTrainer_0  0.12   327.78
+9              BPFOnly                 XgboostFitTrainer_0  0.12   196.14
+39         CounterOnly           LinearRegressionTrainer_0  0.12   268.85
+30  CounterIRQCombined       PolynomialRegressionTrainer_0  0.12   383.77
+3               BPFIRQ        KNeighborsRegressorTrainer_0  0.12   219.30
+40         CounterOnly       PolynomialRegressionTrainer_0  0.13   179.55
+21               Basic       PolynomialRegressionTrainer_0  0.13   184.52
+31  CounterIRQCombined        KNeighborsRegressorTrainer_0  0.13   128.95
+41         CounterOnly      ExponentialRegressionTrainer_0  0.13   226.15
+23               Basic               SVRRegressorTrainer_0  0.14  5183.36
+33  CounterIRQCombined               SVRRegressorTrainer_0  0.14  4277.94
+42         CounterOnly               SVRRegressorTrainer_0  0.14  4516.55
+22               Basic                 XgboostFitTrainer_0  0.14   147.02
+32  CounterIRQCombined                 XgboostFitTrainer_0  0.14   122.25
+11             BPFOnly               SVRRegressorTrainer_0  0.15  4498.77
+35  CounterIRQCombined           LinearRegressionTrainer_0  0.15   391.49
+34  CounterIRQCombined               SGDRegressorTrainer_0  0.15   333.64
+43         CounterOnly                 XgboostFitTrainer_0  0.15   117.87
+12             BPFOnly       PolynomialRegressionTrainer_0  0.17   301.62
+4               BPFIRQ       PolynomialRegressionTrainer_0  0.17   241.12
+5               BPFIRQ               SVRRegressorTrainer_0  0.17  4365.39
+44         CounterOnly      LogarithmicRegressionTrainer_0  0.17   253.22
+36  CounterIRQCombined      LogarithmicRegressionTrainer_0  0.17   195.24
+14             BPFOnly           LinearRegressionTrainer_0  0.19   324.45
+13             BPFOnly  GradientBoostingRegressorTrainer_0  0.19   240.78
+24               Basic      ExponentialRegressionTrainer_0  0.19   228.72
+25               Basic           LinearRegressionTrainer_0  0.19   279.02
+6               BPFIRQ               SGDRegressorTrainer_0  0.21   437.44
+15             BPFOnly               SGDRegressorTrainer_0  0.22   314.52
+26               Basic               SGDRegressorTrainer_0  0.22   327.25
+16             BPFOnly      ExponentialRegressionTrainer_0  0.23   256.76
+7               BPFIRQ      ExponentialRegressionTrainer_0  0.23   349.60
+45         CounterOnly               SGDRegressorTrainer_0  0.25   337.61
+17             BPFOnly      LogarithmicRegressionTrainer_0  0.26   422.14
+8               BPFIRQ      LogarithmicRegressionTrainer_0  0.26   302.03
