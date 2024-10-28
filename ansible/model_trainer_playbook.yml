@@ -25,20 +25,26 @@
         hatch --version
 
     - name: Clone Model Server
+      ignore_errors: true
       ansible.builtin.git:
         repo: "{{ model_server_repo }}"
         dest: "{{ model_server_path }}"
         version: main
-        force: yes
+        force: false
 
     - name: Clone Kepler
+      ignore_errors: true
       ansible.builtin.git:
         repo: "{{ kepler_repo }}"
         dest: "{{ kepler_path }}"
         version: main
-        force: yes
+        force: false
 
     - name: Train Models
+      vars:
+        vm_user: "{{ hostvars['localhost']['ssh_tunnel_user'] }}"
+        vm_name: "{{ hostvars['localhost']['ssh_tunnel_vm'] }}"
+        ssh_key_path: "{{ hostvars['localhost']['ssh_key_path'] }}"
       ansible.builtin.shell: |
         export PATH=$PATH:/usr/local/bin
         echo $PATH
@@ -50,12 +56,16 @@
         mkdir -p {{ model_export_path }}
         touch {{ model_export_path }}/train_logs.txt
 
+        # scp the stress_test_script to the VM
+        scp -i {{ ssh_key_path }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ stress_test_script_path }} {{ vm_user }}@{{ vm_name }}:/tmp/stress_test.sh
+
         # Stress
         chmod +x {{ stress_test_script_path }}
         export START_TIME=$(date +%s)
         for i in {1..{{ stress_iterations }}}; do
           echo "Iteration: $i"
-          {{ stress_test_script_path }}
+          # ssh to the vm and run the stress_test_script
+          ssh -i {{ ssh_key_path }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ vm_user }}@{{ vm_name }} /tmp/stress_test.sh
         done 
         export END_TIME=$(date +%s)
 
@@ -75,6 +85,7 @@
           --server $PROM_URL \
           --output kepler_query \
           --interval $INTERVAL \
+          --vm-train \
           --id $COLLECT_ID >> {{ model_export_path }}/train_logs.txt 2>&1
 
         # Train
@@ -82,12 +93,13 @@
         hatch run python cmd/main.py train \
           --pipeline-name $PIPELINE_NAME \
           --vm-train \
+          -e trained_power_model \
           --input kepler_query --id $COLLECT_ID >> {{ model_export_path }}/train_logs.txt 2>&1
 
         
         # Move to Models Directory
 
-        mv $MODEL_PATH/$PIPELINE_NAME/rapl-sysfs/* {{ model_export_path }}
+        mv $MODEL_PATH/$PIPELINE_NAME/trained_power_model/* {{ model_export_path }}
       
       environment:
         BENCHMARK: "{{ benchmark }}"
