@@ -141,8 +141,8 @@
         state: started
 
     - name: Include Validation for Kepler and Model Server
-      ignore_errors: yes
       include_tasks: tasks/validate_model_server.yml
+      failed_when: false
     
     - name: Dump Kepler metrics
       ansible.builtin.shell: curl -s http://localhost:8888/metrics | grep ^kepler_
