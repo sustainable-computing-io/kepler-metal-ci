@@ -21,11 +21,12 @@
         - stress-ng
 
     - name: Clone the Kepler repository
+      ignore_errors: true
       git:
         repo: "{{ validator_repo }}"
         dest: "/opt/kepler"
         version: main
-        force: yes
+        force: false
 
     - name: Create validator.yaml
       copy:
