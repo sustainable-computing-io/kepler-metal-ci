@@ -99,6 +99,7 @@ jobs:
           git config user.name "dependabot[bot]"
           git add docs/*
           git commit -m "Add train-validate-e2e single server for ${DATE_STR}" -s
+          git pull --rebase
           git push
           
         env:
