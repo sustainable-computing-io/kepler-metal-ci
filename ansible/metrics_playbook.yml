@@ -5,13 +5,6 @@
     - redhat.rhel_system_roles.firewall
   become: true
 
-- name: Use metrics system role to configure Grafana
-  hosts: metrics_monitor
-  roles:
-    - redhat.rhel_system_roles.metrics
-    - redhat.rhel_system_roles.firewall
-  become: true
-
 - name: Use Prometheus role to configure Prometheus server
   hosts: localhost
   become: true

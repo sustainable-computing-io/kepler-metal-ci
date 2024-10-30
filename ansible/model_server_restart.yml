@@ -23,10 +23,38 @@
         name: container-model-server
         state: restarted
 
+    - name: Sleep for 10 seconds to ensure estimator is fully up and download the models
+      ansible.builtin.wait_for:
+        timeout: 10
+
+    - name: Run podman logs estimator and print the output
+      ansible.builtin.shell: podman logs estimator
+      register: estimator_logs
+      failed_when: estimator_logs.rc != 0
+      changed_when: estimator_logs.rc != 0
+   
+    - name: Print Estimator Logs
+      ansible.builtin.debug:
+        msg: "{{ estimator_logs.stdout }}"
+
     - name: Restart Kepler service
       ansible.builtin.systemd:
         name: container-kepler
         state: restarted
-    
+
+    - name: Sleep for 10 seconds to ensure kepler is fully up
+      ansible.builtin.wait_for:
+        timeout: 10
+
+    - name: Run podman logs kepler and print the output
+      ansible.builtin.shell: podman logs kepler
+      register: kepler_logs
+      failed_when: kepler_logs.rc != 0
+      changed_when: kepler_logs.rc != 0
+
+    - name: Print Kepler Logs
+      ansible.builtin.debug:
+        msg: "{{ kepler_logs.stdout }}"
+
     - name: Include Validation for Kepler and Model Server
       include_tasks: tasks/validate_model_server.yml
