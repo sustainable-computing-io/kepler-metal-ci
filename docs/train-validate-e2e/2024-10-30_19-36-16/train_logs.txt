@@ -1,0 +1,1194 @@
+START TIME: 1730324956
+END_TIME: 1730326975
+LENGTH: 2019
+
+Query Prom Data
+
+Creating environment: default
+Installing Python distribution: 3.10
+/usr/lib64/python3.11/tarfile.py:2282: RuntimeWarning: The default behavior of tarfile extraction has been changed to disallow common exploits (including CVE-2007-4559). By default, absolute/parent paths are disallowed and some mode bits are cleared. See https://access.redhat.com/articles/7004769 for more details.
+  warnings.warn(
+Installing project in development mode
+Checking dependencies
+Syncing dependencies
+Query last 2019 interval.
+Start 2024-10-30 17:49:51 End 2024-10-30 18:23:30
+Container Queries:  ['kepler_container_bpf_block_irq_total', 'kepler_container_bpf_cpu_time_ms_total', 'kepler_container_bpf_net_rx_irq_total', 'kepler_container_bpf_net_tx_irq_total', 'kepler_container_bpf_page_cache_hit_total', 'kepler_container_cache_miss_total', 'kepler_container_core_joules_total', 'kepler_container_cpu_cycles_total', 'kepler_container_cpu_instructions_total', 'kepler_container_cpu_ref_cycles_total', 'kepler_container_dram_joules_total', 'kepler_container_joules_total', 'kepler_container_other_joules_total', 'kepler_container_package_joules_total', 'kepler_container_platform_joules_total', 'kepler_container_uncore_joules_total']
+Energy Queries:  ['kepler_container_core_joules_total', 'kepler_container_dram_joules_total', 'kepler_container_joules_total', 'kepler_container_other_joules_total', 'kepler_container_package_joules_total', 'kepler_container_platform_joules_total', 'kepler_container_uncore_joules_total', 'kepler_node_core_joules_total', 'kepler_node_dram_joules_total', 'kepler_node_other_joules_total', 'kepler_node_package_joules_total', 'kepler_node_platform_joules_total', 'kepler_node_uncore_joules_total', 'kepler_process_core_joules_total', 'kepler_process_dram_joules_total', 'kepler_process_joules_total', 'kepler_process_other_joules_total', 'kepler_process_package_joules_total', 'kepler_process_platform_joules_total', 'kepler_process_uncore_joules_total', 'kepler_vm_core_joules_total', 'kepler_vm_dram_joules_total', 'kepler_vm_other_joules_total', 'kepler_vm_package_joules_total', 'kepler_vm_platform_joules_total', 'kepler_vm_uncore_joules_total']
+============================================
+ Present results from all pods: 
+
+
+                                                               count     >0
+scenarioID          query                                                  
+                    kepler_container_bpf_block_irq_total        2696   2696
+                    kepler_container_bpf_cpu_time_ms_total      2696   2696
+                    kepler_container_bpf_net_rx_irq_total       2696   2696
+                    kepler_container_bpf_net_tx_irq_total       2696   1348
+                    kepler_container_bpf_page_cache_hit_total   2696      0
+                    kepler_container_cache_miss_total           2696   2696
+                    kepler_container_core_joules_total          2696   2696
+                    kepler_container_cpu_cycles_total           2696   2696
+                    kepler_container_cpu_instructions_total     2696   2696
+                    kepler_container_cpu_ref_cycles_total       2696   2696
+                    kepler_container_dram_joules_total          2696   2696
+                    kepler_container_joules_total               5392   2696
+                    kepler_container_other_joules_total         2696   2668
+                    kepler_container_package_joules_total       2696   2696
+                    kepler_container_platform_joules_total      2696   2696
+                    kepler_container_uncore_joules_total        2696      0
+                    kepler_exporter_build_info                  1348   1348
+                    kepler_node_info                            1348   1348
+                    kepler_process_bpf_block_irq_total         89681  17968
+                    kepler_process_bpf_cpu_time_ms_total       89681  56813
+                    kepler_process_bpf_net_rx_irq_total        89681  29488
+                    kepler_process_bpf_net_tx_irq_total        89681   1348
+                    kepler_process_bpf_page_cache_hit_total    89681      0
+                    kepler_process_cache_miss_total            89681  75605
+                    kepler_process_cpu_cycles_total            89681  74390
+                    kepler_process_cpu_instructions_total      89681  76064
+                    kepler_process_cpu_ref_cycles_total        89681  74390
+                    kepler_vm_bpf_block_irq_total                674    674
+                    kepler_vm_bpf_cpu_time_ms_total              674    674
+                    kepler_vm_bpf_net_rx_irq_total               674    674
+                    kepler_vm_bpf_net_tx_irq_total               674      0
+                    kepler_vm_bpf_page_cache_hit_total           674      0
+                    kepler_vm_cache_miss_total                   674    674
+                    kepler_vm_cpu_cycles_total                   674    674
+                    kepler_vm_cpu_instructions_total             674    674
+                    kepler_vm_cpu_ref_cycles_total               674    674
+acpi                kepler_vm_platform_joules_total              674    674
+hmc                 kepler_vm_platform_joules_total                0      0
+rapl-msr            kepler_vm_core_joules_total                    0      0
+                    kepler_vm_dram_joules_total                    0      0
+                    kepler_vm_package_joules_total                 0      0
+                    kepler_vm_uncore_joules_total                  0      0
+rapl-sysfs          kepler_vm_core_joules_total                  674    674
+                    kepler_vm_dram_joules_total                  674    674
+                    kepler_vm_package_joules_total               674    674
+                    kepler_vm_uncore_joules_total                674      0
+redfish             kepler_vm_platform_joules_total                0      0
+trained_power_model kepler_vm_core_joules_total                    0      0
+                    kepler_vm_dram_joules_total                    0      0
+                    kepler_vm_package_joules_total                 0      0
+                    kepler_vm_uncore_joules_total                  0      0
+  usage_metric  availability  valid_datapoint
+0          hwc           1.0             2696
+1          bpf           1.0             2696
+==== cgroup ====
+0 pods: 	Valid
+
+Valid data points:
+Empty
+==== hwc ====
+1 pods: 	Valid
+
+Valid data points:
+              >0
+scenarioID      
+            2696
+==== bpf ====
+1 pods: 	Valid
+
+Valid data points:
+              >0
+scenarioID      
+            2696
+rapl-sysfs data: 	[]
+acpi data: 	[]
+Train Models
+
+failed to load json /opt/data/models/Equinix_Pipeline/node_type_index.json: [Errno 2] No such file or directory: '/opt/data/models/Equinix_Pipeline/node_type_index.json'
+valid feature group:  [<FeatureGroup.CounterOnly: 3>, <FeatureGroup.BPFOnly: 4>, <FeatureGroup.BPFIRQ: 8>, <FeatureGroup.CounterIRQCombined: 6>, <FeatureGroup.Basic: 7>]
+energy source:  trained_power_model
+energy components:  ['package', 'core', 'uncore', 'dram']
+Equinix_Pipeline pipeline: CounterOnly extraction done.
+Equinix_Pipeline pipeline: CounterOnly isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/PolynomialRegressionTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): fit scaler to latest data CounterOnly for node_type=0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/PolynomialRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/KNeighborsRegressorTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/SGDRegressorTrainer_0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/LinearRegressionTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/LinearRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/KNeighborsRegressorTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/SGDRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/PolynomialRegressionTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/SVRRegressorTrainer_0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/SVRRegressorTrainer_0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/LogarithmicRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/LogarithmicRegressionTrainer_0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/GradientBoostingRegressorTrainer_0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): failed to save model 0: Input contains NaN.
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): failed to save model 0: Input contains NaN.
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/XgboostFitTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly/ExponentialRegressionTrainer_0
+Equinix_Pipeline pipeline: 20/100 trainers are trained from CounterOnly to trained_power_model
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling trained_power_model power by CounterOnly feature                                                                                                     #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterOnly                                                                                                                   #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 7.09                                                                                                                                                                             #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterOnly                                                                                                                   #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 6.53                                                                                                                                                                             #
+############################################################################################################################################################################################################
+Equinix_Pipeline pipeline: BPFOnly extraction done.
+Equinix_Pipeline pipeline: BPFOnly isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/KNeighborsRegressorTrainer_0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): fit scaler to latest data BPFOnly for node_type=0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/KNeighborsRegressorTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/LinearRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/LinearRegressionTrainer_0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/LinearRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/LinearRegressionTrainer_0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/SVRRegressorTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/SGDRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/PolynomialRegressionTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/SGDRegressorTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/SVRRegressorTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/KNeighborsRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/PolynomialRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/LogarithmicRegressionTrainer_0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): failed to save model 0: Input contains NaN.
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): failed to save model 0: Input contains NaN.
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/LogarithmicRegressionTrainer_0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/GradientBoostingRegressorTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/GradientBoostingRegressorTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/ExponentialRegressionTrainer_0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFOnly/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly/XgboostFitTrainer_0
+Equinix_Pipeline pipeline: 20/100 trainers are trained from BPFOnly to trained_power_model
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling trained_power_model power by BPFOnly feature                                                                                                         #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFOnly                                                                                                                       #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 6.97                                                                                                                                                                             #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFOnly                                                                                                                       #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 6.84                                                                                                                                                                             #
+############################################################################################################################################################################################################
+Equinix_Pipeline pipeline: BPFIRQ extraction done.
+Equinix_Pipeline pipeline: BPFIRQ isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/LinearRegressionTrainer_0.zip
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): fit scaler to latest data BPFIRQ for node_type=0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/LinearRegressionTrainer_0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/PolynomialRegressionTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/LinearRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/LinearRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/KNeighborsRegressorTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/SGDRegressorTrainer_0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/SVRRegressorTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/SGDRegressorTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/SVRRegressorTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/KNeighborsRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/PolynomialRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/LogarithmicRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/LogarithmicRegressionTrainer_0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): failed to save model 0: Input contains NaN.
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): failed to save model 0: Input contains NaN.
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/GradientBoostingRegressorTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/GradientBoostingRegressorTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/ExponentialRegressionTrainer_0
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.BPFIRQ/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ/XgboostFitTrainer_0
+Equinix_Pipeline pipeline: 20/100 trainers are trained from BPFIRQ to trained_power_model
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling trained_power_model power by BPFIRQ feature                                                                                                          #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/BPFIRQ                                                                                                                        #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 6.64                                                                                                                                                                             #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/BPFIRQ                                                                                                                        #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 7.44                                                                                                                                                                             #
+############################################################################################################################################################################################################
+Equinix_Pipeline pipeline: CounterIRQCombined extraction done.
+Equinix_Pipeline pipeline: CounterIRQCombined isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (package)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): fit scaler to latest data CounterIRQCombined for node_type=0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/KNeighborsRegressorTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/KNeighborsRegressorTrainer_0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/LinearRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/LinearRegressionTrainer_0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/SVRRegressorTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/SGDRegressorTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/LinearRegressionTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/SGDRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/PolynomialRegressionTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/PolynomialRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/KNeighborsRegressorTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/SVRRegressorTrainer_0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/LogarithmicRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/LogarithmicRegressionTrainer_0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/GradientBoostingRegressorTrainer_0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): failed to save model 0: Input contains NaN.
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): failed to save model 0: Input contains NaN.
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/XgboostFitTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/XgboostFitTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.CounterIRQCombined/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined/ExponentialRegressionTrainer_0
+Equinix_Pipeline pipeline: 20/100 trainers are trained from CounterIRQCombined to trained_power_model
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling trained_power_model power by CounterIRQCombined feature                                                                                              #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/CounterIRQCombined                                                                                                            #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 6.24                                                                                                                                                                             #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/CounterIRQCombined                                                                                                            #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 6.5                                                                                                                                                                              #
+############################################################################################################################################################################################################
+Equinix_Pipeline pipeline: Basic extraction done.
+Equinix_Pipeline pipeline: Basic isolation done.
+Equinix_Pipeline pipeline: Replace Node Type: 0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+Equinix_Pipeline pipeline: Waiting for 20 trainers to complete...
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (package)
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (core)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (uncore)
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): Newly initialize model (dram)
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/PolynomialRegressionTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): fit scaler to latest data Basic for node_type=0
+PolynomialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/PolynomialRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/PolynomialRegressionTrainer_0
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/LinearRegressionTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/LinearRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/KNeighborsRegressorTrainer_0
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/KNeighborsRegressorTrainer_0
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/SGDRegressorTrainer_0
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/LinearRegressionTrainer_0.zip
+LinearRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/LinearRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/LinearRegressionTrainer_0
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/SGDRegressorTrainer_0.zip
+SGDRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/SGDRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/SGDRegressorTrainer_0
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/SVRRegressorTrainer_0
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/SVRRegressorTrainer_0.zip
+SVRRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/SVRRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/SVRRegressorTrainer_0
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/PolynomialRegressionTrainer_0.zip
+PolynomialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/PolynomialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/PolynomialRegressionTrainer_0
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/KNeighborsRegressorTrainer_0.zip
+KNeighborsRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/KNeighborsRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/KNeighborsRegressorTrainer_0
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/LogarithmicRegressionTrainer_0
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/LogarithmicRegressionTrainer_0.zip
+LogarithmicRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/LogarithmicRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/LogarithmicRegressionTrainer_0
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/GradientBoostingRegressorTrainer_0
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/GradientBoostingRegressorTrainer_0.zip
+GradientBoostingRegressorTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/GradientBoostingRegressorTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/GradientBoostingRegressorTrainer_0
+LogisticRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): failed to save model 0: Input contains NaN.
+LogisticRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): failed to save model 0: Input contains NaN.
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+/opt/kepler-model-server/src/kepler_model/train/trainer/curvefit.py:38: OptimizeWarning: Covariance of the parameters could not be estimated
+  self.popt, self.pcov = curve_fit(self.fit_func, flatten_x, flatten_y, p0=self.p0_func(flatten_x, flatten_y), maxfev=30000)
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/XgboostFitTrainer_0
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/XgboostFitTrainer_0.zip
+XgboostFitTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/XgboostFitTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/XgboostFitTrainer_0
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Dyn/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic/ExponentialRegressionTrainer_0
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): archive model :  /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/ExponentialRegressionTrainer_0.zip
+ExponentialRegressionTrainer trainer (Abs/FeatureGroup.Basic/trained_power_model): save_path : /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/ExponentialRegressionTrainer_0
+save model to /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic/ExponentialRegressionTrainer_0
+Equinix_Pipeline pipeline: 20/100 trainers are trained from Basic to trained_power_model
+############################################################################################################################################################################################################
+# Pipeline Equinix_Pipeline has finished for modeling trained_power_model power by Basic feature                                                                                                           #
+#     Extractor: default                                                                                                                                                                                   #
+#     Isolator: min                                                                                                                                                                                        #
+# Absolute Power Modeling:                                                                                                                                                                                 #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/AbsPower/Basic                                                                                                                         #
+#                                                                                                                                                                                                          #
+#     NodeType 0 Min mae: 5.06                                                                                                                                                                             #
+#                                                                                                                                                                                                          #
+# Dynamic Power Modeling:                                                                                                                                                                                  #
+#     Input data size: 673                                                                                                                                                                                 #
+#     Model Trainers: {'SGDRegressorTrainer', 'LogarithmicRegressionTrainer', 'KNeighborsRegressorTrainer', 'PolynomialRegressionTrainer', 'LogisticRegressionTrainer', 'XgboostFitTrainer', 'ExponentialR #
+# egressionTrainer', 'GradientBoostingRegressorTrainer', 'LinearRegressionTrainer', 'SVRRegressorTrainer'                                                                                                  #
+#     Output: /opt/data/models/Equinix_Pipeline/trained_power_model/DynPower/Basic                                                                                                                         #
+#     Metric Type: vm_metrics                                                                                                                                                                              #
+#     NodeType 0 Min mae: 6.01                                                                                                                                                                             #
+############################################################################################################################################################################################################
+=========== Train trained_power_model Summary ============
+Train args: {'command': 'train', 'data_path': '/opt/data', 'input': 'kepler_query', 'output': 'output', 'server': 'http://localhost:9090', 'interval': 300, 'start_time': '', 'end_time': '', 'step': 3, 'metric_prefix': 'kepler_', 'thirdparty_metrics': '', 'to_csv': False, 'pipeline_name': 'Equinix_Pipeline', 'extractor': 'default', 'isolator': 'min', 'profile': None, 'target_hints': None, 'bg_hints': None, 'abs_pipeline_name': '', 'energy_source': 'trained_power_model', 'abs_trainers': 'PolynomialRegressionTrainer,GradientBoostingRegressorTrainer,KNeighborsRegressorTrainer,LinearRegressionTrainer,SVRRegressorTrainer,XgboostFitTrainer,SGDRegressorTrainer,LogarithmicRegressionTrainer,LogisticRegressionTrainer,ExponentialRegressionTrainer', 'dyn_trainers': 'PolynomialRegressionTrainer,GradientBoostingRegressorTrainer,KNeighborsRegressorTrainer,LinearRegressionTrainer,SVRRegressorTrainer,XgboostFitTrainer,SGDRegressorTrainer,LogarithmicRegressionTrainer,LogisticRegressionTrainer,ExponentialRegressionTrainer', 'trainers': 'XgboostFitTrainer', 'vm_train': True, 'benchmark': None, 'output_type': 'AbsPower', 'feature_group': '', 'model_name': None, 'target_data': None, 'scenario': None, 'publisher': None, 'include_raw': None, 'collect_date': None, 'zip': False, 'id': 'workflow_run'}
+Equinix_Pipeline pipeline: archive pipeline : /opt/data/models/Equinix_Pipeline.zip
+Equinix_Pipeline pipeline: save_path : /opt/data/models/Equinix_Pipeline
+/opt/kepler-model-server/src/kepler_model/util/loader.py:169: FutureWarning: errors='ignore' is deprecated and will raise in a future version. Use to_numeric without passing `errors` and catch exceptions explicitly instead
+  data = data.apply(pd.to_numeric, errors="ignore")
+/opt/kepler-model-server/src/kepler_model/util/loader.py:169: FutureWarning: errors='ignore' is deprecated and will raise in a future version. Use to_numeric without passing `errors` and catch exceptions explicitly instead
+  data = data.apply(pd.to_numeric, errors="ignore")
+AbsPower pipeline results:
+         feature_group                          model_name    mae    mape
+18               Basic                 XgboostFitTrainer_0   5.06   73.60
+19               Basic        KNeighborsRegressorTrainer_0   6.16   65.55
+27  CounterIRQCombined                 XgboostFitTrainer_0   6.24  174.52
+28  CounterIRQCombined  GradientBoostingRegressorTrainer_0   6.30   92.63
+0               BPFIRQ        KNeighborsRegressorTrainer_0   6.64   53.13
+20               Basic               SVRRegressorTrainer_0   6.75   88.35
+1               BPFIRQ                 XgboostFitTrainer_0   6.85   38.37
+9              BPFOnly        KNeighborsRegressorTrainer_0   6.97   14.26
+36         CounterOnly        KNeighborsRegressorTrainer_0   7.09   36.18
+2               BPFIRQ  GradientBoostingRegressorTrainer_0   7.20  107.46
+21               Basic       PolynomialRegressionTrainer_0   7.34   95.88
+29  CounterIRQCombined        KNeighborsRegressorTrainer_0   7.55  130.78
+30  CounterIRQCombined               SVRRegressorTrainer_0   7.59   80.24
+37         CounterOnly  GradientBoostingRegressorTrainer_0   7.69  134.89
+22               Basic  GradientBoostingRegressorTrainer_0   7.73   90.14
+3               BPFIRQ               SVRRegressorTrainer_0   8.29  159.60
+10             BPFOnly  GradientBoostingRegressorTrainer_0   8.65  105.00
+11             BPFOnly       PolynomialRegressionTrainer_0   8.79  255.40
+38         CounterOnly           LinearRegressionTrainer_0   8.92  225.28
+12             BPFOnly                 XgboostFitTrainer_0   8.98   63.26
+39         CounterOnly                 XgboostFitTrainer_0   9.11   16.90
+31  CounterIRQCombined               SGDRegressorTrainer_0   9.11  231.87
+23               Basic      ExponentialRegressionTrainer_0   9.24  229.78
+13             BPFOnly      ExponentialRegressionTrainer_0   9.37  200.14
+40         CounterOnly               SVRRegressorTrainer_0   9.41  121.59
+14             BPFOnly      LogarithmicRegressionTrainer_0   9.43  177.06
+41         CounterOnly       PolynomialRegressionTrainer_0   9.47  133.78
+32  CounterIRQCombined      ExponentialRegressionTrainer_0   9.71   40.55
+33  CounterIRQCombined           LinearRegressionTrainer_0   9.73  235.39
+42         CounterOnly               SGDRegressorTrainer_0   9.74  226.63
+24               Basic               SGDRegressorTrainer_0   9.88   42.17
+25               Basic           LinearRegressionTrainer_0   9.93  403.51
+43         CounterOnly      ExponentialRegressionTrainer_0  10.28  180.42
+26               Basic      LogarithmicRegressionTrainer_0  10.37   86.54
+44         CounterOnly      LogarithmicRegressionTrainer_0  10.41   63.74
+4               BPFIRQ       PolynomialRegressionTrainer_0  10.54  197.18
+15             BPFOnly           LinearRegressionTrainer_0  10.71  200.59
+34  CounterIRQCombined      LogarithmicRegressionTrainer_0  10.78   49.40
+5               BPFIRQ      LogarithmicRegressionTrainer_0  10.82  307.98
+6               BPFIRQ               SGDRegressorTrainer_0  11.90  161.35
+16             BPFOnly               SGDRegressorTrainer_0  12.02  278.70
+7               BPFIRQ      ExponentialRegressionTrainer_0  12.05  513.00
+17             BPFOnly               SVRRegressorTrainer_0  12.26   71.47
+8               BPFIRQ           LinearRegressionTrainer_0  13.41  280.60
+35  CounterIRQCombined       PolynomialRegressionTrainer_0  38.56   34.89
+DynPower pipeline results:
+         feature_group                          model_name    mae     mape
+18               Basic  GradientBoostingRegressorTrainer_0   6.01   345.45
+19               Basic                 XgboostFitTrainer_0   6.07    47.72
+20               Basic        KNeighborsRegressorTrainer_0   6.27   114.86
+27  CounterIRQCombined        KNeighborsRegressorTrainer_0   6.50   204.53
+28  CounterIRQCombined  GradientBoostingRegressorTrainer_0   6.52   135.15
+36         CounterOnly        KNeighborsRegressorTrainer_0   6.53   108.31
+37         CounterOnly  GradientBoostingRegressorTrainer_0   6.70    17.97
+9              BPFOnly        KNeighborsRegressorTrainer_0   6.84     7.55
+29  CounterIRQCombined                 XgboostFitTrainer_0   7.17   316.50
+21               Basic       PolynomialRegressionTrainer_0   7.20    88.49
+10             BPFOnly                 XgboostFitTrainer_0   7.23    87.22
+0               BPFIRQ                 XgboostFitTrainer_0   7.44    78.76
+38         CounterOnly               SVRRegressorTrainer_0   7.53    47.04
+39         CounterOnly                 XgboostFitTrainer_0   7.77    27.73
+11             BPFOnly  GradientBoostingRegressorTrainer_0   7.83   110.20
+1               BPFIRQ               SVRRegressorTrainer_0   8.34   344.37
+12             BPFOnly      LogarithmicRegressionTrainer_0   8.45   428.63
+2               BPFIRQ        KNeighborsRegressorTrainer_0   8.76    62.38
+30  CounterIRQCombined               SVRRegressorTrainer_0   8.92   308.99
+22               Basic               SVRRegressorTrainer_0   9.10   553.02
+3               BPFIRQ  GradientBoostingRegressorTrainer_0   9.12   353.34
+23               Basic           LinearRegressionTrainer_0   9.19   287.06
+40         CounterOnly       PolynomialRegressionTrainer_0   9.25   127.35
+41         CounterOnly               SGDRegressorTrainer_0   9.40   399.25
+31  CounterIRQCombined           LinearRegressionTrainer_0   9.56    76.78
+32  CounterIRQCombined               SGDRegressorTrainer_0   9.56  1157.90
+42         CounterOnly      ExponentialRegressionTrainer_0   9.88   214.26
+24               Basic      ExponentialRegressionTrainer_0   9.91     7.35
+4               BPFIRQ       PolynomialRegressionTrainer_0   9.95   418.60
+43         CounterOnly      LogarithmicRegressionTrainer_0  10.05   489.86
+5               BPFIRQ      LogarithmicRegressionTrainer_0  10.29   241.61
+13             BPFOnly       PolynomialRegressionTrainer_0  10.29  1330.10
+25               Basic      LogarithmicRegressionTrainer_0  10.69   543.17
+44         CounterOnly           LinearRegressionTrainer_0  10.77   996.47
+33  CounterIRQCombined      LogarithmicRegressionTrainer_0  10.79  1025.96
+14             BPFOnly      ExponentialRegressionTrainer_0  11.18   728.67
+15             BPFOnly               SGDRegressorTrainer_0  11.21   457.92
+26               Basic               SGDRegressorTrainer_0  11.53   914.20
+16             BPFOnly           LinearRegressionTrainer_0  11.69   900.11
+17             BPFOnly               SVRRegressorTrainer_0  11.90   308.21
+34  CounterIRQCombined      ExponentialRegressionTrainer_0  12.14   352.72
+6               BPFIRQ      ExponentialRegressionTrainer_0  12.17   181.87
+7               BPFIRQ               SGDRegressorTrainer_0  12.76   134.11
+8               BPFIRQ           LinearRegressionTrainer_0  14.25    55.99
+35  CounterIRQCombined       PolynomialRegressionTrainer_0  45.50   194.91
