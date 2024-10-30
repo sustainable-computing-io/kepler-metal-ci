@@ -132,12 +132,7 @@ jobs:
           echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-${TIME_STR} " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-${TIME_STR}/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-${TIME_STR}/artifacts) |" \
             >> docs/kepler-model-validation.md
 
-          # Capture Prometheus TSDB Snapshot
-          mkdir -p docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-${TIME_STR}/prometheus-snapshot
-          snap_name=$(curl -XPOST http://localhost:9090/api/v1/admin/tsdb/snapshot | jq -r '.data.name')
-          tar -cvzf docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-${TIME_STR}/prometheus-snapshot/snapshot.tar.gz -C \
-            /var/lib/prometheus/snapshots ${snap_name}
-
+          
           # Push to the repo
           git config user.email "dependabot[bot]@users.noreply.github.com"
           git config user.name "dependabot[bot]"
