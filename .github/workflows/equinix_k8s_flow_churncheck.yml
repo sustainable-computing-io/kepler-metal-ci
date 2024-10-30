@@ -80,7 +80,7 @@ jobs:
           cd ~/kepler-metal-ci
           cp ansible/mask_ip_callback.py ~/.github/callback_plugins/mask_ip_callback.py
           # save input var into extra-vars.yaml
-          echo "termination_time: ${{ github.event.inputs.termination_time || '1' }}" > /tmp/extra-vars.yaml
+          echo "termination_time: ${{ github.event.inputs.termination_time || '6' }}" > /tmp/extra-vars.yaml
           echo "control_plan: ${{ github.event.inputs.control_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
           echo "node_plan: ${{ github.event.inputs.node_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
           echo "metro: ${{ github.event.inputs.metro || 'da' }}" >> /tmp/extra-vars.yaml
