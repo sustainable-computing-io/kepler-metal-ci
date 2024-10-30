@@ -104,6 +104,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      - name: List available RAPL domains
+        run: |
+          for file in $(sudo find -L /sys/class/powercap/intel-rapl -name name  2>/dev/null); do cat $file;  done  | sort -n| uniq | tee -a /tmp/rapl-domain-availability.txt
+
       - name: Generate report
         run: |
           ls /tmp
