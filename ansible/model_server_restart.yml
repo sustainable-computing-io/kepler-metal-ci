@@ -58,4 +58,3 @@
 
     - name: Include Validation for Kepler and Model Server
       include_tasks: tasks/validate_model_server.yml
-      failed_when: false

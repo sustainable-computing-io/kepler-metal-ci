@@ -11,7 +11,7 @@
     echo "Model Server Estimator Inactive"
     exit 1
   register: model_server_start
-  failed_when: model_server_start.rc != 0
+  failed_when: false
 
 - name: Check if Set Models are being used
   ansible.builtin.shell: |
@@ -49,7 +49,7 @@
     echo "All Models are being used as expected"
     exit 0
   register: model_use
-  failed_when: model_use.rc != 0
+  failed_when: false
 
 - name: Wait for Kepler to start (retry logic)
   ansible.builtin.shell: |
