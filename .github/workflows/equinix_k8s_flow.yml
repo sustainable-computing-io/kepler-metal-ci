@@ -136,7 +136,7 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Install Prometheus
         run: |
           git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
@@ -146,9 +146,35 @@ jobs:
           kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
           kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
 
+      - name: Pull kube-burner
+        run: |
+          git clone https://github.com/kube-burner/kube-burner
+          curl -sS -L "https://github.com/kube-burner/kube-burner/releases/download/v1.9.5/kube-burner-V1.9.5-linux-x86_64.tar.gz" | tar -xzC kube-burner/ kube-burner
+
       - name: Port forward prom
         run: |
           kubectl port-forward -n monitoring svc/prometheus-k8s 9090:9090 &
+
+      - name: Run kube-burner node-density w/o kepler
+        run: |
+          cp kube-burner/examples/metrics-profiles/metrics.yaml kube-burner/examples/workloads/kubelet-density/metrics.yaml
+          cd kube-burner/examples/workloads/kubelet-density
+          sed -i 's/qps: 2/qps: 20/g' kubelet-density.yml
+          sed -i 's/burst: 2/burst: 20/g' kubelet-density.yml
+          sed -i 's/jobIterations: 25/jobIterations: 80/g' kubelet-density.yml
+          echo "indexers:" >> kubelet-density.yml
+          echo " - type: local" >> kubelet-density.yml
+          echo "   metricsDirectory: collected-metrics" >> kubelet-density.yml
+          export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          ../../../kube-burner init -c kubelet-density.yml -u http://localhost:9090 --metrics-profile metrics.yaml
+          # sleep a min after test
+          sleep 60
+          export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          touch /tmp/nokepler-node-cpu.json
+          # Retrieve metrics related to Kepler cpu and memory utilization over time
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=(100 * avg by (instance,mode) (rate(node_cpu_seconds_total{mode!="idle"}[1m])))' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" | tee /tmp/nokepler-node-cpu.json
 
       - name: Install Kepler helm chart
         run: |
@@ -193,11 +219,6 @@ jobs:
         run: |
           ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh
 
-      - name: Pull kube-burner
-        run: |
-          git clone https://github.com/kube-burner/kube-burner
-          curl -sS -L "https://github.com/kube-burner/kube-burner/releases/download/v1.9.5/kube-burner-V1.9.5-linux-x86_64.tar.gz" | tar -xzC kube-burner/ kube-burner
-          
       - name: Run kube-burner node-density
         run: |
           cp kube-burner/examples/metrics-profiles/metrics.yaml kube-burner/examples/workloads/kubelet-density/metrics.yaml
@@ -214,6 +235,10 @@ jobs:
           sleep 60
           export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           touch /tmp/kepler-stress-test-metrics.txt
+          touch /tmp/kepler-node-cpu.json
+          curl -G 'http://localhost:9090/api/v1/query_range' \
+            --data-urlencode 'query=(100 * avg by (instance,mode) (rate(node_cpu_seconds_total{mode!="idle"}[1m])))' \
+            --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" | tee /tmp/kepler-node-cpu.json
           # Retrieve metrics related to Kepler cpu and memory utilization over time
           curl -G 'http://localhost:9090/api/v1/query_range' \
             --data-urlencode 'query=sum (rate (container_cpu_usage_seconds_total{namespace="kepler"}[1m])) / sum(machine_cpu_cores) * 100' \
@@ -230,8 +255,8 @@ jobs:
       - name: git add the /tmp/kepler-stress-test-metrics.txt
         run: |
           cd ${GITHUB_WORKSPACE}
-          git config --global user.email "dependabot[bot]@users.noreply.github.com" 
-          git config --global user.name "dependabot[bot]"          
+          git config --global user.email "dependabot[bot]@users.noreply.github.com"
+          git config --global user.name "dependabot[bot]"
           END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); echo -n "| " $END_TIME >> docs/kepler-stress-test-metrics.md
           MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
           KUBE_APISERVER_MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-kube-apiserver-metrics.txt)
