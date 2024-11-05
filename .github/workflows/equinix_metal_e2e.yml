@@ -6,7 +6,7 @@ on:
       target_models:
         description: 'Comma Separated List of Models to Train. Format: model_type/feature_type/trainer_name'
         required: false
-        default: 'AbsPower/BPFOnly/SGDRegressorTrainer,AbsPower/BPFOnly/ExponentialRegressionTrainer,AbsPower/BPFOnly/LogarithmicRegressionTrainer'
+        default: 'AbsPower/BPFOnly/SGDRegressorTrainer,AbsPower/BPFOnly/ExponentialRegressionTrainer,AbsPower/BPFOnly/LogarithmicRegressionTrainer,AbsPower/BPFOnly/PolynomialRegressionTrainer,AbsPower/BPFOnly/XgboostFitTrainer'
       model_server_image:
         description: 'Model Server Image to use for validation'
         required: false
