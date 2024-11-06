@@ -33,7 +33,7 @@
 
     if [ "{{ node_components_estimator }}" = "true" ]; then
       found=false
-      for i in {1..10}; do
+      for i in {1..30}; do
         echo "Checking {{ node_components_init_url }}"
         if journalctl -u container-kepler.service | grep "{{ node_components_init_url }}"; then
           found=true
@@ -53,7 +53,7 @@
 
 - name: Wait for Kepler to start (retry logic)
   ansible.builtin.shell: |
-    for i in {1..5}; do
+    for i in {1..10}; do
       echo "Attempt $i"
       ret=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8888/metrics --max-time 10 --connect-timeout 10 || true)
       if [ ${ret} -eq 200 ]; then
@@ -68,7 +68,7 @@
 
 - name: Validate Raw Kepler Metric
   ansible.builtin.shell: |
-    for i in {1..10}; do
+    for i in {1..30}; do
       echo "Check kepler_node_package_joules_total active"
       if curl http://localhost:8888/metrics | grep "kepler_node_package_joules_total"; then
         echo "Metric Validated"
