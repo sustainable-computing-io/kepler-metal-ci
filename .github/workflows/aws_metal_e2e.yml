@@ -55,6 +55,7 @@ jobs:
             instance_type: ${{ github.event.inputs.instance_type }}
             spot_instance_only: ${{ github.event.inputs.spot_instance_only }}
             create_s3_bucket: "false"
+            root_volume_size: "100"
 
       - name: Print Output
         id: output
