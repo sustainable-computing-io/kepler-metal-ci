@@ -51,9 +51,9 @@ jobs:
             aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             security_group_id: ${{ secrets.AWS_SECURITY_GROUP_ID }}
             github_repo: ${{ github.repository }}
-            ami_id: ${{ input.ami_id }}
-            instance_type: ${{ input.instance_type }}
-            spot_instance_only: ${{ input.spot_instance_only }}
+            ami_id: ${{ github.event.inputs.ami_id }}
+            instance_type: ${{ github.event.inputs.instance_type }}
+            spot_instance_only: ${{ github.event.inputs.spot_instance_only }}
             create_s3_bucket: "false"
 
       - name: Print Output
