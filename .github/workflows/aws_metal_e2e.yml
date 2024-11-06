@@ -14,7 +14,7 @@ on:
       ami_id:
         description: 'AMI ID to use for the instance'
         required: false
-        default: 'ami-078cbc4c2d057c244' # per https://access.redhat.com/solutions/15356#us_east_2_rhel9
+        default: 'ami-01529018e3919dace' # CentOS stream 9, per https://www.centos.org/download/aws-images/
       instance_type:
         description: 'Instance Type to use for the instance'
         required: false
