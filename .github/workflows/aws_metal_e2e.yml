@@ -1,0 +1,188 @@
+name: Training and Validation e2e with Single AWS Instance
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_models:
+        description: 'Comma Separated List of Models to Train. Format: model_type/feature_type/trainer_name'
+        required: false
+        default: 'AbsPower/BPFOnly/SGDRegressorTrainer,AbsPower/BPFOnly/ExponentialRegressionTrainer,AbsPower/BPFOnly/LogarithmicRegressionTrainer,AbsPower/BPFOnly/PolynomialRegressionTrainer,AbsPower/BPFOnly/XgboostFitTrainer'
+      model_server_image:
+        description: 'Model Server Image to use for validation'
+        required: false
+        default: 'quay.io/sustainable_computing_io/kepler_model_server:latest'
+      ami_id:
+        description: 'AMI ID to use for the instance'
+        required: false
+        default: 'ami-078cbc4c2d057c244' # per https://access.redhat.com/solutions/15356#us_east_2_rhel9
+      instance_type:
+        description: 'Instance Type to use for the instance'
+        required: false
+        default: 'i3.metal'
+      spot_instance_only:
+        description: 'Whether to use spot instances only'
+        required: false
+        default: 'true'
+
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write
+  packages: write
+
+
+jobs:
+  setup-runner:
+    name: Setup AWS Self Hosted Runner
+    runs-on: ubuntu-latest
+    outputs:
+      instance_id: ${{ steps.create-runner.outputs.instance_id }}
+      runner_name: ${{ steps.create-runner.outputs.runner_name }}
+
+    steps:
+      - name: Create Runner
+        uses: sustainable-computing-io/aws_ec2_self_hosted_runner@v1
+        id: create-runner
+        with:
+            action: "create"
+            aws_region: ${{ secrets.AWS_REGION }}
+            github_token: ${{ secrets.GH_SELF_HOSTED_RUNNER_TOKEN }}
+            aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            security_group_id: ${{ secrets.AWS_SECURITY_GROUP_ID }}
+            github_repo: ${{ github.repository }}
+            ami_id: ${{ input.ami_id }}
+            instance_type: ${{ input.instance_type }}
+            spot_instance_only: ${{ input.spot_instance_only }}
+            create_s3_bucket: "false"
+
+      - name: Print Output
+        id: output
+        run: |
+          echo "instance_id ${{ steps.create-runner.outputs.instance_id }}"
+          echo "instance_ip ${{ steps.create-runner.outputs.instance_ip }}"
+          echo "runner_name ${{ steps.create-runner.outputs.runner_name }}"
+          echo "bucket_name ${{ steps.create-runner.outputs.bucket_name }}"
+    
+  test-runner:
+    needs: setup-runner
+    continue-on-error: true
+    name: GitHub Self Hosted Runner Tests
+    runs-on: [self-hosted, linux, x64]
+
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print Runner Info
+        run: |
+          export INSTANCE_ID="${{ needs.setup-runner.outputs.instance_id }}"
+          echo "Starting self-hosted runner with instance ${INSTANCE_ID}"
+          uname -a # or any other command
+          cat /etc/os-release 
+          cat /proc/cpuinfo 
+
+      - name: Run Setup Runner Action
+        uses: ./.github/actions/setup-action
+
+      - name: Run Setup Playbooks
+        env:
+          MODEL_SERVER_IMAGE: ${{ github.event.inputs.model_server_image }}
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible 
+          echo "Create VM"
+          ansible-playbook -i inventory.yml kvm_playbook.yml
+          echo "Install SSH tunnel"
+          ansible-playbook ssh_tunnel_playbook.yml
+          echo "Install Prometheus"
+          ansible-playbook -i inventory.yml metrics_playbook.yml
+          echo "Install Node Exporter"
+          ansible-playbook -i inventory.yml node_exporter_playbook.yml -vvv
+          echo "Verify node-exporter"
+          sudo systemctl status node_exporter || true
+          sudo ss -tuln | grep 9100 || true
+          curl -s localhost:9100/metrics | grep collector || true
+          echo "Install Kepler"
+          ansible-playbook -i inventory.yml -vvv kepler_playbook.yml
+          echo "Create ssh tunnel"
+          ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
+
+          echo "Install Model Server"
+          ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
+
+      - name: Run Trainer Action
+        uses: ./.github/actions/train-action
+        with:
+          model_export_path: /tmp/trained-equinix-models
+      
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Validation Playbooks
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible
+          echo "Pass Trained Models to VM"
+          ansible-playbook -i inventory.yml -v deploy_http_model_server.yml
+
+          export DATE_STR=$(date +%Y-%m-%d_%H-%M-%S)
+          export DATE_STRING=$(date +%Y-%m-%d)
+          mkdir -p ${GITHUB_WORKSPACE}/docs/train-validate-e2e/${DATE_STR}
+
+          target_models_list="${{ github.event.inputs.target_models }}"
+          IFS=',' read -r -a models <<< "$target_models_list"
+          for model in "${models[@]}"
+          do
+            echo "Running Model Server Playbook: $model"
+            model_url="http://localhost:8080/${model}_0.zip"
+            echo "Model exists with sufficient accuracy: $model_url"
+            ansible-playbook -i inventory.yml -vvv model_server_restart.yml \
+              -e "node_components_init_url=$model_url"
+            echo "Run validation test"
+            ansible-playbook -vvv kepler_validator.yml
+            echo "Validation Finished"
+
+            export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
+
+            FILE="/tmp/validator-*/*"
+            mkdir -p ${GITHUB_WORKSPACE}/docs/train-validate-e2e/${DATE_STR}/${model}
+            mv $FILE ${GITHUB_WORKSPACE}/docs/train-validate-e2e/${DATE_STR}/${model}
+
+            echo "| " ${DATE_STRING} " | " ${model} " | [Report](train-validate-e2e/${DATE_STR}/${model}/report-${KEPLER_TAG}.md) |" \
+            >>  ${GITHUB_WORKSPACE}/docs/kepler-model-train-validate.md
+
+          done
+
+          cd ${GITHUB_WORKSPACE}
+          git config user.email "dependabot[bot]@users.noreply.github.com"
+          git config user.name "dependabot[bot]"
+          git add docs/*
+          git commit -m "Add train-validate-e2e single server for ${DATE_STR}" -s
+          git pull --rebase
+          git push
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+ 
+  destroy-runner:
+    if: always()
+    needs: [setup-runner, test-runner]
+    name: Destroy Self Hosted Runner
+    runs-on: ubuntu-latest
+    steps:
+      - name: unregister runner
+        id: unregister
+        uses: sustainable-computing-io/aws_ec2_self_hosted_runner@v1
+        with:
+          action: "unregister"
+          runner_name: ${{ needs.setup-runner.outputs.runner_name }}
+          github_token: ${{ secrets.GH_SELF_HOSTED_RUNNER_TOKEN }}
+          github_repo: ${{ github.repository }}
+
+      - name: terminate instance
+        id: terminate
+        uses: sustainable-computing-io/aws_ec2_self_hosted_runner@v1
+        with:
+          action: "terminate"
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          instance_id: ${{ needs.setup-runner.outputs.instance_id }}
