@@ -1,0 +1,51 @@
+name: Create Runner
+
+on:
+  workflow_call:
+    inputs:
+      ami_id:
+        description: 'AMI ID to use for the instance'
+        required: true
+        type: string
+      instance_type:
+        description: 'Instance Type to use for the instance'
+        required: true
+        type: string
+      spot_instance_only:
+        description: 'Whether to use spot instances only'
+        required: true
+        type: string
+
+jobs:
+  setup-runner:
+    name: Setup AWS Self Hosted Runner
+    runs-on: ubuntu-latest
+    outputs:
+      instance_id: ${{ steps.create-runner.outputs.instance_id }}
+      runner_name: ${{ steps.create-runner.outputs.runner_name }}
+
+    steps:
+      - name: Create Runner
+        uses: sustainable-computing-io/aws_ec2_self_hosted_runner@main
+        id: create-runner
+        with:
+            action: "create"
+            aws_region: ${{ secrets.AWS_REGION }}
+            github_token: ${{ secrets.GH_SELF_HOSTED_RUNNER_TOKEN }}
+            aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            security_group_id: ${{ secrets.AWS_SECURITY_GROUP_ID }}
+            github_repo: ${{ github.repository }}
+            ami_id: ${{ inputs.ami_id }}
+            instance_type: ${{ inputs.instance_type }}
+            spot_instance_only: ${{ inputs.spot_instance_only }}
+            create_s3_bucket: "false"
+            root_volume_size: "100"
+
+      - name: Print Output
+        id: output
+        run: |
+          echo "instance_id ${{ steps.create-runner.outputs.instance_id }}"
+          echo "instance_ip ${{ steps.create-runner.outputs.instance_ip }}"
+          echo "runner_name ${{ steps.create-runner.outputs.runner_name }}"
+          echo "bucket_name ${{ steps.create-runner.outputs.bucket_name }}"

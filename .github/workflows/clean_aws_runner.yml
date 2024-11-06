@@ -1,0 +1,36 @@
+name: Cleanup
+
+on:
+  workflow_call:
+    inputs:
+      runner_name:
+        required: true
+        type: string
+      instance_id:
+        required: true
+        type: string
+
+jobs:
+  destroy-runner:
+    if: always()
+    name: Destroy Self Hosted Runner
+    runs-on: ubuntu-latest
+    steps:
+      - name: unregister runner
+        id: unregister
+        uses: sustainable-computing-io/aws_ec2_self_hosted_runner@main
+        with:
+          action: "unregister"
+          runner_name: ${{ inputs.runner_name }}
+          github_token: ${{ secrets.GH_SELF_HOSTED_RUNNER_TOKEN }}
+          github_repo: ${{ github.repository }}
+
+      - name: terminate instance
+        id: terminate
+        uses: sustainable-computing-io/aws_ec2_self_hosted_runner@main
+        with:
+          action: "terminate"
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          instance_id: ${{ inputs.instance_id }}
+
