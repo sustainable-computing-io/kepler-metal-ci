@@ -335,7 +335,7 @@ jobs:
           echo $MEAN_SD_OUTPUT "  " $KUBE_APISERVER_WITHOUT_KEPLER_MEAN_SD_OUTPUT "  " $KUBE_APISERVER_WITH_KEPLER_MEAN_SD_OUTPUT "  " $KUBE_APISERVER_MEAN_DIFFERENCE >> docs/kepler-stress-test-baselined-metrics.md
           git add docs/kepler-stress-test-baselined-metrics.md
           git commit -m "kepler stress test metrics result at ${END_TIME}" -s
-          git pull
+          git pull --rebase
           git push origin main
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -356,7 +356,7 @@ jobs:
           echo $MEAN_SD_OUTPUT "  " $KUBE_APISERVER_WITHOUT_KEPLER_MEAN_SD_OUTPUT "  " $KUBE_APISERVER_WITH_KEPLER_MEAN_SD_OUTPUT "  " $KUBE_APISERVER_MEAN_DIFFERENCE >> docs/kepler-stress-test-baselined-metrics-churn.md
           git add docs/kepler-stress-test-baselined-metrics-churn.md
           git commit -m "kepler stress test metrics result at ${END_TIME}" -s
-          git pull
+          git pull --rebase
           git push origin main
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
