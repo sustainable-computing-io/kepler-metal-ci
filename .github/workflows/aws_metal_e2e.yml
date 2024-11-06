@@ -54,6 +54,7 @@ jobs:
             ami_id: ${{ github.event.inputs.ami_id }}
             instance_type: ${{ github.event.inputs.instance_type }}
             spot_instance_only: ${{ github.event.inputs.spot_instance_only }}
+            key_name: ${{ secrets.AWS_KEY_NAME }}
             create_s3_bucket: "false"
             root_volume_size: "100"
 
