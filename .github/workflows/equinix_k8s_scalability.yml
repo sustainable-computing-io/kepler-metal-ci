@@ -195,7 +195,7 @@ jobs:
           --set-json 'prometheus.prometheusSpec.serviceMonitorSelector.matchLabels={"app.kubernetes.io/name":"kepler"}' \
           -n overhead --create-namespace \
           --wait
-          kubectl wait --for=condition=Ready pod/prometheus-kepler-kube-prom-stack-kub-prometheus-0 -n overhead
+          kubectl wait --for=condition=Ready pod/prometheus-kepler-kube-prom-stack-kub-prometheus-0 -n overhead --timeout 3m
 
       - name: Port forward prom
         run: |
