@@ -4,15 +4,16 @@ on:
   workflow_call:
     inputs:
       runner_name:
+        description: "Name of aws runner"
         required: true
         type: string
       instance_id:
+        description: "ID of aws instance"
         required: true
         type: string
 
 jobs:
   destroy-runner:
-    if: always()
     name: Destroy Self Hosted Runner
     runs-on: ubuntu-latest
     steps:
