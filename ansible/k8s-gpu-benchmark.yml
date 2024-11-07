@@ -1,0 +1,94 @@
+---
+- name: Run GPU Benchmark
+  hosts: localhost
+  become: true
+  vars:
+    benchmark_namespace: gpu-benchmark
+    cuda_samples: ["deviceQuery", "bandwidthTest", "matrixMulCUBLAS"]
+
+  tasks:
+    - name: Create benchmark namespace
+      command: kubectl create namespace {{ benchmark_namespace }}
+      environment:
+        KUBECONFIG: /root/.kube/config
+      ignore_errors: yes
+
+    # Deploy MLPerf ResNet50 benchmark pod
+    - name: Create ResNet50 benchmark pod
+      copy:
+        dest: /tmp/resnet50-benchmark.yaml
+        content: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: resnet50-benchmark
+            namespace: {{ benchmark_namespace }}
+            labels:
+              app: gpu-benchmark
+              workload: resnet50
+          spec:
+            restartPolicy: Never
+            containers:
+            - name: resnet50
+              image: pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+              command: ["python3"]
+              args:
+                - "-c"
+                - |
+                  import torch
+                  import torchvision.models as models
+                  import time
+                  
+                  # Set device to GPU
+                  device = torch.device('cuda')
+                  
+                  # Load ResNet50 model
+                  model = models.resnet50(pretrained=False).to(device)
+                  model.eval()
+                  
+                  # Create random input
+                  batch_size = 64
+                  input_tensor = torch.randn(batch_size, 3, 224, 224).to(device)
+                  
+                  # Warm-up
+                  for _ in range(50):
+                      model(input_tensor)
+                  
+                  # Benchmark
+                  torch.cuda.synchronize()
+                  start_time = time.time()
+                  
+                  num_iterations = 1000
+                  for _ in range(num_iterations):
+                      model(input_tensor)
+                      torch.cuda.synchronize()
+                  
+                  end_time = time.time()
+                  avg_time = (end_time - start_time) / num_iterations
+                  print(f"Average inference time: {avg_time*1000:.2f} ms")
+              resources:
+                limits:
+                  nvidia.com/gpu: 1
+                  memory: "8Gi"
+                requests:
+                  nvidia.com/gpu: 1
+                  memory: "8Gi"
+
+    - name: Deploy ResNet50 benchmark
+      command: kubectl apply -f /tmp/resnet50-benchmark.yaml
+      environment:
+        KUBECONFIG: /root/.kube/config
+
+    - name: Wait for ResNet50 benchmark pod to complete
+      command: kubectl wait --for=condition=complete --timeout=600s pod/resnet50-benchmark -n {{ benchmark_namespace }}
+      environment:
+        KUBECONFIG: /root/.kube/config
+      ignore_errors: yes
+      failed_when: false
+
+    # Clean up
+    - name: Delete benchmark pod
+      command: kubectl delete pod resnet50-benchmark -n {{ benchmark_namespace }}
+      environment:
+        KUBECONFIG: /root/.kube/config
+      ignore_errors: yes
