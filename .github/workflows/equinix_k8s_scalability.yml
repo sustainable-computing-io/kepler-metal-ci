@@ -89,7 +89,7 @@ jobs:
           sudo mv /tmp/k8sconfig /tmp/kubeconfig
 
       - name: Upload kubeconfig
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: kubeconfig-${{ github.run_id }}
           path: /tmp/kubeconfig
@@ -102,7 +102,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: mkdir tmp dirs
         run: |
@@ -110,7 +110,7 @@ jobs:
           mkdir -p ~/.kube/
 
       - name: Download kubeconfig
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: kubeconfig-${{ github.run_id }}
           path: ~/.kube/
@@ -227,7 +227,7 @@ jobs:
           tar czf ~/results.tar.gz ~/scalability-benchmark-suite/_output/results/
 
       - name: Upload models as artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: benchmark-results-${{ github.run_id }}
           path: ~/results.tar.gz
