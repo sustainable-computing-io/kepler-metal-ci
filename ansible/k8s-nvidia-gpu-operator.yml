@@ -170,3 +170,24 @@
         --timeout=300s
       environment:
         KUBECONFIG: /root/.kube/config
+
+    - name: Wait nvidia.com/gpu is more than 0
+      shell: >
+        while true; do
+            # Get the GPU capacity from all nodes
+            gpu_capacity=$(kubectl get nodes -o jsonpath="{.items[*].status.allocatable.nvidia\.com/gpu}")
+
+            # Check if GPU capacity is more than 0
+            if [[ "$gpu_capacity" -gt 0 ]]; then
+                echo "GPU capacity detected: $gpu_capacity"
+                break
+            else
+                echo "No GPU capacity found, checking again..."
+            fi
+
+            # Wait for a few seconds before checking again
+            sleep 5
+        done
+      environment:
+        KUBECONFIG: /root/.kube/config
+  
