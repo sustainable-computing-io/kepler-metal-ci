@@ -24,8 +24,8 @@ jobs:
         INSTANCE_ID=$(aws ec2 run-instances \
           --image-id 'ami-01529018e3919dace' \
           --instance-type g4dn.xlarge \
-          --key-name ${{ secrets.AWS_KEY_NAME }} \  
-          --security-group-ids ${{ secrets.AWS_SECURITY_GROUP_ID }} \  
+          --key-name ${{ secrets.AWS_KEY_NAME }} \
+          --security-group-ids ${{ secrets.AWS_SECURITY_GROUP_ID }} \
           --associate-public-ip-address \
           --query 'Instances[0].InstanceId' \
           --instance-market-options 'MarketType=spot' \
