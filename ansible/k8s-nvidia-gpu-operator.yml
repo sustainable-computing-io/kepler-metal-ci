@@ -133,18 +133,18 @@
         creates: /usr/local/bin/helm
 
     - name: Add NVIDIA Helm repository
-      command: helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
+      command:  /usr/local/bin/helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
       environment:
         KUBECONFIG: /root/.kube/config
 
     - name: Update Helm repositories
-      command: helm repo update
+      command:  /usr/local/bin/helm repo update
       environment:
         KUBECONFIG: /root/.kube/config
 
     - name: Install NVIDIA GPU Operator
       command: >
-        helm install --wait --generate-name
+         /usr/local/bin/helm install --wait --generate-name
         nvidia/gpu-operator
         --set driver.enabled=false
         --set toolkit.env[0].name=CONTAINERD_CONFIG
