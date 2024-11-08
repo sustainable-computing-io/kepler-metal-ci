@@ -134,6 +134,9 @@
       when: kubectl_get_nodes.rc != 0
 
     # Install NVIDIA GPU Operator
+    - name: Add /usr/local/bin to PATH
+      shell: export PATH=$PATH:/usr/local/bin
+
     - name: Install Helm
       shell: |
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
