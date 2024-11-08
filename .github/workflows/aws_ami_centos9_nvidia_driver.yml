@@ -38,10 +38,11 @@ jobs:
           --document-name "AWS-RunShellScript" \
           --targets "Key=instanceids,Values=${{ steps.launch_instance.outputs.instance_id }}" \
           --parameters '{"commands":["sudo dnf update -y",
-                                     "sudo dnf install -y 'dnf-command(config-manager)'",
+                                     "sudo dnf install -y dnf-command(config-manager)",
                                      "sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm",
                                      "sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-9.noarch.rpm",
-                                     "sudo dnf install -y 'kernel-devel-$(uname -r)' 'kernel-headers-$(uname -r)' dkms",
+                                     "KERNEL_VERSION=$(uname -r)",
+                                     "sudo dnf install -y kernel-devel-$KERNEL_VERSION kernel-headers-$KERNEL_VERSION dkms",
                                      "sudo dnf config-manager --add-repo=https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo",
                                      "sudo dnf install -y nvidia-driver nvidia-driver-cuda",
                                      "sudo reboot"]}' \
