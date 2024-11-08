@@ -115,4 +115,5 @@ jobs:
         echo "Terminated EC2 instance: ${{ steps.launch_instance.outputs.instance_id }}"
 
     - name: Output AMI ID
-      run: echo "New AMI created with ID: ${{ steps.create_ami.outputs.ami_id }}"
+      run: |
+        echo "New AMI created with ID: ${{ steps.create_ami.outputs.ami_id }}"
