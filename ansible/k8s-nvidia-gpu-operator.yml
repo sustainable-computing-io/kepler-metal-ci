@@ -30,6 +30,9 @@
           dnf -y install cri-o cri-tools
           systemctl enable --now crio
 
+    - name: Create directory /etc/crio/crio.conf.d
+      command: mkdir -p /etc/crio/crio.conf.d
+
     # Set up NVIDIA Container Runtime hook for CRI-O
     - name: Create NVIDIA container runtime hook configuration
       copy:
