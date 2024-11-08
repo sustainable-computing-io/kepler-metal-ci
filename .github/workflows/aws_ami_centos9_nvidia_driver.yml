@@ -18,134 +18,123 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Generate SSH key and create AWS key pair
+      id: ssh_key
+      shell: bash
+      run: |
+        # Generate SSH key pair
+        ssh-keygen -t rsa -b 4096 -f ~/.ssh/ec2_key -N ""
+        chmod 600 ~/.ssh/ec2_key
+
+        # Create a unique key name using timestamp
+        KEY_NAME="temp-key-$(date +%Y%m%d-%H%M%S)"
+
+        # Import public key to AWS
+        aws ec2 import-key-pair \
+          --key-name "$KEY_NAME" \
+          --public-key-material "fileb://~/.ssh/ec2_key.pub"
+
+        # Add to known hosts to prevent fingerprint prompt
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        chmod 600 ~/.ssh/config
+
+        echo "::set-output name=key_name::$KEY_NAME"
+
     - name: Launch EC2 instance
       id: launch_instance
+      shell: bash
       run: |
         INSTANCE_ID=$(aws ec2 run-instances \
           --image-id 'ami-01529018e3919dace' \
           --instance-type g4dn.xlarge \
-          --key-name ${{ secrets.AWS_KEY_NAME }} \
+          --key-name ${{ steps.ssh_key.outputs.key_name }} \
           --security-group-ids ${{ secrets.AWS_SECURITY_GROUP_ID }} \
           --associate-public-ip-address \
           --query 'Instances[0].InstanceId' \
           --instance-market-options 'MarketType=spot' \
           --output text)
+
+        # Wait for instance to be running
+        aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+
+        # Get public IP
+        PUBLIC_IP=$(aws ec2 describe-instances \
+          --instance-ids $INSTANCE_ID \
+          --query 'Reservations[0].Instances[0].PublicIpAddress' \
+          --output text)
+
         echo "::set-output name=instance_id::$INSTANCE_ID"
+        echo "::set-output name=public_ip::$PUBLIC_IP"
 
-    - name: Wait for instance to be ready and verify SSM functionality
+    - name: Wait for SSH to be available
+      id: ssh_check
+      shell: bash
       run: |
-        aws ec2 wait instance-status-ok --instance-ids ${{ steps.launch_instance.outputs.instance_id }}
-        
-        # Set the start time and timeout
         START_TIME=$(date +%s)
-        TIMEOUT=$((30 * 60))  # 30 minutes in seconds
+        TIMEOUT=$((10 * 60))  # 10 minutes timeout
 
-        # Loop until the SSM test command succeeds or timeout is reached
         while true; do
-          # Check elapsed time
-          ELAPSED_TIME=$(( $(date +%s) - START_TIME ))
-          if [ $ELAPSED_TIME -ge $TIMEOUT ]; then
-            echo "Timeout: Instance is not accepting SSM commands within 30 minutes."
+          if [ $(($(date +%s) - START_TIME)) -ge $TIMEOUT ]; then
+            echo "Timeout waiting for SSH connection"
             exit 1
           fi
 
-          # Send a simple SSM command to verify instance readiness
-          COMMAND_ID=$(aws ssm send-command \
-            --document-name "AWS-RunShellScript" \
-            --targets "Key=instanceids,Values=${{ steps.launch_instance.outputs.instance_id }}" \
-            --parameters '{"commands":["echo SSM Test Command Successful"]}' \
-            --query "Command.CommandId" \
-            --output text 2>/dev/null || echo "error")
-
-          # Check if the command was sent successfully
-          if [ "$COMMAND_ID" != "error" ]; then
-            # Wait for the command to execute and retrieve the output
-            aws ssm wait command-executed --instance-id ${{ steps.launch_instance.outputs.instance_id }} --command-id $COMMAND_ID 2>/dev/null
-            SSM_OUTPUT=$(aws ssm get-command-invocation \
-              --command-id $COMMAND_ID \
-              --instance-id ${{ steps.launch_instance.outputs.instance_id }} \
-              --query "StandardOutputContent" \
-              --output text 2>/dev/null || echo "error")
-
-            # Check if the SSM output contains the success message
-            if echo "$SSM_OUTPUT" | grep -q "SSM Test Command Successful"; then
-              echo "SSM command successful. Instance is ready."
-              break
-            else
-              echo "SSM command failed. Retrying in 10 seconds..."
-            fi
-          else
-            echo "SSM command could not be sent. Retrying in 10 seconds..."
-          fi
-          sleep 10
-        done
-
-    - name: Install NVIDIA Driver
-      run: |
-        aws ssm send-command \
-          --document-name "AWS-RunShellScript" \
-          --targets "Key=instanceids,Values=${{ steps.launch_instance.outputs.instance_id }}" \
-          --parameters '{"commands":["sudo dnf update -y",
-                                     "sudo dnf install -y dnf-command(config-manager)",
-                                     "sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm",
-                                     "sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-9.noarch.rpm",
-                                     "KERNEL_VERSION=$(uname -r)",
-                                     "sudo dnf install -y kernel-devel-$KERNEL_VERSION kernel-headers-$KERNEL_VERSION dkms",
-                                     "sudo dnf config-manager --add-repo=https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo",
-                                     "sudo dnf install -y nvidia-driver nvidia-driver-cuda",
-                                     "sudo reboot"]}' \
-          --comment "Install NVIDIA driver on CentOS Stream 9"
-
-    - name: Wait for instance to be ready and check GPU
-      run: |
-        aws ec2 wait instance-status-ok --instance-ids ${{ steps.launch_instance.outputs.instance_id }}
-        
-        # Set the start time
-        START_TIME=$(date +%s)
-        TIMEOUT=$((30 * 60))  # 30 minutes in seconds
-        
-        # Loop until GPU is detected or timeout is reached
-        while true; do
-          # Check elapsed time
-          ELAPSED_TIME=$(( $(date +%s) - START_TIME ))
-          if [ $ELAPSED_TIME -ge $TIMEOUT ]; then
-            echo "Timeout: GPU not detected within 30 minutes."
-            exit 1
-          fi
-
-          # Run nvidia-smi command via SSM
-          COMMAND_ID=$(aws ssm send-command \
-            --document-name "AWS-RunShellScript" \
-            --targets "Key=instanceids,Values=${{ steps.launch_instance.outputs.instance_id }}" \
-            --parameters '{"commands":["nvidia-smi"]}' \
-            --query "Command.CommandId" --output text)
-
-          # Wait for the command to complete
-          aws ssm wait command-executed \
-            --instance-id ${{ steps.launch_instance.outputs.instance_id }} \
-            --command-id $COMMAND_ID
-            
-          # Retrieve the output from SSM
-          SMI_OUTPUT=$(aws ssm get-command-invocation \
-            --command-id $COMMAND_ID \
-            --instance-id ${{ steps.launch_instance.outputs.instance_id }} \
-            --query "StandardOutputContent" \
-            --output text)
-            
-          echo "$SMI_OUTPUT"
-
-          # Check if GPU is detected
-          if echo "$SMI_OUTPUT" | grep -q "NVIDIA-SMI"; then
-            echo "GPU detected successfully!"
+          if ssh -i ~/.ssh/ec2_key centos@${{ steps.launch_instance.outputs.public_ip }} "echo 'SSH connection successful'" 2>/dev/null; then
+            echo "::set-output name=status::ready"
             break
           else
-            echo "No GPU detected yet, retrying in 10 seconds..."
             sleep 10
           fi
         done
 
+    - name: Install NVIDIA Driver
+      if: steps.ssh_check.outputs.status == 'ready'
+      run: |
+        ssh -i ~/.ssh/ec2_key centos@${{ steps.launch_instance.outputs.public_ip }} '
+          sudo dnf update -y && \
+          sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+          sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-9.noarch.rpm && \
+          export KERNEL_VERSION=$(uname -r) && \
+          sudo dnf install -y kernel-devel-$KERNEL_VERSION kernel-headers-$KERNEL_VERSION dkms && \
+          sudo dnf config-manager --add-repo=https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo && \
+          sudo dnf install -y nvidia-driver nvidia-driver-cuda
+        '
+
+    - name: Check GPU Installation
+      id: gpu_check
+      shell: bash
+      run: |
+        START_TIME=$(date +%s)
+        TIMEOUT=$((30 * 60))  # 30 minutes timeout
+
+        while true; do
+          if [ $(($(date +%s) - START_TIME)) -ge $TIMEOUT ]; then
+            echo "::set-output name=status::timeout"
+            exit 1
+          fi
+
+          GPU_CHECK=$(ssh -i ~/.ssh/ec2_key centos@${{ steps.launch_instance.outputs.public_ip }} "nvidia-smi" 2>&1)
+
+          if echo "$GPU_CHECK" | grep -q "NVIDIA-SMI"; then
+            echo "::set-output name=status::ready"
+            break
+          else
+            sleep 10
+          fi
+        done
+
+    - name: Clean up SSH keys before AMI creation
+      if: steps.gpu_check.outputs.status == 'ready'
+      run: |
+        ssh -i ~/.ssh/ec2_key centos@${{ steps.launch_instance.outputs.public_ip }} '
+          sudo rm -f /home/centos/.ssh/authorized_keys && \
+          sudo rm -f /root/.ssh/authorized_keys
+        '
+
     - name: Create AMI
       id: create_ami
+      if: steps.gpu_check.outputs.status == 'ready'
+      shell: bash
       run: |
         AMI_ID=$(aws ec2 create-image \
           --instance-id ${{ steps.launch_instance.outputs.instance_id }} \
@@ -154,16 +143,30 @@ jobs:
           --no-reboot \
           --query 'ImageId' \
           --output text)
-        echo "::set-output name=ami_id::$AMI_ID"
-        echo "Created AMI: $AMI_ID"
 
-    - name: Terminate EC2 instance
-      if: failure() || always()
+        # Wait for AMI to be available
+        aws ec2 wait image-available --image-ids $AMI_ID
+        echo "::set-output name=ami_id::$AMI_ID"
+
+    - name: Cleanup AWS Resources
+      if: always()
+      shell: bash
       run: |
-        aws ec2 terminate-instances --instance-ids ${{ steps.launch_instance.outputs.instance_id }}
-        aws ec2 wait instance-terminated --instance-ids ${{ steps.launch_instance.outputs.instance_id }}
-        echo "Terminated EC2 instance: ${{ steps.launch_instance.outputs.instance_id }}"
+        # Terminate the instance if it exists
+        if [ -n "${{ steps.launch_instance.outputs.instance_id }}" ]; then
+          aws ec2 terminate-instances --instance-ids ${{ steps.launch_instance.outputs.instance_id }}
+          aws ec2 wait instance-terminated --instance-ids ${{ steps.launch_instance.outputs.instance_id }}
+        fi
+
+        # Delete the temporary key pair if it exists
+        if [ -n "${{ steps.ssh_key.outputs.key_name }}" ]; then
+          aws ec2 delete-key-pair --key-name ${{ steps.ssh_key.outputs.key_name }}
+        fi
+
+        # Remove local SSH keys
+        rm -f ~/.ssh/ec2_key*
 
     - name: Output AMI ID
+      if: steps.create_ami.outputs.ami_id != ''
       run: |
         echo "New AMI created with ID: ${{ steps.create_ami.outputs.ami_id }}"
