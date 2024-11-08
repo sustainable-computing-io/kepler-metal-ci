@@ -103,25 +103,35 @@
         state: started
         enabled: yes
 
-    - name: Initialize Kubernetes Cluster
+    - name: Check if Kubernetes cluster is already created by kubectl get nodes
+      command: kubectl get nodes
+      register: kubectl_get_nodes
+      ignore_errors: yes
+
+    - name: Initialize Kubernetes Cluster based on kubectl_get_nodes result
       command: kubeadm init --pod-network-cidr=10.244.0.0/24 --cri-socket=/var/run/crio/crio.sock
+      when: kubectl_get_nodes.rc != 0
 
     - name: mkdir .kube directory
       command: mkdir -p /root/.kube
+      when: kubectl_get_nodes.rc != 0
 
     - name: Copy kubeconfig to root user
       command: cp /etc/kubernetes/admin.conf /root/.kube/config
+      when: kubectl_get_nodes.rc != 0
 
     - name: Install Calico network plugin
       command: kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.0/manifests/calico.yaml
       environment:
         KUBECONFIG: /root/.kube/config
+      when: kubectl_get_nodes.rc != 0
 
     - name: Taint master node to allow pods
       command: kubectl taint nodes --all node-role.kubernetes.io/control-plane-
       environment:
         KUBECONFIG: /root/.kube/config
       ignore_errors: yes
+      when: kubectl_get_nodes.rc != 0
 
     # Install NVIDIA GPU Operator
     - name: Install Helm
