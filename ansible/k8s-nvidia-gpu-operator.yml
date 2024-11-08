@@ -144,15 +144,7 @@
 
     - name: Install NVIDIA GPU Operator
       command: >
-         /usr/local/bin/helm install --wait --generate-name
-        nvidia/gpu-operator
-        --set driver.enabled=false
-        --set toolkit.env[0].name=CONTAINERD_CONFIG
-        --set toolkit.env[0].value="/etc/crio/crio.conf.d"
-        --set toolkit.env[1].name=CONTAINERD_SOCKET
-        --set toolkit.env[1].value="/var/run/crio/crio.sock"
-        --set toolkit.env[2].name=CONTAINERD_RUNTIME_CLASS
-        --set toolkit.env[2].value="nvidia"
+        /usr/local/bin/helm install --wait --generate-name nvidia/gpu-operator
       environment:
         KUBECONFIG: /root/.kube/config
 
