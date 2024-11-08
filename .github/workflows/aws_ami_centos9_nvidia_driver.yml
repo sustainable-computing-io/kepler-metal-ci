@@ -97,10 +97,15 @@ jobs:
           export KERNEL_VERSION=$(uname -r) && \
           sudo dnf install -y kernel-devel-$KERNEL_VERSION kernel-headers-$KERNEL_VERSION dkms && \
           sudo dnf config-manager --add-repo=https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo && \
-          sudo dnf install -y nvidia-driver nvidia-driver-cuda
+          sudo dnf install -y nvidia-driver nvidia-driver-cuda && \
+          sudo dnf clean expire-cache && \
+          sudo dnf install -y datacenter-gpu-manager && \
+          sudo systemctl start nvidia-dcgm && \
+          sudo systemctl enable nvidia-dcgm && \
+          dcgmi discovery -l
         '
 
-    - name: Check GPU Installation
+    - name: Check GPU and DCGM Installation
       id: gpu_check
       shell: bash
       run: |
@@ -113,12 +118,15 @@ jobs:
             exit 1
           fi
           
-          GPU_CHECK=$(ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} "nvidia-smi" 2>&1)
+          GPU_CHECK=$(ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} "nvidia-smi && dcgmi discovery -l" 2>&1)
           
-          if echo "$GPU_CHECK" | grep -q "NVIDIA-SMI"; then
+          if echo "$GPU_CHECK" | grep -q "NVIDIA-SMI" && echo "$GPU_CHECK" | grep -q "GPU 0"; then
             echo "status=ready" >> $GITHUB_OUTPUT
+            echo "GPU and DCGM installation verified:"
+            echo "$GPU_CHECK"
             break
           else
+            echo "Waiting for GPU and DCGM setup to complete..."
             sleep 10
           fi
         done
@@ -139,7 +147,7 @@ jobs:
         AMI_ID=$(aws ec2 create-image \
           --instance-id ${{ steps.launch_instance.outputs.instance_id }} \
           --name "CentOS-Stream9-NVIDIA-$(date +'%Y-%m-%d')" \
-          --description "CentOS Stream 9 with NVIDIA Driver" \
+          --description "CentOS Stream 9 with NVIDIA Driver and DCGM" \
           --no-reboot \
           --query 'ImageId' \
           --output text)
