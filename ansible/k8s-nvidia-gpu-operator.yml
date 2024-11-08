@@ -1,0 +1,163 @@
+---
+- name: Install Kubernetes with CRI-O and NVIDIA GPU Operator on CentOS Stream 9
+  hosts: localhost
+  become: true
+  vars:
+    kubernetes_version: "1.28.0"
+    crio_version: "1.28"
+    crio_os: "CentOS_9_Stream"
+
+  tasks:
+
+    - name: Add yum repo
+      shell: |
+          # This overwrites any existing configuration in /etc/yum.repos.d/kubernetes.repo
+          cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+          [kubernetes]
+          name=Kubernetes
+          baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
+          exclude=kubelet kubeadm kubectl
+          EOF
+
+    - name: Install cri-o
+      shell: |
+          VERSION=1.22
+          curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/CentOS_8/devel:kubic:libcontainers:stable.repo
+          curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:${VERSION}/CentOS_8/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo
+          dnf -y install cri-o cri-tools
+          systemctl enable --now crio
+
+    # Set up NVIDIA Container Runtime hook for CRI-O
+    - name: Create NVIDIA container runtime hook configuration
+      copy:
+        dest: /etc/crio/crio.conf.d/01-nvidia-runtime.conf
+        content: |
+          [crio.runtime]
+          default_runtime = "runc"
+          
+          [crio.runtime.runtimes.nvidia]
+          runtime_path = "/usr/bin/nvidia-container-runtime"
+          runtime_type = "oci"
+          runtime_root = "/run/nvidia"
+          privileged_without_host_devices = false
+
+    - name: Verify NVIDIA driver installation
+      command: nvidia-smi
+      register: nvidia_smi_output
+      ignore_errors: yes
+
+    - name: Display NVIDIA driver status
+      debug:
+        var: nvidia_smi_output.stdout_lines
+      when: nvidia_smi_output.rc == 0
+
+    - name: Disable SELinux
+      command: setenforce 0
+
+    - name: Install kubeadm and dependencies
+      shell: dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+
+    - name: Prepare for kubelet
+      shell: |
+        swapoff -a
+        sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+        setenforce 0
+        sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+        firewall-cmd --permanent --add-port=6443/tcp
+        firewall-cmd --permanent --add-port=2379-2380/tcp
+        firewall-cmd --permanent --add-port=10250/tcp
+        firewall-cmd --permanent --add-port=10259/tcp
+        firewall-cmd --permanent --add-port=10257/tcp
+        firewall-cmd --permanent --add-port=4240/tcp
+        firewall-cmd --permanent --add-port=8472/udp
+        firewall-cmd --permanent --add-port=10250/tcp
+        firewall-cmd --permanent --add-port=30000-32767/tcp  
+        firewall-cmd --reload
+        cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+        overlay
+        br_netfilter
+        EOF
+        
+        modprobe overlay
+        modprobe br_netfilter
+        
+        # sysctl params required by setup, params persist across reboots
+        cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+        net.bridge.bridge-nf-call-iptables  = 1
+        net.bridge.bridge-nf-call-ip6tables = 1
+        net.ipv4.ip_forward                 = 1
+        EOF
+
+        sysctl -p /etc/sysctl.d/k8s.conf
+
+
+    - name: Start and enable kubelet service
+      service:
+        name: kubelet
+        state: started
+        enabled: yes
+
+    - name: Initialize Kubernetes Cluster
+      command: kubeadm init --pod-network-cidr=10.244.0.0/24 --cri-socket=/var/run/crio/crio.sock
+
+    - name: mkdir .kube directory
+      command: mkdir -p /root/.kube
+
+    - name: Copy kubeconfig to root user
+      command: cp /etc/kubernetes/admin.conf /root/.kube/config
+
+    - name: Install Calico network plugin
+      command: kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.0/manifests/calico.yaml
+      environment:
+        KUBECONFIG: /root/.kube/config
+
+    - name: Taint master node to allow pods
+      command: kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+      environment:
+        KUBECONFIG: /root/.kube/config
+      ignore_errors: yes
+
+    # Install NVIDIA GPU Operator
+    - name: Install Helm
+      shell: |
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+      args:
+        creates: /usr/local/bin/helm
+
+    - name: Add NVIDIA Helm repository
+      command: helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
+      environment:
+        KUBECONFIG: /root/.kube/config
+
+    - name: Update Helm repositories
+      command: helm repo update
+      environment:
+        KUBECONFIG: /root/.kube/config
+
+    - name: Install NVIDIA GPU Operator
+      command: >
+        helm install --wait --generate-name
+        nvidia/gpu-operator
+        --set driver.enabled=false
+        --set toolkit.env[0].name=CONTAINERD_CONFIG
+        --set toolkit.env[0].value="/etc/crio/crio.conf.d"
+        --set toolkit.env[1].name=CONTAINERD_SOCKET
+        --set toolkit.env[1].value="/var/run/crio/crio.sock"
+        --set toolkit.env[2].name=CONTAINERD_RUNTIME_CLASS
+        --set toolkit.env[2].value="nvidia"
+      environment:
+        KUBECONFIG: /root/.kube/config
+
+    - name: Wait for NVIDIA GPU operator pods
+      command: >
+        kubectl wait --for=condition=ready pods 
+        --selector=app.kubernetes.io/name=gpu-operator 
+        --namespace default
+        --timeout=300s
+      environment:
+        KUBECONFIG: /root/.kube/config
