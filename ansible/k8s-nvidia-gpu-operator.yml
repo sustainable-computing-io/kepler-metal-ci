@@ -44,38 +44,6 @@
           runtime_root = "/run/nvidia"
           privileged_without_host_devices = false
 
-    # NVIDIA Driver Installation
-    - name: Enable EPEL repository
-      command: dnf install -y 'dnf-command(config-manager)'
-
-    - name: Install EPEL
-      command: dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
-    - name: Install EPEL Next
-      command: dnf install -y https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-9.noarch.rpm
-
-    - name: Install kernel development packages and DKMS
-      dnf:
-        name: 
-          - "kernel-devel-{{ ansible_kernel }}"
-          - "kernel-headers-{{ ansible_kernel }}"
-          - dkms
-        enablerepo: epel
-        state: present
-
-    - name: Add NVIDIA CUDA repository
-      command: dnf config-manager --add-repo http://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo
-
-    - name: Install NVIDIA driver using DKMS
-      command: dnf install -y nvidia-driver nvidia-driver-cuda
-
-    - name: Load NVIDIA driver
-      command: "{{ item }}"
-      loop:
-        - nvidia-modprobe
-        - nvidia-modprobe -u
-      ignore_errors: yes
-
     - name: Verify NVIDIA driver installation
       command: nvidia-smi
       register: nvidia_smi_output
