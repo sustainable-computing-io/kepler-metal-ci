@@ -79,7 +79,7 @@ jobs:
             exit 1
           fi
 
-          if ssh -i ~/.ssh/ec2_key centos@${{ steps.launch_instance.outputs.public_ip }} "echo 'SSH connection successful'" 2>/dev/null; then
+          if ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} "echo 'SSH connection successful'" 2>/dev/null; then
             echo "::set-output name=status::ready"
             break
           else
@@ -90,7 +90,7 @@ jobs:
     - name: Install NVIDIA Driver
       if: steps.ssh_check.outputs.status == 'ready'
       run: |
-        ssh -i ~/.ssh/ec2_key centos@${{ steps.launch_instance.outputs.public_ip }} '
+        ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
           sudo dnf update -y && \
           sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
           sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-9.noarch.rpm && \
@@ -113,7 +113,7 @@ jobs:
             exit 1
           fi
 
-          GPU_CHECK=$(ssh -i ~/.ssh/ec2_key centos@${{ steps.launch_instance.outputs.public_ip }} "nvidia-smi" 2>&1)
+          GPU_CHECK=$(ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} "nvidia-smi" 2>&1)
 
           if echo "$GPU_CHECK" | grep -q "NVIDIA-SMI"; then
             echo "::set-output name=status::ready"
@@ -126,7 +126,7 @@ jobs:
     - name: Clean up SSH keys before AMI creation
       if: steps.gpu_check.outputs.status == 'ready'
       run: |
-        ssh -i ~/.ssh/ec2_key centos@${{ steps.launch_instance.outputs.public_ip }} '
+        ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
           sudo rm -f /home/centos/.ssh/authorized_keys && \
           sudo rm -f /root/.ssh/authorized_keys
         '
