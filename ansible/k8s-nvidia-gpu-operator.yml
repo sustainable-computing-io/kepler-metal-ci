@@ -173,6 +173,11 @@
 
     - name: Wait nvidia.com/gpu is more than 0
       shell: >
+        # Set the timeout duration (20 minutes in seconds)
+        timeout_duration=$((20 * 60))  # 1200 seconds
+        elapsed_time=0
+        interval=5  # Interval between checks in seconds
+
         while true; do
             # Get the GPU capacity from all nodes
             gpu_capacity=$(kubectl get nodes -o jsonpath="{.items[*].status.allocatable.nvidia\.com/gpu}")
@@ -185,8 +190,17 @@
                 echo "No GPU capacity found, checking again..."
             fi
 
-            # Wait for a few seconds before checking again
-            sleep 5
+            # Wait for the specified interval before checking again
+            sleep $interval
+
+            # Update the elapsed time
+            elapsed_time=$((elapsed_time + interval))
+
+            # Check if elapsed time has reached the timeout duration
+            if [[ $elapsed_time -ge $timeout_duration ]]; then
+                echo "Timeout reached. Exiting without detecting GPU capacity."
+                break
+            fi
         done
       environment:
         KUBECONFIG: /root/.kube/config
