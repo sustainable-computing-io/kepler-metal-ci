@@ -120,7 +120,7 @@ jobs:
           
           GPU_CHECK=$(ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} "nvidia-smi && dcgmi discovery -l" 2>&1)
           
-          if echo "$GPU_CHECK" | grep -q "NVIDIA-SMI" && echo "$GPU_CHECK" | grep -q "GPU 0"; then
+          if echo "$GPU_CHECK" | grep -q "NVIDIA-SMI" && echo "$GPU_CHECK" | grep -q "GPU ID"; then
             echo "status=ready" >> $GITHUB_OUTPUT
             echo "GPU and DCGM installation verified:"
             echo "$GPU_CHECK"
