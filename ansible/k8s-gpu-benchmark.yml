@@ -80,7 +80,7 @@
         KUBECONFIG: /root/.kube/config
 
     - name: Wait for ResNet50 benchmark pod to complete
-      command: kubectl wait --for=condition=complete --timeout=600s pod/resnet50-benchmark -n {{ benchmark_namespace }}
+      command: kubectl wait --for=condition=complete --timeout=900s pod/resnet50-benchmark -n {{ benchmark_namespace }}
       environment:
         KUBECONFIG: /root/.kube/config
       ignore_errors: yes
