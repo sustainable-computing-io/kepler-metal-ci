@@ -144,6 +144,7 @@
         ./get_helm.sh
       args:
         creates: /usr/local/bin/helm
+      failed_when: false
 
     - name: Add NVIDIA Helm repository
       command:  /usr/local/bin/helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
