@@ -40,7 +40,7 @@ jobs:
 
   Test-K8s:
     name: "Test K8s"
-    needs: create-k8s-cluster
+    needs: Create-k8s-cluster
     runs-on: ubuntu-latest
 
     steps:
