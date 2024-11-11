@@ -34,69 +34,13 @@ permissions:
 jobs:
   Create-k8s-cluster:
     name: "Create Cluster"
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Validate termination time
-        run: |
-          if [ ${{ github.event.inputs.termination_time || '1' }} -gt 48 ]; then
-            echo "Error: Termination time cannot be more than 48 hours."
-            exit 1
-          fi
-
-      - name: Install ansible, git and jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install ansible jq git -y
-
-      - name: Clone repo
-        run: |
-          cd ~
-          git clone https://github.com/sustainable-computing-io/kepler-metal-ci
-
-      - name: Save ssh key from env to file
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.EQUINIX_SSH_KEY }}" > ~/.ssh/kepler_ci
-          chmod 600 ~/.ssh/kepler_ci
-          echo "StrictHostKeyChecking no" >> ~/.ssh/config
-
-      - name: Create metal config
-        run: |
-          cat <<EOF > /tmp/metal.yaml
-          token: "${{ secrets.METAL_AUTH_TOKEN }}"
-          project-id: ${{ secrets.EQUINIX_PROJECT_ID }}
-          EOF
-
-      - name: Play k8s_kubeadm.yml
-        env:
-          metro: "da"
-          plan: "c3.small.x86"
-          os: "rhel_9"
-        run: |
-          mkdir -p ~/.ansible
-          echo '[defaults]' > ~/.ansible/ansible.cfg
-          echo 'callback_plugins = ~/.github/callback_plugins' >> ~/.ansible/ansible.cfg
-          echo 'callback_whitelist = mask_ip_callback' >> ~/.ansible/ansible.cfg
-          mkdir -p ~/.github/callback_plugins
-          cd ~/kepler-metal-ci
-          cp ansible/mask_ip_callback.py ~/.github/callback_plugins/mask_ip_callback.py
-          # save input var into extra-vars.yaml
-          echo "termination_time: ${{ github.event.inputs.termination_time || '1' }}" > /tmp/extra-vars.yaml
-          echo "control_plan: ${{ github.event.inputs.control_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
-          echo "node_plan: ${{ github.event.inputs.node_plan || 'c3.small.x86' }}" >> /tmp/extra-vars.yaml
-          echo "metro: ${{ github.event.inputs.metro || 'da' }}" >> /tmp/extra-vars.yaml
-          ansible-playbook ansible/k8s_kubeadm.yml \
-            --extra-vars "@/tmp/extra-vars.yaml" 2>&1 >> k8s_kubeadm.log
-          sudo cat /tmp/kubeconfig |jq -r '.stdout' > /tmp/k8sconfig
-          sudo mv /tmp/k8sconfig /tmp/kubeconfig
-
-      - name: Upload kubeconfig
-        uses: actions/upload-artifact@v4
-        with:
-          name: kubeconfig-${{ github.run_id }}
-          path: /tmp/kubeconfig
-          retention-days: 1
+    uses: ./.github/workflows/create_equinix_k8s_cluster.yml
+    secrets: inherit
+    with:
+      termination_time: ${{ github.event.inputs.termination_time || '1' }}
+      control_plan: ${{ github.event.inputs.control_plan }}
+      node_plan: ${{ github.event.inputs.node_plan }}
+      metro: ${{ github.event.inputs.metro }}
 
   Test-K8s:
     name: "Test K8s"
