@@ -12,11 +12,12 @@ jobs:
 
     steps:
     - name: Set up AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+      uses: aws-actions/configure-aws-credentials@v4.0.2
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
+        retry-max-attempts: 40
 
     - name: Generate SSH key and create AWS key pair
       id: ssh_key
@@ -52,6 +53,7 @@ jobs:
           --associate-public-ip-address \
           --query 'Instances[0].InstanceId' \
           --instance-market-options 'MarketType=spot' \
+          --block-device-mappings '[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":50}}]' \
           --output text)
         
         # Wait for instance to be running
@@ -131,6 +133,29 @@ jobs:
           fi
         done
 
+    - name: Install cri-o, kubeadm, kubelet, and kubectl
+      run: |
+        ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
+          export VERSION=1.22
+          sudo curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/CentOS_8/devel:kubic:libcontainers:stable.repo
+          sudo curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:${VERSION}/CentOS_8/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo
+          sudo dnf -y install cri-o cri-tools
+          sudo systemctl enable --now crio
+          sudo mkdir -p /etc/crio/crio.conf.d
+          sudo echo "[kubernetes]" | sudo tee /etc/yum.repos.d/kubernetes.repo
+          sudo echo "name=Kubernetes" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "enabled=1" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "gpgcheck=1" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+        '
+
+    - name: Pull Container images that are used later
+      run: |
+        ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
+          sudo crictl pull pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+        '
     - name: Clean up SSH keys before AMI creation
       if: steps.gpu_check.outputs.status == 'ready'
       run: |
@@ -147,13 +172,27 @@ jobs:
         AMI_ID=$(aws ec2 create-image \
           --instance-id ${{ steps.launch_instance.outputs.instance_id }} \
           --name "CentOS-Stream9-NVIDIA-$(date +'%Y-%m-%d')" \
-          --description "CentOS Stream 9 with NVIDIA Driver and DCGM" \
+          --description "CentOS Stream 9 with NVIDIA Driver and DCGM, CRI-O, and Pytorch" \
           --no-reboot \
           --query 'ImageId' \
           --output text)
         
         # Wait for AMI to be available
-        aws ec2 wait image-available --image-ids $AMI_ID
+        exit_status=1
+        while [ "${exit_status}" != "0" ]
+        do
+            AMI_STATE=$(aws ec2 describe-images --image-ids "${AMI_ID}" --query 'Images[0].State' --output text)
+            echo "### AMI id ${AMI_ID} creation: state is ${AMI_STATE}..."
+
+            # Check if AMI is available, else wait and retry
+            if [ "${AMI_STATE}" = "available" ]; then
+                echo "### AMI ${AMI_ID} is now available."
+                exit_status=0
+            else
+                echo "### Waiting for AMI ${AMI_ID} to become available..."
+                aws ec2 wait image-available --image-ids "${AMI_ID}" || exit_status="$?"
+            fi
+        done
         echo "ami_id=${AMI_ID}" >> $GITHUB_OUTPUT
 
     - name: Cleanup AWS Resources

@@ -10,6 +10,7 @@
   tasks:
 
     - name: Add yum repo
+      ignore_errors: yes
       shell: |
           # This overwrites any existing configuration in /etc/yum.repos.d/kubernetes.repo
           cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
@@ -68,6 +69,7 @@
 
     - name: Install kubeadm and dependencies
       shell: dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+      ignore_errors: yes
 
     - name: Prepare for kubelet
       shell: |
