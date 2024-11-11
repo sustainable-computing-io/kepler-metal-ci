@@ -1,0 +1,40 @@
+## trigger by PR
+name: "pr-test"
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+  schedule: [{cron: "0 0 1 */3 *"}]
+
+jobs:
+  pr_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      ## using kepler-action to set up a kind cluster for dummy
+      - name: use Kepler action to deploy cluster
+        uses: sustainable-computing-io/kepler-action@v0.0.10
+        with:
+          local_dev_cluster_version: v0.0.9
+          kubeconfig_root_dir: /tmp/kubeconfig
+          cluster_provider: kind
+      - name: Upload kubeconfig
+        uses: actions/upload-artifact@v4
+        with:
+          name: kubeconfig-pr-${{ github.run_id }}
+          path: /tmp/kubeconfig
+          retention-days: 1
+      ## using a reusable pipeline for validation without commit, as dummy cluster the values are allowed to be none.
+      - name: Config kube
+        uses: ./.github/actions/kube_config
+        with:
+          ## kube config
+          artifact_name: kubeconfig-pr-${{ github.run_id }}
+      - name: Set up Kepler
+        uses: ./.github/actions/setup_kepler
+      ## kepler-model-server
+      - name: Set up Kepler model server
+        uses: ./.github/actions/kepler_model_server

@@ -102,37 +102,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-
-      - name: mkdir ~/.kube
-        run: |
-          mkdir -p ~/.kube
-
-      - name: Download kubeconfig
-        uses: actions/download-artifact@v4
+      - name: Config kube
+        uses: ./.github/actions/kube_config
         with:
-          name: kubeconfig-${{ github.run_id }}
-          path: ~/.kube/
-
-      - name: Test k8s
-        run: |
-          ls -la ~/.kube/*
-          mv ~/.kube/kubeconfig ~/.kube/config
-          kubectl get nodes
-          kubectl get pods --all-namespaces
-
-      - name: Label workers
-        run: |
-          kubectl label node $(kubectl get nodes --selector=node-role.kubernetes.io/control-plane!= --no-headers -o custom-columns=":metadata.name") node-role.kubernetes.io/worker=
-
-      - name: Install ansible, git and jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install jq -y
+          ## kube config
+          artifact_name: kubeconfig-${{ github.run_id }}
 
       - name: Checkout code
         uses: actions/checkout@v4
