@@ -94,73 +94,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-
-      - name: mkdir ~/.kube
-        run: |
-          mkdir -p ~/.kube
-
-      - name: Download kubeconfig
-        uses: actions/download-artifact@v4
+      - name: Config kube
+        uses: ./.github/actions/kube_config
         with:
-          name: kubeconfig-${{ github.run_id }}
-          path: ~/.kube/
-
-      - name: Test k8s
-        run: |
-          ls -la ~/.kube/*
-          mv ~/.kube/kubeconfig ~/.kube/config
-          kubectl get nodes
-          kubectl get pods --all-namespaces
-
-      - name: Label workers
-        run: |
-          kubectl label node $(kubectl get nodes --selector=node-role.kubernetes.io/control-plane!= --no-headers -o custom-columns=":metadata.name") node-role.kubernetes.io/worker=
-
-      - name: Install ansible, git and jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install jq -y
-
-      - name: Checkout code
-        uses: actions/checkout@v4
+          ## kube config
+          artifact_name: kubeconfig-${{ github.run_id }}
+      - name: Set up Kepler
+        uses: ./.github/actions/setup_kepler
       
-      - name: Install Prometheus
-        run: |
-          git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
-          kubectl apply --server-side --validate=false -f manifests/setup
-          kubectl apply --validate=false -f manifests/
-          until kubectl -n monitoring get statefulset prometheus-k8s; do kubectl get all -n monitoring; echo "StatefulSet not created yet, waiting..."; sleep 5; done
-          kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
-          kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
-
-      - name: Allow prometheus to scrape kepler metrics in kepler namespace
-        run: |
-          kubectl create namespace kepler
-          curl -O https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/manifests/k8s/config/rbac/prometheus_role.yaml
-          sed -i 's/namespace: system/namespace: kepler/' prometheus_role.yaml
-          kubectl apply -f prometheus_role.yaml
-          kubectl apply -f - <<EOF
-          apiVersion: rbac.authorization.k8s.io/v1
-          kind: RoleBinding
-          metadata:
-            labels:
-              app.kubernetes.io/component: prometheus
-              app.kubernetes.io/instance: k8s
-              app.kubernetes.io/name: prometheus
-              sustainable-computing.io/app: kepler
-            name: prometheus-k8s
-            namespace: kepler
-          roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: Role
-            name: prometheus-k8s
-          subjects:
-          - kind: ServiceAccount
-            name: prometheus-k8s
-            namespace: monitoring
-          EOF

@@ -105,36 +105,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: mkdir tmp dirs
-        run: |
-          mkdir -p /tmp/kubeconfig
-          mkdir -p ~/.kube/
-
-      - name: Download kubeconfig
-        uses: actions/download-artifact@v4
+      - name: Config kube
+        uses: ./.github/actions/kube_config
         with:
-          name: kubeconfig-${{ github.run_id }}
-          path: ~/.kube/
-
-      - name: Test k8s
-        run: |
-          ls -la ~/.kube/*
-          cp ~/.kube/kubeconfig ~/.kube/config
-          cp ~/.kube/kubeconfig /tmp/kubeconfig/config
-          kubectl get nodes
-          kubectl get pods --all-namespaces
-
-      - name: Label workers
-        run: |
-          kubectl label node $(kubectl get nodes --selector=node-role.kubernetes.io/control-plane!= --no-headers -o custom-columns=":metadata.name") node-role.kubernetes.io/worker=
-
-      - name: Install ansible, git and jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install jq -y
+          ## kube config
+          artifact_name: kubeconfig-${{ github.run_id }}
       
       - name: use Kepler action to deploy cluster
         uses: sustainable-computing-io/kepler-action@main
