@@ -133,7 +133,6 @@ jobs:
         done
 
     - name: Install cri-o, kubeadm, kubelet, and kubectl
-      if: steps.gpu_check.outputs.status == 'ready'
       run: |
         ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
           export VERSION=1.22
@@ -155,7 +154,6 @@ jobs:
         '
 
     - name: Pull Container images that are used later
-      ignore_errors: true
       shell: |
         ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
           crictl pull pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
