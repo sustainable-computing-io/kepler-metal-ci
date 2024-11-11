@@ -92,6 +92,7 @@ jobs:
         env:
           MODEL_SERVER_IMAGE: ${{ github.event.inputs.model_server_image }}
         run: |
+          sudo setenforce 0
           cd ${GITHUB_WORKSPACE}/ansible 
           echo "Create VM"
           ansible-playbook -i inventory.yml kvm_playbook.yml
