@@ -154,7 +154,7 @@ jobs:
         '
 
     - name: Pull Container images that are used later
-      shell: |
+      run: |
         ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
           crictl pull pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
         '
