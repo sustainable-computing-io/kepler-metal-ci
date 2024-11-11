@@ -141,15 +141,12 @@ jobs:
           sudo dnf -y install cri-o cri-tools
           sudo systemctl enable --now crio
           sudo mkdir -p /etc/crio/crio.conf.d
-          cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
-enabled=1
-gpgcheck=1
-gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
-exclude=kubelet kubeadm kubectl
-EOF
+          sudo echo "[kubernetes]" | sudo tee /etc/yum.repos.d/kubernetes.repo
+          sudo echo "name=Kubernetes" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "enabled=1" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "gpgcheck=1" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
           sudo dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
         '
 
