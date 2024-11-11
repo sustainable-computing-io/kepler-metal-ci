@@ -178,7 +178,21 @@ jobs:
           --output text)
         
         # Wait for AMI to be available
-        aws ec2 wait image-available --image-ids $AMI_ID
+        exit_status=1
+        while [ "${exit_status}" != "0" ]
+        do
+            AMI_STATE=$(aws ec2 describe-images --image-ids "${AMI_ID}" --query 'Images[0].State' --output text)
+            echo "### AMI id ${AMI_ID} creation: state is ${AMI_STATE}..."
+
+            # Check if AMI is available, else wait and retry
+            if [ "${AMI_STATE}" = "available" ]; then
+                echo "### AMI ${AMI_ID} is now available."
+                exit_status=0
+            else
+                echo "### Waiting for AMI ${AMI_ID} to become available..."
+                aws ec2 wait image-available --image-ids "${AMI_ID}" || exit_status="$?"
+            fi
+        done
         echo "ami_id=${AMI_ID}" >> $GITHUB_OUTPUT
 
     - name: Cleanup AWS Resources
