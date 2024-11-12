@@ -80,3 +80,22 @@
     exit 1
   register: kepler_metric
   failed_when: false
+
+- name: Get logs for Kepler container
+  ansible.builtin.shell: |
+    journalctl -u container-kepler.service | grep "Using the EstimatorSidecar"
+    journalctl -u container-kepler.service | grep "Using weights"
+  register: kepler_logs
+
+- name: Display Kepler logs
+  ansible.builtin.debug:
+    var: kepler_logs.stdout_lines
+
+- name: Get logs for Estimator container
+  ansible.builtin.shell: |
+    journalctl -u container-estimator.service
+  register: estimator_logs
+
+- name: Display Estimator logs
+  ansible.builtin.debug:
+    var: estimator_logs.stdout_lines
