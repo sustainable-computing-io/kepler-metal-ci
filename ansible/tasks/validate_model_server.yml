@@ -83,10 +83,11 @@
 
 - name: Get logs for Kepler container
   ansible.builtin.shell: |
-    journalctl -u container-kepler.service | grep "Using the EstimatorSidecar"
-    journalctl -u container-kepler.service | grep "Failed to"
-    journalctl -u container-kepler.service | grep "Using weights"
+    journalctl -u container-kepler.service | grep "Using the EstimatorSidecar" || echo "No Occurrence"
+    journalctl -u container-kepler.service | grep "Failed to" || echo "No Occurrence"
+    journalctl -u container-kepler.service | grep "Using weights" || echo "No Occurrence"
   register: kepler_logs
+  ignore_errors: true
 
 - name: Display Kepler logs
   ansible.builtin.debug:
@@ -96,6 +97,7 @@
   ansible.builtin.shell: |
     journalctl -u container-estimator.service
   register: estimator_logs
+  ignore_errors: true
 
 - name: Display Estimator logs
   ansible.builtin.debug:
