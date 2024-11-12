@@ -101,7 +101,7 @@ jobs:
             mkdir -p ${GITHUB_WORKSPACE}/docs/train-validate-e2e/${DATE_STR}/${model}
             mv $FILE ${GITHUB_WORKSPACE}/docs/train-validate-e2e/${DATE_STR}/${model}
 
-            echo "| " ${DATE_STRING} " | " ${model} " | [Report](train-validate-e2e/${DATE_STR}/${model}/report-${KEPLER_TAG}.md) |" \
+            echo "| " ${DATE_STRING} " | " ${model}-equinix " | [Report](train-validate-e2e/${DATE_STR}/${model}/report-${KEPLER_TAG}.md) |" \
             >>  ${GITHUB_WORKSPACE}/docs/kepler-model-train-validate.md
 
           done
