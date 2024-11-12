@@ -1,0 +1,46 @@
+name: deploy_model_server
+## using a reusable pipeline for config cluster    
+description: 'Action to deploy model server'
+inputs:
+  artifact_name:
+        description: "runner id for kube config"
+        required: true
+  #model_server:
+  #      description: "deploy model server or not"
+  #      required: true
+
+runs:
+  using: 'composite'
+  steps:
+      - name: Install kubectl
+        shell: bash
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+          mkdir -p ~/.kube
+          
+      - name: Download kubeconfig
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ~/.kube/
+
+      - name: Test k8s
+        shell: bash
+        run: |
+          ls -la ~/.kube/*
+          mv ~/.kube/kubeconfig ~/.kube/config || true
+          kubectl get nodes
+          kubectl get pods --all-namespaces
+
+      - name: Label workers
+        shell: bash
+        run: |
+          kubectl label node $(kubectl get nodes --selector=node-role.kubernetes.io/control-plane!= --no-headers -o custom-columns=":metadata.name") node-role.kubernetes.io/worker= || true
+
+      - name: Install ansible, git and jq
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq -y

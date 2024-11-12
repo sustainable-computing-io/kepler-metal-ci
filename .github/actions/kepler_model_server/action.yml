@@ -1,0 +1,22 @@
+name: deploy_model_server
+## using a reusable pipeline for config cluster    
+description: 'Action to deploy model server'
+runs:
+  using: 'composite'
+  steps:
+      - name: Clone Kepler Model Server
+        uses: actions/checkout@v4
+        with:
+            # Repository name with owner. For example, actions/checkout
+            # Default: ${{ github.repository }}
+            repository: 'sustainable-computing-io/kepler-model-server'
+            path: kepler-model-server
+
+      - name: Deploy Tekton Training Tasks
+        shell: bash
+        run: |
+          ls -al ${{ github.workspace }}
+          kubectl apply -f ${{ github.workspace }}/kepler-model-server/model_training/tekton/pvc/hostpath.yaml
+          kubectl apply -f ${{ github.workspace }}/kepler-model-server/model_training/tekton/tasks
+          kubectl apply -f ${{ github.workspace }}/kepler-model-server/model_training/tekton/tasks/s3
+          kubectl apply -f ${{ github.workspace }}/kepler-model-server/model_training/tekton/pipelines

@@ -1,0 +1,219 @@
+name: Create CentOS Stream 9 AMI with NVIDIA Driver
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-ami:
+    runs-on: ubuntu-latest
+    outputs:
+      ami_id: ${{ steps.create_ami.outputs.ami_id }}
+      instance_id: ${{ steps.launch_instance.outputs.instance_id }}
+
+    steps:
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4.0.2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        retry-max-attempts: 40
+
+    - name: Generate SSH key and create AWS key pair
+      id: ssh_key
+      shell: bash
+      run: |
+        # Generate SSH key pair
+        ssh-keygen -t rsa -b 4096 -f ~/.ssh/ec2_key -N ""
+        chmod 600 ~/.ssh/ec2_key
+        
+        # Create a unique key name using timestamp
+        KEY_NAME="temp-key-$(date +%Y%m%d-%H%M%S)"
+        
+        # Import public key to AWS
+        aws ec2 import-key-pair \
+          --key-name "$KEY_NAME" \
+          --public-key-material "fileb://~/.ssh/ec2_key.pub"
+        
+        # Add to known hosts to prevent fingerprint prompt
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        chmod 600 ~/.ssh/config
+        
+        echo "key_name=${KEY_NAME}" >> $GITHUB_OUTPUT
+
+    - name: Launch EC2 instance
+      id: launch_instance
+      shell: bash
+      run: |
+        INSTANCE_ID=$(aws ec2 run-instances \
+          --image-id 'ami-01529018e3919dace' \
+          --instance-type g4dn.xlarge \
+          --key-name ${{ steps.ssh_key.outputs.key_name }} \
+          --security-group-ids ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+          --associate-public-ip-address \
+          --query 'Instances[0].InstanceId' \
+          --instance-market-options 'MarketType=spot' \
+          --block-device-mappings '[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":50}}]' \
+          --output text)
+        
+        # Wait for instance to be running
+        aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+        
+        # Get public IP
+        PUBLIC_IP=$(aws ec2 describe-instances \
+          --instance-ids $INSTANCE_ID \
+          --query 'Reservations[0].Instances[0].PublicIpAddress' \
+          --output text)
+        
+        echo "instance_id=${INSTANCE_ID}" >> $GITHUB_OUTPUT
+        echo "public_ip=${PUBLIC_IP}" >> $GITHUB_OUTPUT
+
+    - name: Wait for SSH to be available
+      id: ssh_check
+      shell: bash
+      run: |
+        START_TIME=$(date +%s)
+        TIMEOUT=$((10 * 60))  # 10 minutes timeout
+        
+        while true; do
+          if [ $(($(date +%s) - START_TIME)) -ge $TIMEOUT ]; then
+            echo "Timeout waiting for SSH connection"
+            exit 1
+          fi
+          
+          if ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} "echo 'SSH connection successful'" 2>/dev/null; then
+            echo "status=ready" >> $GITHUB_OUTPUT
+            break
+          else
+            sleep 10
+          fi
+        done
+
+    - name: Install NVIDIA Driver
+      if: steps.ssh_check.outputs.status == 'ready'
+      run: |
+        ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
+          sudo dnf update -y && \
+          sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+          sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-9.noarch.rpm && \
+          export KERNEL_VERSION=$(uname -r) && \
+          sudo dnf install -y kernel-devel-$KERNEL_VERSION kernel-headers-$KERNEL_VERSION dkms && \
+          sudo dnf config-manager --add-repo=https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo && \
+          sudo dnf install -y nvidia-driver nvidia-driver-cuda && \
+          sudo dnf clean expire-cache && \
+          sudo dnf install -y datacenter-gpu-manager && \
+          sudo systemctl start nvidia-dcgm && \
+          sudo systemctl enable nvidia-dcgm && \
+          dcgmi discovery -l
+        '
+
+    - name: Check GPU and DCGM Installation
+      id: gpu_check
+      shell: bash
+      run: |
+        START_TIME=$(date +%s)
+        TIMEOUT=$((30 * 60))  # 30 minutes timeout
+        
+        while true; do
+          if [ $(($(date +%s) - START_TIME)) -ge $TIMEOUT ]; then
+            echo "status=timeout" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          GPU_CHECK=$(ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} "nvidia-smi && dcgmi discovery -l" 2>&1)
+          
+          if echo "$GPU_CHECK" | grep -q "NVIDIA-SMI" && echo "$GPU_CHECK" | grep -q "GPU ID"; then
+            echo "status=ready" >> $GITHUB_OUTPUT
+            echo "GPU and DCGM installation verified:"
+            echo "$GPU_CHECK"
+            break
+          else
+            echo "Waiting for GPU and DCGM setup to complete..."
+            sleep 10
+          fi
+        done
+
+    - name: Install cri-o, kubeadm, kubelet, and kubectl
+      run: |
+        ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
+          export VERSION=1.22
+          sudo curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/CentOS_8/devel:kubic:libcontainers:stable.repo
+          sudo curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:${VERSION}/CentOS_8/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo
+          sudo dnf -y install cri-o cri-tools
+          sudo systemctl enable --now crio
+          sudo mkdir -p /etc/crio/crio.conf.d
+          sudo echo "[kubernetes]" | sudo tee /etc/yum.repos.d/kubernetes.repo
+          sudo echo "name=Kubernetes" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "enabled=1" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "gpgcheck=1" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo echo "gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key" | sudo tee -a /etc/yum.repos.d/kubernetes.repo
+          sudo dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+        '
+
+    - name: Pull Container images that are used later
+      run: |
+        ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
+          sudo crictl pull pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+        '
+    - name: Clean up SSH keys before AMI creation
+      if: steps.gpu_check.outputs.status == 'ready'
+      run: |
+        ssh -i ~/.ssh/ec2_key ec2-user@${{ steps.launch_instance.outputs.public_ip }} '
+          sudo rm -f /home/centos/.ssh/authorized_keys && \
+          sudo rm -f /root/.ssh/authorized_keys
+        '
+
+    - name: Create AMI
+      id: create_ami
+      if: steps.gpu_check.outputs.status == 'ready'
+      shell: bash
+      run: |
+        AMI_ID=$(aws ec2 create-image \
+          --instance-id ${{ steps.launch_instance.outputs.instance_id }} \
+          --name "CentOS-Stream9-NVIDIA-$(date +'%Y-%m-%d')" \
+          --description "CentOS Stream 9 with NVIDIA Driver and DCGM, CRI-O, and Pytorch" \
+          --no-reboot \
+          --query 'ImageId' \
+          --output text)
+        
+        # Wait for AMI to be available
+        exit_status=1
+        while [ "${exit_status}" != "0" ]
+        do
+            AMI_STATE=$(aws ec2 describe-images --image-ids "${AMI_ID}" --query 'Images[0].State' --output text)
+            echo "### AMI id ${AMI_ID} creation: state is ${AMI_STATE}..."
+
+            # Check if AMI is available, else wait and retry
+            if [ "${AMI_STATE}" = "available" ]; then
+                echo "### AMI ${AMI_ID} is now available."
+                exit_status=0
+            else
+                echo "### Waiting for AMI ${AMI_ID} to become available..."
+                aws ec2 wait image-available --image-ids "${AMI_ID}" || exit_status="$?"
+            fi
+        done
+        echo "ami_id=${AMI_ID}" >> $GITHUB_OUTPUT
+
+    - name: Cleanup AWS Resources
+      if: always()
+      shell: bash
+      run: |
+        # Terminate the instance if it exists
+        if [ -n "${{ steps.launch_instance.outputs.instance_id }}" ]; then
+          aws ec2 terminate-instances --instance-ids ${{ steps.launch_instance.outputs.instance_id }}
+          aws ec2 wait instance-terminated --instance-ids ${{ steps.launch_instance.outputs.instance_id }}
+        fi
+        
+        # Delete the temporary key pair if it exists
+        if [ -n "${{ steps.ssh_key.outputs.key_name }}" ]; then
+          aws ec2 delete-key-pair --key-name ${{ steps.ssh_key.outputs.key_name }}
+        fi
+        
+        # Remove local SSH keys
+        rm -f ~/.ssh/ec2_key*
+
+    - name: Output AMI ID
+      if: steps.create_ami.outputs.ami_id != ''
+      run: |
+        echo "New AMI created with ID: ${{ steps.create_ami.outputs.ami_id }}"
