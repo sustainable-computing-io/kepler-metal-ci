@@ -1,0 +1,40 @@
+name: kepler_validation_with_kubeburner
+## using a reusable pipeline for config cluster    
+description: 'Action to deploy model server'
+inputs:
+  timeout:
+    description: "timeout for workloads"
+    default: 4h
+    required: true
+outputs:
+  start_time:
+    description: "start time for workload"
+    value: ${{ steps.run_workload.outputs.start_time }}
+  end_time:
+    description: "start time for workload"
+    value: ${{ steps.run_workload.outputs.end_time }}
+runs:
+  using: 'composite'
+  steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: install kube-burner
+      shell: bash
+      run: |
+          curl -sS -L "https://github.com/kube-burner/kube-burner/releases/download/v1.9.5/kube-burner-V1.9.5-linux-x86_64.tar.gz" | tar -xzC /usr/local/bin/ kube-burner
+          chmod +x /usr/local/bin/kube-burner
+
+    - name: run_workload
+      id: run_workload
+      shell: bash
+      run: |
+          cd ${{ github.workspace }}/kube-burner-config
+          export START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo ${{ inputs.timeout }}
+          # for PR as smoke test, we limit time for kube burner and ignore the timeout error
+          kube-burner init -c ./kubelet-density.yml -u http://localhost:9090 --metrics-profile ./metrics.yaml --timeout ${{ inputs.timeout }} || true
+          # sleep a min after test
+          sleep 60
+          echo "start_time=${START_TIME}" >> $GITHUB_OUTPUT
+          export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "end_time=${END_TIME}" >> $GITHUB_OUTPUT
