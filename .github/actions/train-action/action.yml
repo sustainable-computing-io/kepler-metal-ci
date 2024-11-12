@@ -8,6 +8,26 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Check Prometheus Endpoint
+      shell: bash
+      run: |
+        for i in {1..10}; do
+          status_code=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:9090)
+          if [ "$status_code" -ne 200 ]; then
+            echo "Prometheus Endpoint is inactive (status: $status_code)"
+            exit 1
+          else
+            echo "Prometheus Endpoint is active"
+          fi
+
+          metric_response = $(curl -sG http://localhost:9090/api/v1/query --data-urlencode 'query=kepler_process_bpf_cpu_time_ms_total{job="vm"}')
+          if echo "$metric_response" | grep -q '"result":\[\]'; then
+            echo "Target VM Metric does not exist or is empty"
+            exit 1
+          else
+            echo "Target VM Metric does exist and is nonempty"
+          fi
+
     - name: Train models
       shell: bash
       run: |
