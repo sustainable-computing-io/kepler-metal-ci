@@ -84,6 +84,7 @@
 - name: Get logs for Kepler container
   ansible.builtin.shell: |
     journalctl -u container-kepler.service | grep "Using the EstimatorSidecar"
+    journalctl -u container-kepler.service | grep "Failed to"
     journalctl -u container-kepler.service | grep "Using weights"
   register: kepler_logs
 
