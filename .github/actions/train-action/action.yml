@@ -14,7 +14,7 @@ runs:
   steps:
     - name: Train models
       env:
-        TOTAL_RUNTIME_SECONDS: {{ input. total_runtime_seconds }}
+        TOTAL_RUNTIME_SECONDS: {{ inputs.total_runtime_seconds }}
       shell: bash
       run: |
         cd ${GITHUB_WORKSPACE}/ansible
