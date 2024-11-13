@@ -32,9 +32,6 @@ jobs:
         uses: ./.github/actions/setup-action
 
       - name: Run playbook
-        env:
-          TOTAL_RUNTIME_SECONDS: 1200
-          VALIDATOTR_CURVE_TYPE: "default"
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
           echo "Create VM"
@@ -82,9 +79,11 @@ jobs:
           # git add docs/daily-validations/*
           # git commit -m "Add Daily Validations for Model Server Workflow" -s
           # git push
-
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          TOTAL_RUNTIME_SECONDS: 1200
+          VALIDATOTR_CURVE_TYPE: "default"
+
 
   Cleanup:
     name: "Cleanup"
