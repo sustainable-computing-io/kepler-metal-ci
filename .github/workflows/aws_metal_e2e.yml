@@ -138,13 +138,13 @@ jobs:
           ls -l /tmp/prometheus-snapshot
           mv /tmp/prometheus-snapshot ${GITHUB_WORKSPACE}/docs/train-validate-e2e-aws/${DATE_STR}/
 
-          # cd ${GITHUB_WORKSPACE}
-          # git config user.email "dependabot[bot]@users.noreply.github.com"
-          # git config user.name "dependabot[bot]"
-          # git add docs/*
-          # git commit -m "Add train-validate-e2e-aws single server for ${DATE_STR}" -s
-          # git pull --rebase
-          # git push
+          cd ${GITHUB_WORKSPACE}
+          git config user.email "dependabot[bot]@users.noreply.github.com"
+          git config user.name "dependabot[bot]"
+          git add docs/*
+          git commit -m "Add train-validate-e2e-aws single server for ${DATE_STR}" -s
+          git pull --rebase
+          git push
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
  
