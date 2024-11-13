@@ -22,3 +22,4 @@ collect_id: "workflow_run"
 prom_url: "http://localhost:9090"
 pipeline_name: "Equinix_Pipeline"
 stress_test_script_path: "/opt/kepler/e2e/tools/validator/scripts/stressor.sh"
+total_time_in_seconds: {{ lookup('env', 'TOTAL_RUNTIME_SECONDS') }}

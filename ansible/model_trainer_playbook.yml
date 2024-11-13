@@ -45,6 +45,7 @@
         vm_user: "{{ hostvars['localhost']['ssh_tunnel_user'] }}"
         vm_name: "{{ hostvars['localhost']['ssh_tunnel_vm'] }}"
         ssh_key_path: "{{ hostvars['localhost']['ssh_key_path'] }}"
+        total_time_in_seconds: "{{ hostvars['localhost']['total_time_in_seconds'] }}"
       ansible.builtin.shell: |
         export PATH=$PATH:/usr/local/bin
         echo $PATH
@@ -65,7 +66,7 @@
         for i in {1..{{ stress_iterations }}}; do
           echo "Iteration: $i"
           # ssh to the vm and run the stress_test_script
-          ssh -i {{ ssh_key_path }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ vm_user }}@{{ vm_name }} /tmp/stress_test.sh
+          ssh -i {{ ssh_key_path }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ vm_user }}@{{ vm_name }} /tmp/stress_test.sh -t {{ total_time_in_seconds }}
         done 
         export END_TIME=$(date +%s)
 

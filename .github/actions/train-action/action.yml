@@ -5,10 +5,16 @@ inputs:
     description: 'Location to output models'
     required: true
     default: '/tmp/trained-equinix-models'
+  total_runtime_seconds:
+    description: 'Total time to run the training'
+    required: false
+    default: 1200
 runs:
   using: 'composite'
   steps:
     - name: Train models
+      env:
+        TOTAL_RUNTIME_SECONDS: {{ input. total_runtime_seconds }}
       shell: bash
       run: |
         cd ${GITHUB_WORKSPACE}/ansible

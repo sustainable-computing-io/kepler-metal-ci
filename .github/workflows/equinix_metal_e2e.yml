@@ -68,13 +68,14 @@ jobs:
         uses: ./.github/actions/train-action
         with:
           model_export_path: /tmp/trained-equinix-models
+          total_runtime_seconds: 1200
       
       - name: Checkout code
         uses: actions/checkout@v4
       
       - name: Run Validation Playbooks
         env:
-          TOTAL_RUNTIME_SECONDS: 1200
+          TOTAL_RUNTIME_SECONDS: 300
           VALIDATOTR_CURVE_TYPE: "default"
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
