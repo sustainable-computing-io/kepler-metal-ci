@@ -13,13 +13,11 @@ runs:
   using: 'composite'
   steps:
     - name: Train models
-      env:
-        TOTAL_RUNTIME_SECONDS: ${{ inputs.total_runtime_seconds }}
       shell: bash
       run: |
         cd ${GITHUB_WORKSPACE}/ansible
-        echo "Deploy Trainer"
-        ansible-playbook -i inventory.yml -vvv model_trainer_playbook.yml -e "model_export_path=${{ inputs.model_export_path }}"
+          echo "Deploy Trainer"
+          ansible-playbook -i inventory.yml -vvv model_trainer_playbook.yml -e "model_export_path=${{ inputs.model_export_path }} total_runtime_seconds=${{ inputs.total_runtime_seconds }}"
     
     - name: Upload models as artifacts
       uses: actions/upload-artifact@v4
