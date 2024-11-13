@@ -35,13 +35,38 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Baremetal Setup
+      # - name: Run Setup
+      #   run: |
+      #     cd ${GITHUB_WORKSPACE}/ansible
+      #     echo "Install Prometheus Baremetal"
+      #     ansible-playbook -i inventory.yml -vvv metal_prometheus.yml
+      #     echo "Install Kepler Metal"
+      #     ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"
+
+      - name: Run Setup Playbooks
+        env:
+          MODEL_SERVER_IMAGE: 'quay.io/sustainable_computing_io/kepler_model_server:latest'
         run: |
-          cd ${GITHUB_WORKSPACE}/ansible
-          echo "Install Prometheus Baremetal"
-          ansible-playbook -i inventory.yml -vvv metal_prometheus.yml
-          echo "Install Kepler Metal"
-          ansible-playbook -i inventory.yml kepler_playbook.yml -e "target_host=localhost"      
+          cd ${GITHUB_WORKSPACE}/ansible 
+          echo "Create VM"
+          ansible-playbook -i inventory.yml kvm_playbook.yml
+          echo "Install SSH tunnel"
+          ansible-playbook ssh_tunnel_playbook.yml
+          echo "Install Prometheus"
+          ansible-playbook -i inventory.yml metrics_playbook.yml
+          echo "Install Node Exporter"
+          ansible-playbook -i inventory.yml node_exporter_playbook.yml -vvv
+          echo "Verify node-exporter"
+          sudo systemctl status node_exporter || true
+          sudo ss -tuln | grep 9100 || true
+          curl -s localhost:9100/metrics | grep collector || true
+          echo "Install Kepler"
+          ansible-playbook -i inventory.yml -vvv kepler_playbook.yml
+          echo "Create ssh tunnel"
+          ansible-playbook -i inventory.yml ssh_tunnel_playbook.yml
+
+          echo "Install Model Server"
+          ansible-playbook -i inventory.yml -vvv model_server_playbook.yml
 
       - name: Run Trainer Action
         uses: ./.github/actions/train-action
