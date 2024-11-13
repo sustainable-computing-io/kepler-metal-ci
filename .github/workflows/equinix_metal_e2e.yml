@@ -68,7 +68,7 @@ jobs:
         uses: ./.github/actions/train-action
         with:
           model_export_path: /tmp/trained-equinix-models
-          total_runtime_seconds: 1200
+          total_runtime_seconds: 300
       
       - name: Checkout code
         uses: actions/checkout@v4
