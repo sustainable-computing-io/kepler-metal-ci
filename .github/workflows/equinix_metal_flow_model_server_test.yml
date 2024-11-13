@@ -32,6 +32,9 @@ jobs:
         uses: ./.github/actions/setup-action
 
       - name: Run playbook
+        env:
+          TOTAL_RUNTIME_SECONDS: 1200
+          VALIDATOTR_CURVE_TYPE: "default"
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
           echo "Create VM"

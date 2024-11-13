@@ -47,6 +47,9 @@
             url: http://localhost:9090
             rate_interval: 20s
             steps: 5s
+          stressor:
+            total_runtime_seconds: {{ lookup('env', 'TOTAL_RUNTIME_SECONDS') }}
+            curve_type: {{ lookup('env', 'VALIDATOTR_CURVE_TYPE') }}
           validations_file: ../validations.yaml
 
     - name: Install the validator

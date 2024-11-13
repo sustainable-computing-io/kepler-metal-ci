@@ -56,6 +56,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Validation Playbooks
+        env:
+          TOTAL_RUNTIME_SECONDS: 1200
+          VALIDATOTR_CURVE_TYPE: "default"
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
           echo "Create VM"
