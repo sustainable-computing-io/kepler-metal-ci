@@ -62,10 +62,11 @@
         # Stress
         chmod +x {{ stress_test_script_path }}
         export START_TIME=$(date +%s)
+        echo "total runtime seconds: {{ total_runtime_seconds }}"
         for i in {1..{{ stress_iterations }}}; do
           echo "Iteration: $i"
           # ssh to the vm and run the stress_test_script
-          ssh -i {{ ssh_key_path }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ vm_user }}@{{ vm_name }} /tmp/stress_test.sh
+          ssh -i {{ ssh_key_path }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ vm_user }}@{{ vm_name }} /tmp/stress_test.sh -t {{ total_runtime_seconds }}
         done 
         export END_TIME=$(date +%s)
 
