@@ -55,10 +55,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Validation Playbooks
-        env:
-          TOTAL_RUNTIME_SECONDS: 1200
-          VALIDATOTR_CURVE_TYPE: "default"
+      - name: Run Validation Playbooks          
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
           echo "Create VM"
@@ -115,6 +112,8 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          TOTAL_RUNTIME_SECONDS: 1200
+          VALIDATOTR_CURVE_TYPE: "default"
 
   Cleanup:
     name: "Cleanup"
