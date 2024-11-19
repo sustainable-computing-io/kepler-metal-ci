@@ -1,4 +1,17 @@
 ---
+- name: Pause for 60 seconds
+  ansible.builtin.pause:
+    seconds: 60
+
+- name: View Kepler Logs
+  ansible.builtin.shell: |
+    journalctl -u container-kepler.service
+  register: kepler_logs
+
+- name: Display Kepler logs
+  ansible.builtin.debug:
+    var: kepler_logs.stdout_lines
+
 - name: Wait for Kepler to start (retry logic)
   ansible.builtin.shell: |
     for i in {1..5}; do
