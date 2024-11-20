@@ -85,8 +85,16 @@ jobs:
           git add docs/*
           git commit -m "Add validation report for ${DATE_STR}" -s
           git push
+          echo "date=${DATE_STR}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: upload to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: validator_compose
+          path: docs/validation/${{ steps.run_workload.run_playbook.date }}
+          retention-days: 30
 
       - name: Update model validation chart
         run: |
