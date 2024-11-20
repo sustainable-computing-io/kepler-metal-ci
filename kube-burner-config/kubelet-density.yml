@@ -1,0 +1,22 @@
+global:
+  gc: true
+  measurements:
+   - name: podLatency
+jobs:
+  - name: kubelet-density
+    jobIterations: 80
+    qps: 20
+    burst: 20
+    preLoadImages: false
+    namespacedIterations: false
+    namespace: kubelet-density
+    waitWhenFinished: true
+    podWait: false
+    objects:
+      - objectTemplate: templates/pod.yml
+        replicas: 1
+        inputVars:
+          containerImage: registry.k8s.io/pause:3.1
+indexers:
+ - type: local
+   metricsDirectory: collected-metrics

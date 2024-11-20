@@ -87,16 +87,16 @@ jobs:
             --data-urlencode "start=${START_TIME}" --data-urlencode "end=${END_TIME}" --data-urlencode "step=5" \
             | jq -r '.data.result[0].values[] | @tsv' | awk '{printf "Time: %s, Utilization: %s%%\n", strftime("%Y-%m-%d %H:%M:%S", $1), $2}' \
             | tee -a /tmp/kepler-stress-test-kube-apiserver-metrics.txt
-
-      - name: git add the /tmp/kepler-stress-test-metrics.txt
-        run: |
           cd ${GITHUB_WORKSPACE}
-          git config --global user.email "dependabot[bot]@users.noreply.github.com" 
-          git config --global user.name "dependabot[bot]"          
-          END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); echo -n "| " $END_TIME >> docs/kepler-stress-test-metrics.md
+          echo -n "| " $END_TIME >> docs/kepler-stress-test-metrics.md
           MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
           KUBE_APISERVER_MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-kube-apiserver-metrics.txt)
           echo $MEAN_SD_OUTPUT "  " $KUBE_APISERVER_MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
+
+      - name: git add the /tmp/kepler-stress-test-metrics.txt
+        run: |
+          git config --global user.email "dependabot[bot]@users.noreply.github.com" 
+          git config --global user.name "dependabot[bot]"          
           git add docs/kepler-stress-test-metrics.md
           git commit -m "kepler stress test metrics result at ${END_TIME}" -s
           git push origin main

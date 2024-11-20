@@ -35,6 +35,34 @@ jobs:
           artifact_name: kubeconfig-pr-${{ github.run_id }}
       - name: Set up Kepler
         uses: ./.github/actions/setup_kepler
+      - name: test_kepler_with_kubeburner
+        id: test_kepler_with_kubeburner
+        uses: ./.github/actions/kepler_validation_with_kubeburner
+        with:
+          timeout: 1m
+      - name: check outputs
+        shell: bash
+        run: |
+          echo ${{ steps.test_kepler_with_kubeburner.outputs.start_time }}
+          echo ${{ steps.test_kepler_with_kubeburner.outputs.end_time }}
+      - name: generate_report
+        shell: bash
+        run: |
+          cd ${{ github.workspace }}/kube-burner-config
+          touch /tmp/kepler-stress-test-metrics.txt
+          touch /tmp/kepler-stress-test-kube-apiserver-metrics.txt
+          # Retrieve metrics related to Kepler cpu and memory utilization over time
+          export query="sum (rate (container_cpu_usage_seconds_total{namespace="kepler"}[1m])) / sum(machine_cpu_cores) * 100"
+          ./fetchmetric.sh $query /tmp/kepler-stress-test-metrics.txt
+          # Retrieve the kube-apiserver cpu and memory utilization over time
+          export query="sum (rate (container_cpu_usage_seconds_total{namespace="kube-system", pod=~"kube-apiserver-.*"}[1m])) / sum(machine_cpu_cores) * 100"
+          ./fetchmetric.sh $query /tmp/kepler-stress-test-kube-apiserver-metrics.txt
+          cd ${GITHUB_WORKSPACE}
+          echo -n "| " ${{ steps.test_kepler_with_kubeburner.outputs.end_time }} >> docs/kepler-stress-test-metrics.md
+          MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-metrics.txt)
+          KUBE_APISERVER_MEAN_SD_OUTPUT=$(./util/calc_mean_sd.awk /tmp/kepler-stress-test-kube-apiserver-metrics.txt)
+          echo $MEAN_SD_OUTPUT "  " $KUBE_APISERVER_MEAN_SD_OUTPUT >> docs/kepler-stress-test-metrics.md
+
       ## kepler-model-server
       - name: Set up Kepler model server
         uses: ./.github/actions/kepler_model_server
