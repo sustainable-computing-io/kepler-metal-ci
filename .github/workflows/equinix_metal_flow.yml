@@ -100,10 +100,18 @@ jobs:
           git add docs/*
           git commit -m "Add validation report for ${DATE_STR}-${TIME_STR}" -s
           git push
+          echo "date=${DATE_STR}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           TOTAL_RUNTIME_SECONDS: 1200
           VALIDATOTR_CURVE_TYPE: "default"
+
+      - name: upload to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: equinix_metal
+          path: docs/validation/${{ steps.run_workload.run_playbook.date }}
+          retention-days: 30
 
       - name: Update model validation chart
         run: |
