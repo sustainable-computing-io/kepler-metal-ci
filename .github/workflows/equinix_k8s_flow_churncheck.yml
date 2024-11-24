@@ -46,15 +46,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
       - name: Config kube
         uses: ./.github/actions/kube_config
         with:
           ## kube config
           artifact_name: kubeconfig-${{ github.run_id }}
 
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
       - name: Install Prometheus
         run: |
           git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
