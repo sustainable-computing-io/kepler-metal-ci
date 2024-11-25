@@ -10,6 +10,7 @@
       sleep 5
     done
     echo "Kepler did not start in time"
+    sudo systemctl status container-kepler || true
     exit 1
   register: kepler_start
   failed_when: kepler_start.rc != 0
