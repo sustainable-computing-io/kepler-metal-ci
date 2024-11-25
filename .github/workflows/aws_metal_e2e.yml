@@ -63,22 +63,74 @@ jobs:
       - name: Run Setup Runner Action
         uses: ./.github/actions/setup-action
 
-      # - name: Run Setup Playbooks
-      #   env:
-      #     MODEL_SERVER_IMAGE: ${{ github.event.inputs.model_server_image }}
-      #   run: |
-      #     sudo setenforce 0
-      #     cd ${GITHUB_WORKSPACE}/ansible 
-      #     echo "Install Metal Prometheus"
-      #     ansible-playbook -i inventory.yml metal_prometheus.yml
-      #     echo "Install Node Exporter"
-      #     ansible-playbook -i inventory.yml node_exporter_playbook.yml -vvv
-      #     echo "Verify node-exporter"
-      #     sudo systemctl status node_exporter || true
-      #     sudo ss -tuln | grep 9100 || true
-      #     curl -s localhost:9100/metrics | grep collector || true
-      #     echo "Install Kepler"
-      #     ansible-playbook -i inventory.yml -vvv kepler_playbook.yml
+      - name: Run GPU Playbooks
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible
+          echo "Install K8s node with GPU Operator"
+          ansible-playbook -i inventory.yml k8s-nvidia-gpu-operator.yml -vvv
+          echo "Run GPU Benchmark"
+          ansible-playbook -i inventory.yml k8s-gpu-benchmark.yml -vvv
+          
+          # echo "Install Node Exporter"
+          # ansible-playbook -i inventory.yml node_exporter_playbook.yml -vvv
+          # echo "Verify node-exporter"
+          # sudo systemctl status node_exporter || true
+          # sudo ss -tuln | grep 9100 || true
+          # curl -s localhost:9100/metrics | grep collector || true
+          # echo "Install Kepler"
+          # ansible-playbook -i inventory.yml -vvv kepler_playbook.yml
+          
+      - name: Install Prometheus
+        run: |
+          git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
+          kubectl apply --server-side --validate=false -f manifests/setup
+          kubectl apply --validate=false -f manifests/
+          until kubectl -n monitoring get statefulset prometheus-k8s; do kubectl get all -n monitoring; echo "StatefulSet not created yet, waiting..."; sleep 5; done
+          kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
+          kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
+          
+      - name: Install Kepler helm chart
+        run: |
+          # Install helm binary first
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+          export PATH=$PATH:/usr/local/bin
+          helm repo add kepler https://sustainable-computing-io.github.io/kepler-helm-chart
+          helm repo update
+          helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest \
+            --set extraEnvVars.EXPOSE_COMPONENT_POWER="false" --set extraEnvVars.EXPOSE_ESTIMATED_IDLE_POWER_METRICS="true" --set extraEnvVars.EXPOSE_BPF_METRICS="false" \
+            --set extraEnvVars.EXPERIMENTAL_BPF_SAMPLE_RATE=1000 --set extraEnvVars.ENABLE_GPU="true"
+
+      - name: Allow prometheus to scrape kepler metrics in kepler namespace
+        run: |
+          curl -O https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/manifests/k8s/config/rbac/prometheus_role.yaml
+          sed -i 's/namespace: system/namespace: kepler/' prometheus_role.yaml
+          kubectl apply -f prometheus_role.yaml
+          kubectl apply -f - <<EOF
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: RoleBinding
+          metadata:
+            labels:
+              app.kubernetes.io/component: prometheus
+              app.kubernetes.io/instance: k8s
+              app.kubernetes.io/name: prometheus
+              sustainable-computing.io/app: kepler
+            name: prometheus-k8s
+            namespace: kepler
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: Role
+            name: prometheus-k8s
+          subjects:
+          - kind: ServiceAccount
+            name: prometheus-k8s
+            namespace: monitoring
+          EOF
+
+      - name: Wait for Kepler metrics kepler_node_package_joules_total is not empty through Prometheus query
+        run: |
+          ${GITHUB_WORKSPACE}/util/wait_for_prometheus.sh
 
       # - name: Run Trainer Action
       #   uses: ./.github/actions/train-action
@@ -86,16 +138,16 @@ jobs:
       #     model_export_path: /tmp/trained-equinix-models
       #     total_runtime_seconds: 600
       
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
       
-      - name: Run Validation Playbooks          
-        run: |
-          sleep 7000
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          TOTAL_RUNTIME_SECONDS: 600
-          VALIDATOTR_CURVE_TYPE: "default"
+      # - name: Run Validation Playbooks          
+      #   run: |
+      #     sleep 7000
+      #   env:
+      #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      #     TOTAL_RUNTIME_SECONDS: 600
+      #     VALIDATOTR_CURVE_TYPE: "default"
  
   destroy-runner:
     if: always()
