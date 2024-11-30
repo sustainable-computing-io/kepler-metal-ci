@@ -62,6 +62,8 @@
       sleep 5
     done
     echo "Kepler did not start in time"
+    sudo systemctl status container-kepler || true
+    sudo podman logs kepler || true
     exit 1
   register: kepler_start
   failed_when: false

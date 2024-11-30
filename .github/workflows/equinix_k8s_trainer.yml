@@ -51,6 +51,9 @@ jobs:
       TEKTON_PATH: ${{ github.workspace }}/kepler-model-server/model-training/tekton
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Config kube
         uses: ./.github/actions/kube_config
         with:
