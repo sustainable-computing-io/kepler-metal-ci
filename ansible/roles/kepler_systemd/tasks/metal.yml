@@ -22,7 +22,7 @@
       ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
           --privileged --network=host --pid=host --rm -e EXPOSE_VM_METRICS="true" -e EXCLUDE_SWAPPER_PROCESS="true" -e \
           ENABLE_PROCESS_METRICS="true" -e EXCLUDE_SWAPPER_PROCESS="true" -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc \
-          {{ kepler_image }} /usr/bin/kepler --config-dir=/etc
+          {{ kepler_image }} --config-dir=/etc
       ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
       ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
       Type=notify
