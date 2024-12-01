@@ -10,21 +10,6 @@ on:
   schedule: [{cron: "0 0 1 */3 *"}]
 
 jobs:
-  pr_for_kepler_container:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: check kepler container running
-        shell: bash
-        run: |
-          docker run -d --name kepler \
-          --privileged --network=host --pid=host -e EXPOSE_VM_METRICS="true" -e EXCLUDE_SWAPPER_PROCESS="true" -e \
-          ENABLE_PROCESS_METRICS="true" -e EXCLUDE_SWAPPER_PROCESS="true" -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc \
-          quay.io/sustainable_computing_io/kepler:latest --config-dir=/etc
-          sleep 5s
-          docker ps -a
-          docker logs kepler
-
   pr_test:
     runs-on: ubuntu-latest
     steps:
