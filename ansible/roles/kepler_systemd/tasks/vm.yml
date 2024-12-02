@@ -9,6 +9,19 @@
     name: stress-ng
     state: present
 
+- name: Create config directory
+  ansible.builtin.file:
+    path: "{{ config_path }}"
+    state: directory
+    mode: 0755
+
+- name: Create Kepler config
+  ansible.builtin.copy:
+    dest: "{{ config_path }}/{{ item.key }}"
+    content: "{{ item.value | lower }}"
+    mode: 0644
+  loop: "{{ kepler_vm_config | dict2items }}"
+
 - name: Create Kepler systemd unit file
   ansible.builtin.copy:
     content: |
@@ -25,9 +38,8 @@
       TimeoutStopSec=70
       ExecStartPre=/bin/rm -f %t/%n.ctr-id
       ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon -d --replace --name kepler \
-          --privileged --network=host --pid=host --rm -e EXPOSE_ESTIMATED_IDLE_POWER_METRICS="false" -e EXCLUDE_SWAPPER_PROCESS="true" -e \
-          ENABLE_PROCESS_METRICS="true" -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc \
-          {{ kepler_image }} --config-dir=/etc
+          --privileged --network=host --pid=host --rm -v /usr/src:/usr/src -v /sys/:/sys/ -v /proc:/proc -v /etc:/etc \
+          {{ kepler_image }}
       ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
       ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
       Type=notify
