@@ -7,6 +7,12 @@ runs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: try best to get kube config
+        shell: bash
+        run: |
+          mkdir -p /tmp/kubeconfig/
+          cp -r ~/.kube/config /tmp/kubeconfig/config
+
       - name: use Kepler action to deploy cluster
         uses: sustainable-computing-io/kepler-action@v0.0.10
         with:
