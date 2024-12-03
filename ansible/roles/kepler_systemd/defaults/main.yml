@@ -1,1 +1,10 @@
 ---
+kepler_metal_config:
+  EXPOSE_VM_METRICS: "true"
+  EXCLUDE_SWAPPER_PROCESS: "true"
+  ENABLE_PROCESS_METRICS: "true"
+
+kepler_vm_config:
+  EXPOSE_ESTIMATED_IDLE_POWER_METRICS: "false"
+  EXCLUDE_SWAPPER_PROCESS: "true"
+  ENABLE_PROCESS_METRICS: "true"
