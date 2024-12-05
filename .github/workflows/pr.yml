@@ -27,6 +27,10 @@ jobs:
           name: kubeconfig-pr-${{ github.run_id }}
           path: /tmp/kubeconfig
           retention-days: 1
+      - name: clean up kubeconfig as in new instance the kubeconfig should download from artifact
+        shell: bash
+        run: |
+          rm -rf /tmp/kubeconfig
       ## using a reusable pipeline for validation without commit, as dummy cluster the values are allowed to be none.
       - name: Config kube
         uses: ./.github/actions/kube_config
