@@ -1,6 +1,6 @@
 import os
 import re
-import requests
+import httpx
 from datetime import datetime
 from openai import OpenAI
 from github import Github
@@ -46,7 +46,7 @@ def check_regression(report_content):
     if there is any significant regression, the summary is exactly "Significant Regression Detected" and then followed by those with only the significant increase and conclusion. 
     Otherwise, the summary should be exactly "No Issue" and then stop generating any content, just stop there.
     """
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), )
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"),http_client=httpx.Client() )
     completion = client.chat.completions.create(
         messages=[{
             "role": "user",
