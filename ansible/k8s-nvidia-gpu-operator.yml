@@ -214,18 +214,23 @@
         KUBECONFIG: /root/.kube/config
 
     - name: Install Prometheus
-      shell: >
-        git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus; cd kube-prometheus;
+      shell: |
+        git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus
+        cd kube-prometheus
         kubectl apply --server-side --validate=false -f manifests/setup
         kubectl apply --validate=false -f manifests/
-        until kubectl -n monitoring get statefulset prometheus-k8s; do kubectl get all -n monitoring; echo "StatefulSet not created yet, waiting..."; sleep 5; done
+        until kubectl -n monitoring get statefulset prometheus-k8s; do
+          kubectl get all -n monitoring
+          echo "StatefulSet not created yet, waiting..."
+          sleep 5
+        done
         kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
         kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
       environment:
         KUBECONFIG: /root/.kube/config
-    
+
     - name: Install Kepler with Helm
-      shell: >
+      shell: |
         /usr/local/bin/helm repo add kepler https://sustainable-computing-io.github.io/kepler-helm-chart
         /usr/local/bin/helm repo update
         /usr/local/bin/helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest \
@@ -235,7 +240,7 @@
         KUBECONFIG: /root/.kube/config
     
     - name: Scrape kepler metrics in kepler namespace
-      shell: >
+      shell: |
         curl -O https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/manifests/k8s/config/rbac/prometheus_role.yaml
         sed -i 's/namespace: system/namespace: kepler/' prometheus_role.yaml
         kubectl apply -f prometheus_role.yaml
@@ -267,7 +272,7 @@
         seconds: 240
     
     - name: Query Kepler
-      shell: >
+      shell: |
         kubectl get pods --all-namespaces
       environment:
         KUBECONFIG: /root/.kube/config
