@@ -68,8 +68,9 @@ jobs:
           cd ${GITHUB_WORKSPACE}/ansible
           echo "Install K8s node with GPU Operator"
           ansible-playbook -i inventory.yml k8s-nvidia-gpu-operator.yml -vvv
-          echo "Run GPU Benchmark"
-          ansible-playbook -i inventory.yml k8s-gpu-benchmark.yml -vvv
+          sleep 1000
+          # echo "Run GPU Benchmark"
+          # ansible-playbook -i inventory.yml k8s-gpu-benchmark.yml -vvv
           
           # echo "Install Node Exporter"
           # ansible-playbook -i inventory.yml node_exporter_playbook.yml -vvv
