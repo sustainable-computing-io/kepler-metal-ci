@@ -233,9 +233,9 @@
       shell: |
         /usr/local/bin/helm repo add kepler https://sustainable-computing-io.github.io/kepler-helm-chart
         /usr/local/bin/helm repo update
-        /usr/local/bin/helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest \
-          --set extraEnvVars.EXPOSE_VM_METRICS="true" --set extraEnvVars.EXCLUDE_SWAPPER_PROCESS="true" \
-          --set extraEnvVars.ENABLE_PROCESS_METRICS="true" --set extraEnvVars.ENABLE_GPU="true"
+        /usr/local/bin/helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag=latest-dcgm \
+          --set extraEnvVars.ENABLE_GPU="true" --set extraEnvVars.EXCLUDE_SWAPPER_PROCESS="true" \
+          --set extraEnvVars.ENABLE_PROCESS_METRICS="true" --set extraEnvVars.EXPOSE_VM_METRICS="true"
       environment:
         KUBECONFIG: /root/.kube/config
     
