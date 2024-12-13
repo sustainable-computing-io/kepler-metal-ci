@@ -280,9 +280,9 @@
       environment:
         KUBECONFIG: /root/.kube/config
 
-    - name: Wait 20 seconds for scraping to begin
+    - name: Wait 200 seconds for scraping to begin
       pause:
-        seconds: 20
+        seconds: 200
     
     - name: Query Kepler Logs
       shell: |
@@ -306,12 +306,15 @@
       environment:
         KUBECONFIG: /root/.kube/config
 
-    - name: Wait for port forwarding
-      wait_for_connection:
-        host: localhost
-        port: 9090
-        delay: 5
-        timeout: 60
+    - name: Wait 200 seconds
+      pause:
+        seconds: 200
+    # - name: Wait for port forwarding
+    #   wait_for_connection:
+    #     host: localhost
+    #     port: 9090
+    #     delay: 5
+    #     timeout: 60
 
     - name: Query Kepler Metrics
       shell: |
