@@ -267,12 +267,40 @@
       environment:
         KUBECONFIG: /root/.kube/config
 
-    - name: Wait for scraping to begin
+    - name: Wait 20 seconds for scraping to begin
       pause:
-        seconds: 240
+        seconds: 20
     
-    - name: Query Kepler
+    - name: Query Kepler Logs
       shell: |
         kubectl get pods --all-namespaces
+        kubectl describe ds kepler -n kepler
+        pod_names=$(kubectl get pods -n kepler -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
+        for pod in $pod_names; do
+          echo "Logs for pod: $pod"
+          kubectl logs $pod -n kepler
+          kubectl get pod $pod -n kepler -o jsonpath='{.spec.containers[*].name}'
+        done
       environment:
         KUBECONFIG: /root/.kube/config
+
+    - name: Portforward Prom service
+      shell:
+        cmd: kubectl port-forward svc/prometheus-operated 9090:9090 -n monitoring &
+        executable: /bin/bash
+      async: 300
+      poll: 0
+      environment:
+        KUBECONFIG: /root/.kube/config
+
+    - name: Wait for port forwarding
+      wait_for_connection:
+        host: localhost
+        port: 9090
+        delay: 5
+        timeout: 60
+
+    - name: Query Kepler Metrics
+      shell: |
+        curl -s  http://localhost:9090/api/v1/label/__name__/values | jq -r ".data[]" | sort
+        curl 'http://localhost:9090/api/v1/query?query={__name__=~".+"}' | jq .
