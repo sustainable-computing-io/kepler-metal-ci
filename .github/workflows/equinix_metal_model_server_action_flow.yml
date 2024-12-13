@@ -97,6 +97,15 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           TOTAL_RUNTIME_SECONDS: 1200
           VALIDATOTR_CURVE_TYPE: "default"
+          MODEL_SERVER_IMAGE: 'quay.io/sustainable_computing_io/kepler_model_server:latest'
+
+      - name: error_handle_for_estimator
+        if: ${{ failure() }}
+        run: |
+            systemctl status container-estimator || true
+            systemctl list-units --type=service
+            sudo podman ps -a || true
+            sudo podman logs estimator || true
 
       - name: upload to artifacts
         uses: actions/upload-artifact@v4
