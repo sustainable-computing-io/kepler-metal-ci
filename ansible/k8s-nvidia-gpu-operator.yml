@@ -164,24 +164,6 @@
       environment:
         KUBECONFIG: /root/.kube/config
 
-    - name: Install Prometheus
-      shell: |
-        git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus
-        cd kube-prometheus
-        kubectl apply --server-side --validate=false -f manifests/setup
-        kubectl apply --validate=false -f manifests/
-        # until kubectl -n monitoring get statefulset prometheus-k8s; do
-        #   kubectl get all -n monitoring
-        #   echo "StatefulSet not created yet, waiting..."
-        #   sleep 5
-        # done
-        sleep 200
-        kubectl -n monitoring get statefulset prometheus-k8
-        kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
-        kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
-      environment:
-        KUBECONFIG: /root/.kube/config
-
     - name: Install NVIDIA GPU Operator
       command: >
         #/usr/local/bin/helm install --wait --generate-name nvidia/gpu-operator
@@ -241,6 +223,24 @@
     #     done
       # environment:
       #   KUBECONFIG: /root/.kube/config
+
+    - name: Install Prometheus
+      shell: |
+        git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus
+        cd kube-prometheus
+        kubectl apply --server-side --validate=false -f manifests/setup
+        kubectl apply --validate=false -f manifests/
+        # until kubectl -n monitoring get statefulset prometheus-k8s; do
+        #   kubectl get all -n monitoring
+        #   echo "StatefulSet not created yet, waiting..."
+        #   sleep 5
+        # done
+        sleep 200
+        kubectl -n monitoring get statefulset prometheus-k8
+        kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
+        kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
+      environment:
+        KUBECONFIG: /root/.kube/config
 
     - name: Install Kepler with Helm
       shell: |
