@@ -166,7 +166,6 @@
 
     - name: Install NVIDIA GPU Operator
       command: >
-        #/usr/local/bin/helm install --wait --generate-name nvidia/gpu-operator
         /usr/local/bin/helm install --wait --generate-name nvidia/gpu-operator \
           --set dcgmExporter.serviceMonitor.enabled=true
       environment:
