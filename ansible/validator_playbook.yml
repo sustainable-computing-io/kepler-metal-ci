@@ -1,16 +1,8 @@
 ---
-- name: Create VM
+- name: Setup Environment
   hosts: "localhost"
   become: yes
-  roles:
-    - kvm_vm
-  any_errors_fatal: true
-
-- name: Setup Environment
-  hosts: "{{ target_host | default('servers') }}"
-  become: yes
   vars:
-    vm_ip: "{{ hostvars['localhost']['vm_ip'] }}"
     ansible_user: root
   roles:
     - docker
@@ -21,10 +13,6 @@
   hosts: "localhost"
   become: yes
   vars:
-    vm_name: "{{ hostvars['localhost']['vm_name'] }}"
-    vm_user: "{{ hostvars['localhost']['vm_user'] }}"
-    vm_ip: "{{ hostvars['localhost']['vm_ip'] }}"
-    ssh_key_path: "{{ hostvars['localhost']['ssh_key_path'] }}"
   roles:
     - validator
   any_errors_fatal: true

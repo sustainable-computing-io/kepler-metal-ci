@@ -1,6 +1,6 @@
 ---
 # This file contains variables that are less likely to be overridden
-kepler_repo: https://github.com/sustainable-computing-io/kepler.git
+kepler_repo: https://github.com/vprashar2929/kepler.git
 kepler_dir: /opt/kepler
-metal_compose_dir: /opt/kepler/manifests/compose/validation/metal
+metal_compose_dir: /opt/kepler/manifests/compose/dev
 vm_compose_dir: /opt/kepler/manifests/compose/validation/vm
