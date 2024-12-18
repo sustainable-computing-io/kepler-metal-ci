@@ -243,7 +243,7 @@
     
     - name: Install Kepler Manifests
       shell: |
-        git clone --depth 1 git@github.com:sustainable-computing-io/kepler.git
+        git clone --depth 1 https://github.com/sustainable-computing-io/kepler.git
         cd ./kepler
         make build-manifest OPTS="PROMETHEUS_DEPLOY DCGM_DEPLOY"
         kubectl apply -f _output/generated-manifest/deployment.yaml
