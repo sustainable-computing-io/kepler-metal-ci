@@ -229,12 +229,12 @@
         cd kube-prometheus
         kubectl apply --server-side --validate=false -f manifests/setup
         kubectl apply --validate=false -f manifests/
-        # until kubectl -n monitoring get statefulset prometheus-k8s; do
-        #   kubectl get all -n monitoring
-        #   echo "StatefulSet not created yet, waiting..."
-        #   sleep 5
-        # done
-        sleep 200
+        sleep 100
+        until kubectl -n monitoring get statefulset prometheus-k8s; do
+          kubectl get all -n monitoring
+          echo "StatefulSet not created yet, waiting..."
+          sleep 5
+        done
         kubectl -n monitoring get statefulset prometheus-k8
         kubectl wait deployments -n monitoring prometheus-adapter --for=condition=available --timeout 3m
         kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
