@@ -315,9 +315,9 @@
     #   environment:
     #     KUBECONFIG: /root/.kube/config
 
-    - name: Wait 4500 seconds
+    - name: Wait 7500 seconds
       pause:
-        seconds: 4500
+        seconds: 7500
     # - name: Wait for port forwarding
     #   wait_for_connection:
     #     host: localhost
