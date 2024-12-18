@@ -296,18 +296,18 @@
       environment:
         KUBECONFIG: /root/.kube/config
 
-    - name: Portforward Prom service
-      shell:
-        cmd: kubectl port-forward svc/prometheus-operated 9090:9090 -n monitoring &
-        executable: /bin/bash
-      async: 300
-      poll: 0
-      environment:
-        KUBECONFIG: /root/.kube/config
+    # - name: Portforward Prom service
+    #   shell:
+    #     cmd: kubectl port-forward svc/prometheus-operated 9090:9090 -n monitoring &
+    #     executable: /bin/bash
+    #   async: 300
+    #   poll: 0
+    #   environment:
+    #     KUBECONFIG: /root/.kube/config
 
-    - name: Wait 200 seconds
+    - name: Wait 4500 seconds
       pause:
-        seconds: 200
+        seconds: 4500
     # - name: Wait for port forwarding
     #   wait_for_connection:
     #     host: localhost
@@ -315,7 +315,7 @@
     #     delay: 5
     #     timeout: 60
 
-    - name: Query Kepler Metrics
-      shell: |
-        curl -s  http://localhost:9090/api/v1/label/__name__/values | jq -r ".data[]" | sort
-        curl 'http://localhost:9090/api/v1/query?query={__name__=~".+"}' | jq .
+    # - name: Query Kepler Metrics
+    #   shell: |
+    #     curl -s  http://localhost:9090/api/v1/label/__name__/values | jq -r ".data[]" | sort
+    #     curl 'http://localhost:9090/api/v1/query?query={__name__=~".+"}' | jq .
