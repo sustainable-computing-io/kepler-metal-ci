@@ -241,14 +241,14 @@
       environment:
         KUBECONFIG: /root/.kube/config
     
-    - name: Install Kepler Manifests
-      shell: |
-        git clone --depth 1 https://github.com/sustainable-computing-io/kepler.git
-        cd ./kepler
-        make build-manifest OPTS="PROMETHEUS_DEPLOY DCGM_DEPLOY"
-        kubectl apply -f _output/generated-manifest/deployment.yaml
-      environment:
-        KUBECONFIG: /root/.kube/config
+    # - name: Install Kepler Manifests
+    #   shell: |
+    #     git clone --depth 1 https://github.com/sustainable-computing-io/kepler.git
+    #     cd ./kepler
+    #     make build-manifest OPTS="PROMETHEUS_DEPLOY DCGM_DEPLOY"
+    #     kubectl apply -f _output/generated-manifest/deployment.yaml
+    #   environment:
+    #     KUBECONFIG: /root/.kube/config
       
 
     # - name: Install Kepler with Helm
@@ -293,18 +293,18 @@
       pause:
         seconds: 200
     
-    - name: Query Kepler Logs
-      shell: |
-        kubectl get pods --all-namespaces
-        kubectl describe ds kepler -n kepler
-        pod_names=$(kubectl get pods -n kepler -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
-        for pod in $pod_names; do
-          echo "Logs for pod: $pod"
-          kubectl logs $pod -n kepler
-          kubectl get pod $pod -n kepler -o jsonpath='{.spec.containers[*].name}'
-        done
-      environment:
-        KUBECONFIG: /root/.kube/config
+    # - name: Query Kepler Logs
+    #   shell: |
+    #     kubectl get pods --all-namespaces
+    #     kubectl describe ds kepler -n kepler
+    #     pod_names=$(kubectl get pods -n kepler -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
+    #     for pod in $pod_names; do
+    #       echo "Logs for pod: $pod"
+    #       kubectl logs $pod -n kepler
+    #       kubectl get pod $pod -n kepler -o jsonpath='{.spec.containers[*].name}'
+    #     done
+    #   environment:
+    #     KUBECONFIG: /root/.kube/config
 
     # - name: Portforward Prom service
     #   shell:
