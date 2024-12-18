@@ -240,44 +240,54 @@
         kubectl rollout status --watch --timeout=600s statefulset -n monitoring prometheus-k8s
       environment:
         KUBECONFIG: /root/.kube/config
-
-    - name: Install Kepler with Helm
-      shell: |
-        /usr/local/bin/helm repo add kepler https://sustainable-computing-io.github.io/kepler-helm-chart
-        /usr/local/bin/helm repo update
-        /usr/local/bin/helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag="latest-dcgm" \
-          --set extraEnvVars.ENABLE_GPU="true" --set extraEnvVars.EXCLUDE_SWAPPER_PROCESS="true" \
-          --set extraEnvVars.ENABLE_PROCESS_METRICS="true" --set extraEnvVars.EXPOSE_VM_METRICS="true"
-      environment:
-        KUBECONFIG: /root/.kube/config
     
-    - name: Scrape kepler metrics in kepler namespace
+    - name: Install Kepler Manifests
       shell: |
-        curl -O https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/manifests/k8s/config/rbac/prometheus_role.yaml
-        sed -i 's/namespace: system/namespace: kepler/' prometheus_role.yaml
-        kubectl apply -f prometheus_role.yaml
-        kubectl apply -f - <<EOF
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: RoleBinding
-        metadata:
-          labels:
-            app.kubernetes.io/component: prometheus
-            app.kubernetes.io/instance: k8s
-            app.kubernetes.io/name: prometheus
-            sustainable-computing.io/app: kepler
-          name: prometheus-k8s
-          namespace: kepler
-        roleRef:
-          apiGroup: rbac.authorization.k8s.io
-          kind: Role
-          name: prometheus-k8s
-        subjects:
-        - kind: ServiceAccount
-          name: prometheus-k8s
-          namespace: monitoring
-        EOF
+        git clone --depth 1 git@github.com:sustainable-computing-io/kepler.git
+        cd ./kepler
+        make build-manifest OPTS="PROMETHEUS_DEPLOY DCGM_DEPLOY"
+        kubectl apply -f _output/generated-manifest/deployment.yaml
       environment:
         KUBECONFIG: /root/.kube/config
+      
+
+    # - name: Install Kepler with Helm
+    #   shell: |
+    #     /usr/local/bin/helm repo add kepler https://sustainable-computing-io.github.io/kepler-helm-chart
+    #     /usr/local/bin/helm repo update
+    #     /usr/local/bin/helm install kepler kepler/kepler --namespace kepler --create-namespace --set serviceMonitor.enabled=true --set image.tag="latest-dcgm" \
+    #       --set extraEnvVars.ENABLE_GPU="true" --set extraEnvVars.EXCLUDE_SWAPPER_PROCESS="true" \
+    #       --set extraEnvVars.ENABLE_PROCESS_METRICS="true" --set extraEnvVars.EXPOSE_VM_METRICS="true"
+    #   environment:
+    #     KUBECONFIG: /root/.kube/config
+    
+    # - name: Scrape kepler metrics in kepler namespace
+    #   shell: |
+    #     curl -O https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/manifests/k8s/config/rbac/prometheus_role.yaml
+    #     sed -i 's/namespace: system/namespace: kepler/' prometheus_role.yaml
+    #     kubectl apply -f prometheus_role.yaml
+    #     kubectl apply -f - <<EOF
+    #     apiVersion: rbac.authorization.k8s.io/v1
+    #     kind: RoleBinding
+    #     metadata:
+    #       labels:
+    #         app.kubernetes.io/component: prometheus
+    #         app.kubernetes.io/instance: k8s
+    #         app.kubernetes.io/name: prometheus
+    #         sustainable-computing.io/app: kepler
+    #       name: prometheus-k8s
+    #       namespace: kepler
+    #     roleRef:
+    #       apiGroup: rbac.authorization.k8s.io
+    #       kind: Role
+    #       name: prometheus-k8s
+    #     subjects:
+    #     - kind: ServiceAccount
+    #       name: prometheus-k8s
+    #       namespace: monitoring
+    #     EOF
+    #   environment:
+    #     KUBECONFIG: /root/.kube/config
 
     - name: Wait 200 seconds for scraping to begin
       pause:
