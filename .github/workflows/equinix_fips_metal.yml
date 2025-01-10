@@ -1,0 +1,74 @@
+name: Validation with Standalone Kepler
+
+on:
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write
+  packages: write
+
+jobs:
+  Create-runner:
+    name: "Create Runner"
+    uses: ./.github/workflows/create_equinix_runner.yml
+    secrets: inherit
+
+  Install:
+    name: "Install"
+    needs: Create-runner
+    runs-on: self-hosted
+    outputs:
+      runner-name: ${{ runner.name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Setup Runner Action
+        uses: ./.github/actions/setup-action
+        with:
+          fips_enabled: 'true'
+    
+      - name: List OS
+        run: |
+          cat /etc/os-release
+          hostnamectl
+    
+      - name: Check FIPS Enabled
+        run: |
+          cat /proc/sys/crypto/fips_enabled
+          cat /proc/sys/crypto/fips_version
+
+      - name: List available RAPL domains
+        run: |
+          for file in $(sudo find -L /sys/class/powercap/intel-rapl -name name  2>/dev/null); do cat $file;  done  | sort -n| uniq | tee -a /tmp/rapl-domain-availability.txt
+          # expected typical output if all domains are supported
+          # - core
+          # - dram
+          # - package-0
+          # - psys # relatively new power management domain, only available after Skylake
+          # - uncore
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run playbook
+        run: |
+          cd ${GITHUB_WORKSPACE}/ansible
+          echo "Install Kepler"
+          ansible-playbook -i inventory.yml kepler_playbook.yml
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          TOTAL_RUNTIME_SECONDS: 1200
+          VALIDATOTR_CURVE_TYPE: "default"
+
+  Cleanup:
+    name: "Cleanup"
+    needs: [Install]
+    if: ${{ always() }}
+    uses: ./.github/workflows/clean_equinix_runner.yml
+    secrets: inherit
+    with:
+      runner_name: ${{ needs.Install.outputs.runner-name }}

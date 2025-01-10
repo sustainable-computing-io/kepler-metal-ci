@@ -1,5 +1,10 @@
 name: 'Setup Runner Action'
 description: 'Composite Action to Setup Metal Runner'
+inputs:
+  fips_enabled:
+    description: 'Enable FIPS mode'
+    required: false
+    default: 'false'
 runs:
   using: 'composite'
   steps:
@@ -8,6 +13,14 @@ runs:
       run: |
         echo "This is runner: ${{ runner.name }}"
         echo "Running on ${{ runner.arch }} ${{ runner.os }}"
+        # install fips
+        if [ "${{ inputs.fips_enabled }}" == "true" ]; then
+          echo "Enabling FIPS"
+          sudo fips-mode-setup --enable
+          #echo "Rebooting to enable FIPS mode"
+          #sudo reboot
+          
+        fi
         # config ssh
         sudo ssh-keygen -t rsa -b 4096 -f /root/.ssh/ansible_rsa -N ''
         sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
