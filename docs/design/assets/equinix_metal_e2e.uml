@@ -1,0 +1,89 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger workflow_dispatch;
+note right
+  Inputs:
+   - target_models 
+   - model_server_image
+  (Default values provided)
+end note
+
+:Job: Create-runner;
+note right
+  Uses: create_equinix_runner.yml
+  Secrets: inherit
+  (Creates a dedicated Equinix runner)
+end note
+
+:Job: Validate;
+note right
+  Needs: Create-runner
+  Runs on: self-hosted server
+  Continue-on-error: true
+  Outputs: runner-name
+end note
+
+partition "Validate Steps" {
+    :Checkout Code;
+    note right
+      Uses actions/checkout@v4.
+    end note
+
+    :Run Setup Runner Action;
+    note right
+      Executes custom setup-action.
+    end note
+
+    :Run Setup Playbooks (Ansible);
+    note right
+      Executes sequential steps:
+       - Create VM (kvm_playbook.yml)
+       - Install SSH tunnel (ssh_tunnel_playbook.yml)
+       - Install Prometheus (metrics_playbook.yml)
+       - Install Node Exporter (node_exporter_playbook.yml, with verification)
+       - Install Kepler (kepler_playbook.yml)
+       - Create second SSH tunnel (ssh_tunnel_playbook.yml)
+       - Install Model Server (model_server_playbook.yml)
+    end note
+
+    :Run Trainer Action;
+    note right
+      Uses custom train-action.
+      Params:
+       - model_export_path: /tmp/trained-equinix-models
+       - total_runtime_seconds: 1200
+    end note
+
+    :Checkout Code (again);
+    note right
+      To update code before validation.
+    end note
+
+    :Run Validation Playbooks (Ansible);
+    note right
+      Actions:
+       - Deploy HTTP model server (deploy_http_model_server.yml)
+       - Create a timestamped docs directory (using DATE_STR and DATE_STRING)
+       - For each target model (from target_models input):
+         * Restart model server (model_server_restart.yml) with model URL
+         * Run validation test (kepler_validator.yml)
+         * Move generated report to docs folder
+         * Update central markdown report with link
+       - Capture Prometheus TSDB Snapshot and training logs
+       - Git: add, commit, pull, push updates to docs
+    end note
+}
+
+:Job: Cleanup;
+note right
+  Uses: clean_equinix_runner.yml
+  Secrets: inherit
+  Inputs: runner_name from Validate
+  (Cleans up the runner environment)
+end note
+
+stop
+@enduml

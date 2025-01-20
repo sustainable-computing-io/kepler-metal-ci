@@ -1,0 +1,68 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger (workflow_dispatch or workflow_call);
+note right
+  Permissions:
+    pull-requests, contents,
+    repository-projects, packages: write
+end note
+
+:Job: Create-runner;
+note right
+  uses: create_equinix_runner.yml
+  (Provisions an Equinix runner)
+end note
+
+:Job: Train-models;
+note right
+  needs: Create-runner
+  runs-on: self-hosted
+  continue-on-error: true
+  outputs: runner-name
+end note
+
+partition "Train-models Steps" {
+    :Checkout Code;
+    note right
+      uses actions/checkout@v4
+    end note
+
+    :Run Setup Runner Action;
+    note right
+      uses ./.github/actions/setup-action
+    end note
+
+    :Checkout Code (again);
+
+    :Run Setup Playbooks (Ansible);
+    note right
+      Steps:
+        - Create VM (kvm_playbook.yml)
+        - Install SSH tunnel (ssh_tunnel_playbook.yml)
+        - Install Prometheus (metrics_playbook.yml)
+        - Install Node Exporter (node_exporter_playbook.yml)
+        - Install Kepler (kepler_playbook.yml)
+        - Create SSH tunnel (ssh_tunnel_playbook.yml)
+        - Install Model Server (model_server_playbook.yml)
+    end note
+
+    :Run Trainer Action;
+    note right
+      uses train-action
+      (model_export_path: /tmp/trained-equinix-models,
+       total_runtime_seconds: 1200)
+    end note
+}
+
+:Job: Cleanup;
+note right
+  needs: [Train-models]
+  uses: clean_equinix_runner.yml
+  (Cleans up runner environment)
+end note
+
+stop
+@enduml

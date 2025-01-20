@@ -1,0 +1,78 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger Workflow Call;
+note right
+  Inputs:
+  - termination_time (default: '1')
+  - control_plan (default: 'c3.small.x86')
+  - node_plan (default: 'c3.small.x86')
+  - metro (default: 'da')
+end note
+
+:Job: Create-Cluster (runs on ubuntu-latest);
+
+:Validate termination time;
+note right
+  if termination_time > 48 then
+    Error: Termination time cannot be more than 48 hours.
+    exit 1.
+  end note
+
+:Install ansible, git and jq;
+note right
+  sudo apt-get update &&
+  sudo apt-get install ansible jq git -y
+end note
+
+:Checkout Code;
+note right
+  Uses actions/checkout@v4
+end note
+
+:Save ssh key from env to file;
+note right
+  Creates ~/.ssh/kepler_ci,
+  Sets permission,
+  Adds "StrictHostKeyChecking no" to ~/.ssh/config
+end note
+
+:Create metal config;
+note right
+  Writes /tmp/metal.yaml with:
+    token: secret METAL_AUTH_TOKEN
+    project-id: secret EQUINIX_PROJECT_ID
+end note
+
+:Play k8s_kubeadm.yml (Ansible);
+note right
+  Setup Ansible environment:
+   - Create ~/.ansible/ansible.cfg
+   - Copy mask_ip_callback.py to ~/.github/callback_plugins/
+  Prepare /tmp/extra-vars.yaml with:
+   - termination_time
+   - control_plan
+   - node_plan
+   - metro
+  Execute:
+   ansible-playbook ansible/k8s_kubeadm.yml --extra-vars "@/tmp/extra-vars.yaml"
+  Process output:
+   Parse /tmp/kubeconfig using jq and move file.
+end note
+
+:Error handling for cluster;
+note right
+  If failure: cat k8s_kubeadm.log in GITHUB_WORKSPACE
+end note
+
+:Upload kubeconfig;
+note right
+  Uses actions/upload-artifact@v4
+  Artifact name: kubeconfig-${github.run_id}
+  Path: /tmp/kubeconfig, retention 1 day
+end note
+
+stop
+@enduml

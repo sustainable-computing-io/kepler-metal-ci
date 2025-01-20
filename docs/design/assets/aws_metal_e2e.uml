@@ -1,0 +1,90 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger Workflow Dispatch;
+note right
+  Inputs: target_models,
+          model_server_image,
+          ami_id,
+          instance_type,
+          spot_instance_only.
+end note
+
+:Job: setup-runner (Create AWS Runner);
+note right
+  Uses create_aws_runner.yml
+  Inputs:
+  - ami_id
+  - instance_type
+  - spot_instance_only
+  Outputs: instance_id, runner_name
+end note
+
+:Job: test-runner (GitHub Self Hosted Runner Tests);
+note right
+  Depends on setup-runner
+  Runs on self-hosted, linux, x64 runner.
+end note
+
+partition "Test Runner Steps" {
+    :Checkout Code;
+    
+    :Print Runner Info;
+    note right
+      Exports instance_id from setup-runner.
+      Runs "uname -a", shows /etc/os-release and /proc/cpuinfo.
+    end note
+
+    :Run Setup Runner Action;
+    note right
+      Executes custom setup-action.
+    end note
+
+    :Run Setup Playbooks (Ansible);
+    note right
+      Steps executed:
+      - Disable SELinux (setenforce 0)
+      - Run kvm_playbook.yml (Create VM)
+      - Run ssh_tunnel_playbook.yml (Install SSH tunnel)
+      - Run metrics_playbook.yml (Install Prometheus)
+      - Run node_exporter_playbook.yml (Install & Verify Node Exporter)
+      - Run kepler_playbook.yml (Install Kepler)
+      - Run ssh_tunnel_playbook.yml (Create SSH tunnel again)
+      - Run model_server_playbook.yml (Install Model Server)
+    end note
+
+    :Run Trainer Action;
+    note right
+      Executes custom train-action.
+      Parameters: model_export_path, total_runtime_seconds.
+    end note
+
+    :Checkout Code;
+    
+    :Run Validation Playbooks (Ansible);
+    note right
+      Performs:
+      - Deploy HTTP model server via deploy_http_model_server.yml.
+      - Creates timestamped folder for artifacts.
+      - For each target model:
+         * Runs model_server_restart.yml with model URL.
+         * Runs kepler_validator.yml for validation.
+         * Moves validator artifacts.
+         * Updates markdown report with link.
+      - Captures TSDB snapshot from Prometheus.
+      - Moves snapshot and training logs to document folder.
+      - Git: add, commit, pull (rebase), and push changes.
+    end note
+}
+
+:Job: destroy-runner (Destroy AWS Runner);
+note right
+  Always runs after setup-runner and test-runner.
+  Uses clean_aws_runner.yml.
+  Inputs: runner_name, instance_id.
+end note
+
+stop
+@enduml

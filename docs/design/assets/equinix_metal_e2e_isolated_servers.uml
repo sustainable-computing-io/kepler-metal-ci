@@ -1,0 +1,86 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger workflow_dispatch;
+note right
+  Input:
+    - target_models (comma-separated list)
+end note
+
+:Job: Train-models;
+note right
+  Uses equinix_metal_trainer.yml
+  (Triggers model training.)
+end note
+
+:Job: Create-runner;
+note right
+  Needs Train-models.
+  Uses create_equinix_runner.yml.
+  (Provisions an isolated server runner.)
+end note
+
+:Job: Validate;
+note right
+  Needs Create-runner.
+  Runs on self-hosted runner.
+  Continue-on-error: true.
+end note
+
+partition "Validate Steps" {
+    :Checkout Code;
+    note right
+      Uses actions/checkout@v4.
+    end note
+
+    :Run Setup Runner Action;
+    note right
+      Executes setup-action.
+    end note
+
+    :Download Models;
+    note right
+      Downloads trained-equinix-models artifact.
+    end note
+
+    :List and Verify Trained Models;
+    note right
+      Checks file paths (e.g. /tmp/trained-equinix-models/AbsPower).
+    end note
+
+    :Checkout Code (again);
+    
+    :Run Validation Playbooks;
+    note right
+      Executes multiple Ansible playbooks:
+      - Create VM (kvm_playbook.yml)
+      - Install SSH tunnel, Prometheus, Node Exporter, Kepler, Model Server
+      - Deploy HTTP model server (deploy_http_model_server.yml)
+      - For each target model:
+         * Restart model server (model_server_restart.yml)
+         * Run validation test (kepler_validator.yml)
+         * Collect reports.
+    end note
+
+    :Move Reports & Logs;
+    note right
+      Organizes reports into docs/train-validate-e2e-isolated/{DATE_STR} folder.
+    end note
+
+    :Git Commit and Push;
+    note right
+      Updates repository with validation results.
+    end note
+}
+
+:Job: Cleanup;
+note right
+  Needs Validate.
+  Uses clean_equinix_runner.yml.
+  (Cleans up the runner environment.)
+end note
+
+stop
+@enduml

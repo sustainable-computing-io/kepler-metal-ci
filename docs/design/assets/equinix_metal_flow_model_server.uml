@@ -1,0 +1,71 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger via workflow_dispatch or schedule (cron: '0 23 * * *');
+note right
+  Permissions:
+    - pull-requests, contents, repository-projects, packages: write
+end note
+
+:Job: Create-runner;
+note right
+  uses: create_equinix_runner.yml
+  (Provision Equinix runner)
+end note
+
+:Job: Install;
+note right
+  Needs: Create-runner
+  Runs on: self-hosted
+  Outputs: runner-name
+end note
+
+partition "Install Steps" {
+    :Checkout Code;
+    note right
+      actions/checkout@v4
+    end note
+
+    :Run Setup Runner Action;
+    note right
+      Custom setup-action
+    end note
+
+    :Checkout Code (again);
+
+    :Run playbook (Ansible);
+    note right
+      Steps:
+      - Create VM (kvm_playbook.yml)
+      - Install SSH tunnel (ssh_tunnel_playbook.yml)
+      - Install Prometheus (metrics_playbook.yml)
+      - Install Node Exporter (node_exporter_playbook.yml) + verify
+      - Install Kepler (kepler_playbook.yml)
+      - Install Model Server (model_server_playbook.yml)
+      - Create SSH tunnel (ssh_tunnel_playbook.yml)
+      - Validation test (kepler_validator.yml)
+      - Collect report, store in docs/validation/
+      - Capture Prometheus TSDB snapshot
+      - Commit & push updates to repo
+    end note
+
+    :Handle error for estimator (if failure);
+
+    :Upload to artifacts;
+    note right
+      actions/upload-artifact@v4
+    end note
+}
+
+:Job: Cleanup;
+note right
+  Needs: Install
+  if: always()
+  uses: clean_equinix_runner.yml
+  (Cleanup runner)
+end note
+
+stop
+@enduml

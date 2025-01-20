@@ -1,0 +1,91 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger Workflow Dispatch;
+note right
+  Inputs:
+    - termination_time (default: '1')
+    - control_plan (default: 'c3.small.x86')
+    - node_plan (default: 'c3.small.x86')
+    - metro (default: 'da')
+    - kepler_model_server_repo (default: 'https://github.com/sustainable-computing-io/kepler-model-server.git')
+end note
+
+:Job: Create-k8s-cluster;
+note right
+  Uses create_equinix_k8s_cluster.yml
+  (Secrets: Inherited)
+  Inputs passed: termination_time, control_plan, node_plan, metro.
+end note
+
+:Job: Test-K8s;
+note right
+  Needs: Create-k8s-cluster
+  Runs on: ubuntu-latest
+  Env: TEKTON_PATH set to kepler-model-server/model-training/tekton
+end note
+
+partition "Test-K8s Steps" {
+    :Checkout Code;
+    note right
+      Uses actions/checkout@v4 to pull repository.
+    end note
+
+    :Config kube;
+    note right
+      Retrieves kubeconfig artifact (named kubeconfig-${github.run_id}).
+    end note
+
+    :Set up Kepler;
+    note right
+      Executes custom setup_kepler action.
+    end note
+
+    :Clone Kepler Model Server;
+    note right
+      Clones kepler-model-server.git into home directory.
+      Verifies contents of ${TEKTON_PATH} (pvc, tasks, pipelines).
+    end note
+
+    :Deploy Tekton Training Tasks;
+    note right
+      Applies PVC, tasks, and pipeline manifests from ${TEKTON_PATH} via kubectl.
+    end note
+
+    :Run Complete Training;
+    note right
+      Applies tekton training example (abs-power.yaml) via kubectl.
+    end note
+
+    :Wait for Tekton Training;
+    note right
+      Executes wait_for_pipelineruns.sh to wait until training completes.
+    end note
+
+    :Deploy Model Inspector;
+    note right
+      Applies inspection manifest (inspect.yml) to launch inspector pod.
+    end note
+
+    :Wait for Inspector Pod;
+    note right
+      Loops until pod "inspector-pod" is ready and Succeeded.
+    end note
+
+    :Copy models from pod to runner;
+    note right
+      Uses kubectl cp to copy trained_models.tar.gz from inspector-pod.
+    end note
+
+    :Upload models as artifacts;
+    note right
+      Uses actions/upload-artifact@v4.
+      Artifact name: trained_models-${github.run_id}-$(date +%F)
+      Retention: 30 days.
+    end note
+}
+
+stop
+@enduml

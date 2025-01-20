@@ -1,0 +1,76 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger workflow_dispatch;
+note right
+  Permissions:
+    pull-requests, contents,
+    repository-projects, packages: write
+end note
+
+:Job: Create-runner;
+note right
+  uses: create_equinix_runner.yml
+  with: os_name="ubuntu_22_04"
+  (Provisions Equinix runner w/ Ubuntu 22.04)
+end note
+
+:Job: Install;
+note right
+  Needs: Create-runner
+  Runs on: self-hosted
+  continue-on-error: true
+  Outputs: runner-name
+end note
+
+partition "Install Steps" {
+    :Checkout Code;
+    note right
+      actions/checkout@v4
+    end note
+
+    :Run Setup Runner Action;
+    note right
+      Custom setup-action
+    end note
+
+    :List available RAPL domains;
+    note right
+      Saves domain info to /tmp/rapl-domain-availability.txt
+    end note
+
+    :Checkout Code (again);
+
+    :Run playbook (Ansible);
+    note right
+      Executes validator_playbook.yml, which:
+      - Runs a Kepler validation with docker-compose
+      - Collects a validation report under /tmp
+      - Moves results to docs/validation/{DATE_STR}/
+      - Archives Prometheus snapshot from /tmp/snapshot/
+      - Commits changes to repo
+    end note
+
+    :Upload to artifacts;
+    note right
+      Uses actions/upload-artifact@v4
+      (validator_compose)
+    end note
+
+    :Update model validation chart;
+    note right
+      Runs kepler_analytics.py and commits chart updates
+    end note
+}
+
+:Job: Cleanup;
+note right
+  Needs: Install
+  uses: clean_equinix_runner.yml
+  (Cleans up runner)
+end note
+
+stop
+@enduml
