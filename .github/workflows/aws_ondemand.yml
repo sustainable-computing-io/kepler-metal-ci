@@ -1,0 +1,59 @@
+name: Create an Single AWS Instance for Training and Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      ami_id:
+        description: 'AMI ID to use for the instance'
+        required: false
+        default: 'ami-00f99930aa1a28faa' # CentOS stream 9, single node k8s with nvidia gpu operator pre-installed
+      instance_type:
+        description: 'Instance Type to use for the instance'
+        required: false
+        default: 'g4dn.xlarge' # with nvidia t4 gpu
+      spot_instance_only:
+        description: 'Whether to use spot instances only'
+        required: false
+        default: 'true'
+
+jobs:
+  setup-runner:
+    name: "Create AWS Runner"
+    uses: ./.github/workflows/create_aws_runner.yml
+    secrets: inherit
+    with:
+      ami_id: ${{ github.event.inputs.ami_id }}
+      instance_type: ${{ github.event.inputs.instance_type }}
+      spot_instance_only: ${{ github.event.inputs.spot_instance_only }}
+
+  test-runner:
+    needs: setup-runner
+    continue-on-error: true
+    name: GitHub Self Hosted Runner Tests
+    runs-on: [self-hosted, linux, x64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print Runner Info
+        run: |
+          export INSTANCE_ID="${{ needs.setup-runner.outputs.instance_id }}"
+          echo "Starting self-hosted runner with instance ${INSTANCE_ID}"
+          uname -a # or any other command
+          cat /etc/os-release 
+          cat /proc/cpuinfo 
+
+      - name: Sleep for 5 hours 
+        run: |
+          sleep 5h
+
+  destroy-runner:
+    if: always()
+    name: "Destroy AWS Runner"
+    needs: [setup-runner, test-runner]
+    uses: ./.github/workflows/clean_aws_runner.yml
+    secrets: inherit
+    with:
+      runner_name: ${{ needs.setup-runner.outputs.runner_name }}
+      instance_id: ${{ needs.setup-runner.outputs.instance_id }}
