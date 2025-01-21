@@ -1,0 +1,94 @@
+@startuml
+start
+
+:Trigger Workflow dispatch;
+
+:Job: create-ami (runs on ubuntu-latest);
+note right
+  This job creates a CentOS Stream 9 AMI with NVIDIA Driver.
+end note
+
+:Step 1: Set up AWS Credentials;
+note right
+  Uses aws-actions/configure-aws-credentials@v4.0.2
+  Configures AWS access & region.
+end note
+
+:Step 2: Generate SSH Key and Create AWS Key Pair;
+note right
+  Generates SSH key pair.
+  Imports public key to AWS as a temporary key.
+  Configures SSH to avoid fingerprint prompts.
+end note
+
+:Step 3: Launch EC2 Instance;
+note right
+  Runs aws ec2 run-instances.
+  Waits for the instance to be running.
+  Retrieves instance ID and public IP.
+end note
+
+:Step 4: Wait for SSH Availability;
+note right
+  Loops until SSH is available (10 min timeout).
+  Outputs SSH status = ready.
+end note
+
+:Step 5: Install NVIDIA Driver;
+if (SSH status == ready?) then (Yes)
+  note right
+    Uses SSH to execute remote commands on the instance:
+    - Updates OS packages,
+    - Installs EPEL repositories,
+    - Installs kernel and development packages,
+    - Adds NVIDIA CUDA repo,
+    - Installs NVIDIA driver and management tools,
+    - Starts NVIDIA DCGM.
+  end note
+  :Execute remote installation via SSH;
+else (No)
+  stop
+endif
+
+:Step 6: Check GPU and DCGM Installation;
+note right
+  Checks installation using SSH: nvidia-smi & dcgmi discovery.
+  Loops until it verifies readiness (30 min timeout).
+end note
+
+:Step 7: Install cri-o, kubeadm, kubelet, and kubectl;
+note right
+  Installs Kubernetes components via SSH.
+end note
+
+:Step 8: Pull Container Images;
+note right
+  Uses SSH to pull a specific container image.
+end note
+
+:Step 9: Clean Up SSH Keys Before AMI Creation;
+note right
+  Uses SSH to remove authorized_keys.
+end note
+
+:Step 10: Create AMI;
+note right
+  Uses aws ec2 create-image.
+  Loops until the AMI state is "available".
+  Captures the ami_id.
+end note
+
+:Step 11: Cleanup AWS Resources;
+note right
+  Terminates the EC2 instance.
+  Deletes the temporary AWS key pair.
+  Removes local SSH keys.
+end note
+
+:Step 12: Output AMI ID;
+note right
+  Outputs the new AMI id if successful.
+end note
+
+stop
+@enduml

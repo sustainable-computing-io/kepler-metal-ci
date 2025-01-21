@@ -1,0 +1,77 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger Workflow Dispatch and Schedule;
+note right
+  Inputs:
+    - termination_time (default: '1')
+    - control_plan (default: 'c3.small.x86')
+    - node_plan (default: 'c3.small.x86')
+    - metro (default: 'da')
+  Permissions:
+    - pull-requests, contents, repository-projects, packages: write
+end note
+
+:Job: Create-k8s-cluster;
+note right
+  Uses: create_equinix_k8s_cluster.yml
+  Passes inputs:
+    termination_time,
+    control_plan,
+    node_plan,
+    metro.
+end note
+
+:Job: Test-K8s;
+note right
+  Needs: Create-k8s-cluster
+  Runs on: ubuntu-latest
+end note
+
+partition "Test-K8s Steps" {
+    :Checkout Code;
+    note right
+      Uses actions/checkout@v4
+    end note
+
+    :Config kube;
+    note right
+      Custom action "kube_config" retrieves kubeconfig-${github.run_id}.
+    end note
+
+    :Set up Kepler;
+    note right
+      Uses custom action "setup_kepler".
+    end note
+
+    :Pull kube-burner;
+    note right
+      - Clone kube-burner repository.
+      - Download and extract kube-burner release.
+    end note
+
+    :Run kube-burner node-density Test;
+    note right
+      - Copy and modify workload metrics configuration.
+      - Set QPS, burst, iterations.
+      - Append indexer config.
+      - Record START_TIME.
+      - Run kube-burner with Prometheus URL.
+      - Sleep for one minute.
+      - Record END_TIME.
+      - Retrieve and process Kepler and kube-apiserver metrics.
+      - Update docs/kepler-stress-test-metrics.md.
+    end note
+
+    :Git add and commit metrics;
+    note right
+      Configures git user, adds updated markdown,
+      commits with message containing END_TIME,
+      and pushes to main.
+    end note
+}
+
+stop
+@enduml

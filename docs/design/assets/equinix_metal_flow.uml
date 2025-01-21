@@ -1,0 +1,78 @@
+@startuml
+!define RECTANGLE class
+
+start
+
+:Trigger workflow_dispatch or schedule (cron: '0 16 * * *');
+note right
+  Permissions: pull-requests, contents, repository-projects, packages: write
+end note
+
+:Job: Create-runner;
+note right
+  Uses: create_equinix_runner.yml
+  (Provision runner)
+end note
+
+:Job: Install;
+note right
+  Needs: Create-runner
+  Runs on: self-hosted runner
+  Outputs: runner-name
+end note
+
+partition "Install Steps" {
+    :Checkout Code;
+    note right
+      Uses actions/checkout@v4.
+    end note
+
+    :Run Setup Runner Action;
+    note right
+      Executes custom setup-action.
+    end note
+
+    :List available RAPL domains;
+    note right
+      List and save RAPL domain details to /tmp/rapl-domain-availability.txt.
+    end note
+
+    :Checkout Code (again);
+
+    :Run Playbook;
+    note right
+      Executes a series of Ansible playbooks to:
+       - Create VM (kvm_playbook.yml)
+       - Install SSH tunnel (ssh_tunnel_playbook.yml)
+       - Install Prometheus (metrics_playbook.yml)
+       - Install Node Exporter (node_exporter_playbook.yml)
+       - Verify Node Exporter
+       - Install Kepler (kepler_playbook.yml)
+       - Create SSH tunnel (ssh_tunnel_playbook.yml)
+       - Run Kepler validation test (kepler_validator.yml)
+       - Generate and move validation report and artifacts
+       - Capture Prometheus TSDB snapshot
+       - Commit & push validation report to repo
+    end note
+
+    :Upload to Artifacts;
+    note right
+      Uses actions/upload-artifact@v4
+    end note
+
+    :Update model validation chart;
+    note right
+      Runs kepler_analytics.py then commits chart updates to repo.
+    end note
+}
+
+:Job: Cleanup;
+note right
+  Needs: Install
+  if: always()
+  Uses: clean_equinix_runner.yml
+  (Clean up runner)
+end note
+
+stop
+@enduml
