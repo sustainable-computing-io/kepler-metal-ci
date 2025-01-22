@@ -1,0 +1,4 @@
+core
+dram
+package-0
+uncore
