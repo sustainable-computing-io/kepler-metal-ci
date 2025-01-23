@@ -128,8 +128,18 @@ jobs:
           TOTAL_RUNTIME_SECONDS: 1200
           VALIDATOTR_CURVE_TYPE: "default"
 
+      - name: Checkout tools repo
+        uses: actions/checkout@v4
+        with:
+          repository: sustainable-computing-io/kepler-model-db
+          path: kepler-model-db
 
-
+      - name: Run Validation Playbooks
+        run: |
+          cd ${$GITHUB_WORKSPACE}/kepler-model-db
+          cp -r /tmp/trained-equinix-models .
+          ls -al
+          git status
 
   Cleanup:
     name: "Cleanup"
