@@ -1,0 +1,3 @@
+core
+dram
+package-0
