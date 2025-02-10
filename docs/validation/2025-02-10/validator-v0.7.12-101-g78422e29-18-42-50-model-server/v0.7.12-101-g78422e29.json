@@ -1,0 +1,143 @@
+{
+  "build_info": [
+    {
+      "arch": "amd64",
+      "branch": "main",
+      "instance": "localhost:8888",
+      "job": "metal",
+      "os": "linux",
+      "revision": "78422e29541076996e1c322909f67e9014675a30",
+      "version": "v0.7.12-101-g78422e29"
+    },
+    {
+      "arch": "amd64",
+      "branch": "main",
+      "instance": "localhost:9999",
+      "job": "vm",
+      "os": "linux",
+      "revision": "78422e29541076996e1c322909f67e9014675a30",
+      "version": "v0.7.12-101-g78422e29"
+    }
+  ],
+  "node_info": [
+    {
+      "components_power_source": "rapl-sysfs",
+      "cpu_architecture": "Coffee Lake",
+      "instance": "localhost:8888",
+      "job": "metal",
+      "platform_power_source": "acpi",
+      "source": "os"
+    },
+    {
+      "components_power_source": "estimator",
+      "cpu_architecture": "Coffee Lake",
+      "instance": "localhost:9999",
+      "job": "vm",
+      "platform_power_source": "none",
+      "source": "os"
+    }
+  ],
+  "machine_specs": [
+    {
+      "type": "host",
+      "model": "Intel(R) Xeon(R) E-2278G CPU @ 3.40GHz",
+      "cores": "16",
+      "threads": "2",
+      "sockets": "1",
+      "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp vnmi md_clear flush_l1d arch_capabilities",
+      "dram": "32592996 kB"
+    },
+    {
+      "type": "vm",
+      "model": "Intel(R) Xeon(R) E-2278G CPU @ 3.40GHz",
+      "cores": "14",
+      "threads": "1",
+      "sockets": "14",
+      "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves arat vnmi umip md_clear flush_l1d arch_capabilities",
+      "dram": "16108340 kB"
+    }
+  ],
+  "results": [
+    {
+      "metric-name": "node-rapl - kepler-package",
+      "value": {
+        "mse": "1.61",
+        "mape": "2.40",
+        "mae": "1.04",
+        "status": "mape passed: true, mse passed: true, mae passed: true"
+      }
+    },
+    {
+      "metric-name": "platform - absolute",
+      "value": {
+        "mse": "16869986662791.12",
+        "mape": "100.00",
+        "mae": "4073346.27",
+        "status": "mape passed: true, mse passed: true, mae passed: true"
+      }
+    },
+    {
+      "metric-name": "package - absolute",
+      "value": {
+        "mse": "11645.25",
+        "mape": "375.91",
+        "mae": "106.97",
+        "status": "mape passed: true, mse passed: true, mae passed: true"
+      }
+    },
+    {
+      "metric-name": "core - absolute",
+      "value": {
+        "mse": "11894.27",
+        "mape": "396.95",
+        "mae": "108.14",
+        "status": "mape passed: true, mse passed: true, mae passed: true"
+      }
+    },
+    {
+      "metric-name": "platform - dynamic",
+      "value": {
+        "mse": "16869986662791.12",
+        "mape": "100.00",
+        "mae": "4073346.27",
+        "status": "mape passed: true, mse passed: true, mae passed: true"
+      }
+    },
+    {
+      "metric-name": "package - dynamic",
+      "value": {
+        "mse": "11645.25",
+        "mape": "375.91",
+        "mae": "106.97",
+        "status": "mape passed: true, mse passed: true, mae passed: true"
+      }
+    },
+    {
+      "metric-name": "core - dynamic",
+      "value": {
+        "mse": "11894.27",
+        "mape": "396.95",
+        "mae": "108.14",
+        "status": "mape passed: true, mse passed: true, mae passed: true"
+      }
+    },
+    {
+      "metric-name": "dram - dynamic",
+      "value": {
+        "mse": "304.36",
+        "mape": "1149.80",
+        "mae": "17.44",
+        "status": "mape passed: true, mse passed: true, mae passed: true"
+      }
+    },
+    {
+      "metric-name": "cpu-time - absolute",
+      "value": {
+        "mse": "860742.09",
+        "mape": "45.32",
+        "mae": "692.75",
+        "status": "mape passed: true, mse passed: true, mae passed: true"
+      }
+    }
+  ]
+}
