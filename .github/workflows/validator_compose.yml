@@ -48,72 +48,76 @@ jobs:
       - name: Run playbook
         run: |
           cd ${GITHUB_WORKSPACE}/ansible
-          echo "Run Validator Playbook"
-          ansible-playbook -vvv -i inventory.yml validator_playbook.yml
-
-          echo "Checkout the report"
-          ls /tmp
-          cat /tmp/report-*.md || true
-
-          # create a directory to store the artifacts, the directory is the current date 
-          set -x
-          export DATE_STR=$(date +%Y-%m-%d)
-          cd ${GITHUB_WORKSPACE}
-          mkdir -p docs/validation/${DATE_STR}
-          export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
-          python3 -m pip install --upgrade pip
-          pip install tabulate
-          python3 util/generate_daily_validations.py \
-            --report-md-filepath docs/daily-validations/daily-validations-kepler-standalone/daily-report.md \
-            --report-json-filepath docs/daily-validations/daily-validations-kepler-standalone/daily-report.json \
-            --new-val-filepath /tmp/validator-${KEPLER_TAG}/${KEPLER_TAG}.json
-
-          # copy the report to the directory
-          mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/
-          mv /tmp/rapl-domain-availability.txt docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/
-          echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-compose " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/artifacts) |" \
-            >> docs/kepler-model-validation.md
-
-          # Capture Prometheus TSDB Snapshot
-          mkdir -p docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/prometheus-snapshot
-          tar -cvzf docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/prometheus-snapshot/snapshot.tar.gz -C \
-            /tmp/snapshot/ .
-
-          # Push to the repo
-          git config user.email "dependabot[bot]@users.noreply.github.com"
-          git config user.name "dependabot[bot]"
-          git add docs/*
-          git commit -m "Add validation report for ${DATE_STR}" -s
-          git push
-          echo "date=${DATE_STR}" >> $GITHUB_OUTPUT
+          until [[ -f /tmp/unsleep ]]; do
+            echo "Sleeping for 10 seconds"
+            sleep 0
+          done
+          # echo "Run Validator Playbook"
+          # ansible-playbook -vvv -i inventory.yml validator_playbook.yml
+          #
+          # echo "Checkout the report"
+          # ls /tmp
+          # cat /tmp/report-*.md || true
+          #
+          # # create a directory to store the artifacts, the directory is the current date 
+          # set -x
+          # export DATE_STR=$(date +%Y-%m-%d)
+          # cd ${GITHUB_WORKSPACE}
+          # mkdir -p docs/validation/${DATE_STR}
+          # export KEPLER_TAG=$(ls -d /tmp/validator-* |tail -1 | sed 's/.*validator-//g')
+          # python3 -m pip install --upgrade pip
+          # pip install tabulate
+          # python3 util/generate_daily_validations.py \
+          #   --report-md-filepath docs/daily-validations/daily-validations-kepler-standalone/daily-report.md \
+          #   --report-json-filepath docs/daily-validations/daily-validations-kepler-standalone/daily-report.json \
+          #   --new-val-filepath /tmp/validator-${KEPLER_TAG}/${KEPLER_TAG}.json
+          #
+          # # copy the report to the directory
+          # mv /tmp/validator-${KEPLER_TAG}/ docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/
+          # mv /tmp/rapl-domain-availability.txt docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/
+          # echo "| " ${DATE_STR} " | " ${KEPLER_TAG}-compose " | [Report](validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/report-${KEPLER_TAG}.md) | [Artifacts](validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/artifacts) |" \
+          #   >> docs/kepler-model-validation.md
+          #
+          # # Capture Prometheus TSDB Snapshot
+          # mkdir -p docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/prometheus-snapshot
+          # tar -cvzf docs/validation/${DATE_STR}/validator-${KEPLER_TAG}-compose/prometheus-snapshot/snapshot.tar.gz -C \
+          #   /tmp/snapshot/ .
+          #
+          # # Push to the repo
+          # git config user.email "dependabot[bot]@users.noreply.github.com"
+          # git config user.name "dependabot[bot]"
+          # git add docs/*
+          # git commit -m "Add validation report for ${DATE_STR}" -s
+          # git push
+          # echo "date=${DATE_STR}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - name: upload to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: validator_compose
-          path: docs/validation/${{ steps.run_workload.run_playbook.date }}
-          retention-days: 30
-
-      - name: Update model validation chart
-        run: |
-          export DATE_STR=$(date +%Y-%m-%d)
-          cd ${GITHUB_WORKSPACE}
-          cd docs/analytics
-          python3 -m pip install --upgrade pip
-          pip install -r requirements.txt
-          python3 ./kepler_analytics.py
-          # update git
-          git config user.email "dependabot[bot]@users.noreply.github.com"
-          git config user.name "dependabot[bot]"
-          cd ${GITHUB_WORKSPACE}
-          git add docs/analytics/*
-          git add docs/kepler-model-validation-chart.md
-          git commit -m "Add validation chart for ${DATE_STR}" -s
-          git push
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      # - name: upload to artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: validator_compose
+      #     path: docs/validation/${{ steps.run_workload.run_playbook.date }}
+      #     retention-days: 30
+      #
+      # - name: Update model validation chart
+      #   run: |
+      #     export DATE_STR=$(date +%Y-%m-%d)
+      #     cd ${GITHUB_WORKSPACE}
+      #     cd docs/analytics
+      #     python3 -m pip install --upgrade pip
+      #     pip install -r requirements.txt
+      #     python3 ./kepler_analytics.py
+      #     # update git
+      #     git config user.email "dependabot[bot]@users.noreply.github.com"
+      #     git config user.name "dependabot[bot]"
+      #     cd ${GITHUB_WORKSPACE}
+      #     git add docs/analytics/*
+      #     git add docs/kepler-model-validation-chart.md
+      #     git commit -m "Add validation chart for ${DATE_STR}" -s
+      #     git push
+      #   env:
+      #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   Cleanup:
     name: "Cleanup"
