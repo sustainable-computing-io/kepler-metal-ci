@@ -11,6 +11,7 @@ runs:
         # config ssh
         sudo ssh-keygen -t rsa -b 4096 -f /root/.ssh/ansible_rsa -N ''
         sudo cat ~/.ssh/ansible_rsa.pub >> ~/.ssh/authorized_keys
+        sudo echo -n "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCrMUcsN9rhYacFimRyOrqPUdYH4SZASH6wqK/cRsKccNcj/nP4TtxaacB5J3/Rmy61f6IzZWIqoU+KyKLCJk+2/JAMRSbjAhnIiKgbWfhL9Fsqs4XosSAGC8+F3hdPZ1SD3rdu66dbk0odKX3bhzAtyOguMvp65eJc19x/5XLrmmucZI6WLg5SvHlIVCG3qunvTkO+OoJwPKEg9AD6Tazca2qGKJtONNy370SfXyIjs6EeNvZlszXd0AS5oH/xg0Ok5Ru2I0G3gR0GESo3wg75RMLWC9bA3LI7ymaO3oMcOYvxldZln/ngSsQ6k0P+Rq3fPdPMPqtb5T8gQVYdDLGxZvk1VIRh4R69zDUbOyeWQU/49K+7pDi/GOfjjRpzskE6nluCAY58iUz1CNgTg8bVrMn8pId8sf//7J/kNIs+5zt1uicjDObSuYZpbq5qR0+4stSi3NZWYBbvll8Es8wa+lDqdH0dR/00ELqjTbmuxf1p1rJhsnrvV6acW/+7jEc= vibhuprashar@vprashar-mac" >> ~/.ssh/authorized_keys
         sudo echo "StrictHostKeyChecking no" >> ~/.ssh/config
         # install ansible
         if grep -q 'Ubuntu' /etc/os-release ; then
