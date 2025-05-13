@@ -3,7 +3,7 @@
 
 start
 
-:Trigger Workflow Dispatch and Schedule;
+:Trigger Workflow Dispatch;
 note right
   Inputs:
     - termination_time (default: '1')

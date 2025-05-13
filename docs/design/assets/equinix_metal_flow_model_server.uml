@@ -3,7 +3,7 @@
 
 start
 
-:Trigger via workflow_dispatch or schedule (cron: '0 23 * * *');
+:Trigger via workflow_dispatch;
 note right
   Permissions:
     - pull-requests, contents, repository-projects, packages: write
