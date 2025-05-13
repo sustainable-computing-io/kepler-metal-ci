@@ -3,7 +3,7 @@
 
 start
 
-:Trigger workflow_dispatch or schedule (cron: '0 16 * * *');
+:Trigger workflow_dispatch;
 note right
   Permissions: pull-requests, contents, repository-projects, packages: write
 end note

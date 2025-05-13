@@ -2,8 +2,6 @@ name: Validation with Standalone Kepler
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 16 * * *'
 
 permissions:
   pull-requests: write
